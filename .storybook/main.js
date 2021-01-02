@@ -9,9 +9,6 @@ const path = require('path')
   stories: ['../stories/**/*.stories.tsx'],
   addons: ['@storybook/addon-actions', '@storybook/addon-links'],
   webpackFinal: config => {
-    config.mode = 'production'
-    config.devtool = 'none'
-    
 
     config.resolve.extensions.push('.ts', '.tsx')
     config.resolve.alias['i-render'] = path.resolve(__dirname, '../lib/src/index.js')

@@ -7,7 +7,7 @@ import {  Ielement } from './Ielement/IElement'
 
 
 export enum GL_ELEMENT_TYPES {
-
+  
     GL_IMAGE='GL_IMAGE'
 }
 

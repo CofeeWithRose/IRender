@@ -2,6 +2,16 @@ import React, { useEffect, useRef } from 'react';
 
 import { IRender, GL_ELEMENT_TYPES, Iimage } from 'i-render'
 
+export default {
+  title: 'GL RENDER',
+  component: Test,
+};
+
+export function Test() {
+  return <div>
+    test...
+  </div>
+}
 
 const canvasWidth = 1920
 const canvasHeight = 969
@@ -10,7 +20,7 @@ const circleR = 5
 
 const borderR = 0
 
-function Test() {
+export function IrenderTest() {
     const cRef = useRef()
 
     const textureRef = useRef<HTMLCanvasElement>()
@@ -125,13 +135,9 @@ function Test() {
    </ div >
 }
 
-export default {
-    title: 'GL RENDER',
-    component: Test,
-  };
+
+
   
-  export const ToStorybook = () => <Test/>;
-  
-  ToStorybook.story = {
-    name: 'webgl',
-  };
+  // ToStorybook.story = {
+  //   name: 'render test',
+  // };
