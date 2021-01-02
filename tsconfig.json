@@ -3,12 +3,19 @@
     "jsx": "preserve",
     "moduleResolution": "Node",
     "rootDir": "./src",
+    "baseUrl": "./src",
     "lib": ["ESNext", "DOM"],
-    "module": "ES6",
-    "target": "ES3",
+    "module": "commonjs",
+    "target": "ES5",
     "outDir": "lib",
     "declaration": true,
     "allowSyntheticDefaultImports": true,
+    "paths": { 
+      "i-render": ["index.ts"]
+    }
   },
-  "exclude": ["stories","lib"]
+  "exclude": ["lib"],
+  "include": [
+    "**/*.ts",  "**/*.tsx",
+  ],
 }

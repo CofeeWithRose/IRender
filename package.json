@@ -4,7 +4,7 @@
   "description": "light and fast image render based on webgl.",
   "main": "lib/index.js",
   "scripts": {
-    "start": "tsc -watch | npm run dev",
+    "start": "tsc --watch | npm run dev",
     "build": "tsc&&node ./build/index.js",
     "dev": "start-storybook -p 6006",
     "build-storybook": "build-storybook"

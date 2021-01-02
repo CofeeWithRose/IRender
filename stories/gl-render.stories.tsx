@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { GLRender, GL_ELEMENT_TYPES } from '../lib'
-import { GlImage } from '../lib/GLElement/GLImage';
 
+import { IRender, GL_ELEMENT_TYPES, Iimage } from 'i-render'
 
 
 const canvasWidth = 1920
@@ -16,16 +15,16 @@ function Test() {
 
     const textureRef = useRef<HTMLCanvasElement>()
 
-    const glRenderRef  =  useRef<GLRender>()
+    const glRenderRef  =  useRef<IRender>()
 
     useEffect(() =>{
 
-        const xCount = 600
+        const xCount = 600  
         const yCount = 500
 
         console.log('total:', xCount * yCount)
 
-        const glRender = new GLRender(cRef.current, { maxNumber: xCount * yCount })
+        const glRender = new IRender(cRef.current, { maxNumber: xCount * yCount })
         glRenderRef.current = glRender
         const circle = document.createElement('canvas')
         circle.width = (circleR+ borderR) *2
@@ -47,7 +46,7 @@ function Test() {
         const [halfImgId] = glRender.loadImgs([circle])
         let reqH = {};
         
-        const imgList:GlImage[] = []
+        const imgList:Iimage[] = []
         for(let i =0; i< xCount; i++){
           for( let j =0; j< yCount; j++ ){
             imgList.push ( 

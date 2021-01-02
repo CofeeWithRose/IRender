@@ -1,6 +1,11 @@
+/*
+ * @Author: muyin
+ * @Date: 2021-01-02 16:58:06
+ * @email: muyin.ph@alibaba-inc.com
+ */
 
 import { Vec2 } from '../Data/Vec2'
-import {GLElement} from './GLElement'
+import {Ielement} from './Ielement'
 
 export interface UpdateHandle {
   updatePosition: () => void
@@ -8,7 +13,7 @@ export interface UpdateHandle {
   updateImg: () => void
 }
 
-export class GlImage extends GLElement  {
+export class Iimage extends Ielement  {
 
     constructor( 
       private update:UpdateHandle,
