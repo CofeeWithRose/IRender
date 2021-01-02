@@ -1,0 +1,47 @@
+{
+  "name": "i-render",
+  "version": "0.0.1",
+  "description": "light and fast image render based on webgl.",
+  "main": "lib/index.js",
+  "scripts": {
+    "start": "tsc -watch | npm run dev",
+    "build": "tsc&&node ./build/index.js",
+    "dev": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
+  },
+  "author": "cofeewithrose",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.11.0",
+    "@babel/preset-typescript": "^7.10.4",
+    "@storybook/addon-actions": "^5.3.19",
+    "@storybook/addon-links": "^5.3.19",
+    "@storybook/addons": "^5.3.19",
+    "@storybook/react": "^5.3.19",
+    "@types/node": "^14.0.22",
+    "@types/react": "^16.9.42",
+    "babel-loader": "^8.1.0",
+    "react": "^16.13.1",
+    "terser": "^4.8.0",
+    "typescript": "^3.9.6"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {},
+  "files": [
+    "lib"
+  ],
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CofeeWithRose/IRender.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CofeeWithRose/IRender/issues"
+  },
+  "homepage": "https://github.com/CofeeWithRose/IRender#readme"
+}
