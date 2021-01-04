@@ -16,6 +16,7 @@ const path = require('path')
     config.module.rules[0].test= /\.ts(x)?$/
     const babelConfig = config.module.rules[0].use[0].options
     babelConfig.presets.push(require.resolve('@babel/preset-typescript'))
+    console.log(JSON.stringify(config))
     return config
   }
 };

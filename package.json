@@ -31,7 +31,9 @@
   "directories": {
     "lib": "lib"
   },
-  "dependencies": {},
+  "dependencies": {
+    "zrender": "^5.0.1"
+  },
   "files": [
     "lib"
   ],

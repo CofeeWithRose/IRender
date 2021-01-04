@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 import { IRender, GL_ELEMENT_TYPES, Iimage } from 'i-render'
+import { startFPS, stopFPS } from './fps';
 
 export default {
   title: 'GL RENDER',
@@ -13,12 +14,18 @@ export function Test() {
   </div>
 }
 
-const canvasWidth = 1920
-const canvasHeight = 969
+const canvasWidth = 2800
+const canvasHeight = 1300
 
-const circleR = 5
+
+
+const xCount = 85 * 10
+const yCount = 25 * 14
+
+const circleR = 40
 
 const borderR = 0
+
 
 export function IrenderTest() {
     const cRef = useRef()
@@ -29,10 +36,7 @@ export function IrenderTest() {
 
     useEffect(() =>{
 
-        const xCount = 600  
-        const yCount = 500
-
-        console.log('total:', xCount * yCount)
+       
 
         const glRender = new IRender(cRef.current, { maxNumber: xCount * yCount })
         glRenderRef.current = glRender
@@ -40,7 +44,7 @@ export function IrenderTest() {
         circle.width = (circleR+ borderR) *2
         circle.height = (circleR+ borderR)  *2
         const ctx = circle.getContext('2d')
-        ctx.fillStyle= "rgba(50,255,255,0.5)"
+        ctx.fillStyle= "rgba(50,255,255,0.2)"
         ctx.lineWidth= borderR
         ctx.arc(circleR, circleR, circleR,0,  Math.PI *2)
         ctx.fill()
@@ -49,61 +53,48 @@ export function IrenderTest() {
         const [circleImgId] = glRender.loadImgs([circle])
 
         ctx.clearRect(0,0, circleR *2, circleR *2)
-        ctx.fillStyle= "rgba(255,125,125,0.5)"
+        ctx.fillStyle= "rgba(255,125,125,0.2)"
         ctx.arc(circleR, circleR , circleR, 0,  Math.PI *2 )
         ctx.fill()
 
         const [halfImgId] = glRender.loadImgs([circle])
-        let reqH = {};
+        let reqH = { a : 0};
         
-        const imgList:Iimage[] = []
+        const list:Iimage[] = []
         for(let i =0; i< xCount; i++){
           for( let j =0; j< yCount; j++ ){
-            imgList.push ( 
+            list.push ( 
         
               glRender.createElement(
                 GL_ELEMENT_TYPES.GL_IMAGE, 
                 { 
-                  imgId:imgList.length%2? circleImgId: halfImgId , 
-                  position:  {x: i *circleR *2  , y: j * circleR *2}
+                  imgId:list.length%2? circleImgId: halfImgId , 
+                  position:  {x: i *circleR * 0.3  , y: j * circleR * 0.3}
                 }
               ),
             )
           }
         }
 
-        const fpsDiv = document.querySelector('#fps')
-        let lastTime = performance.now()
+        console.log('total:', list.length)
+       
         let frameCount = 0
         const req = () => {
           frameCount++
-          const now = performance.now()
-    
-          if(now - lastTime >=1000){
-            const preFrameSeconds = (now - lastTime) * 0.001/ frameCount
-            fpsDiv.innerHTML ='fps: '+ Math.round(1/preFrameSeconds)
-            frameCount = 0;
-            lastTime = now;
-          }
-          // imgList.forEach( function update(e, ind){
-          //   // if(!(frameCount%10)){
-          //     // e.setPosition( Math.random() * (canvasWidth - circleR *2), Math.random() * (canvasHeight - circleR *2) )
-          //     // e.setPosition( e.position.x+1, e.position.y +1 )
-
-          //   // }
-          //   // e.setImgId((Date.now())%(2* 1000) < 1 *1000?  (ind%2? circleImgId: halfImgId) : (ind%3? circleImgId: halfImgId))
-          //   e.setImgId((frameCount+ind)%60? circleImgId: halfImgId)
-          // })
-          const l = imgList.length
+          
+          const l = list.length
           for(let i = 0; i<l; ++i ) {
-            imgList[i].setImgId((frameCount+i)%60? circleImgId: halfImgId)
+            list[i].setImgId((frameCount+i)%60? circleImgId: halfImgId)
+            // list[i].setPosition(list[i].position.x + Math.sign(frameCount) , list[i].position.y)
           }
 
           glRender.updateImidiatly()
           reqH.a =requestAnimationFrame(req)
         }
+        startFPS()
         req()
         return () => { 
+          stopFPS()
           cancelAnimationFrame(reqH.a)
         }
     }, [])

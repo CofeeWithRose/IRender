@@ -138,7 +138,7 @@ export class IRender {
                 this.attrData.a_position[startIndex + 8] = 3
             })
             this.gl.bindBuffer( this.gl.ARRAY_BUFFER, this.attrBuffer.a_position )
-            this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_position, this.gl.STATIC_DRAW)
+            this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_position, this.gl.DYNAMIC_DRAW)
             // console.log('positionChanged....')
         }
 
@@ -170,10 +170,10 @@ export class IRender {
           })
 
           this.gl.bindBuffer( this.gl.ARRAY_BUFFER, this.attrBuffer.a_texCoord )
-          this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_texCoord, this.gl.STATIC_DRAW)
+          this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_texCoord, this.gl.DYNAMIC_DRAW)
 
           this.gl.bindBuffer( this.gl.ARRAY_BUFFER, this.attrBuffer.a_size )
-          this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_size, this.gl.STATIC_DRAW)
+          this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_size, this.gl.DYNAMIC_DRAW)
           // console.log('imageIdChanged...')
         }
 
@@ -215,19 +215,19 @@ export class IRender {
         }
         const positionBuffer = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer)
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_position, this.gl.STATIC_DRAW )
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_position, this.gl.DYNAMIC_DRAW )
         this.gl.enableVertexAttribArray(this.attribuitesLocations.a_position)
         this.gl.vertexAttribPointer(this.attribuitesLocations.a_position, 3, this.gl.FLOAT, false, 0,0)
 
         const sizeBuffer = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, sizeBuffer)
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_size, this.gl.STATIC_DRAW )
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_size, this.gl.DYNAMIC_DRAW )
         this.gl.enableVertexAttribArray(this.attribuitesLocations.a_size)
         this.gl.vertexAttribPointer(this.attribuitesLocations.a_size, 2, this.gl.FLOAT, false, 0,0)
 
         const texCoord = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, texCoord)
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_texCoord, this.gl.STATIC_DRAW )
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_texCoord, this.gl.DYNAMIC_DRAW )
         this.gl.enableVertexAttribArray(this.attribuitesLocations.a_texCoord)
         this.gl.vertexAttribPointer(this.attribuitesLocations.a_texCoord, 2, this.gl.FLOAT, false, 0,0)
 
