@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-import { IRender, GL_ELEMENT_TYPES, Iimage } from 'i-render'
+import { IRender, Iimage, I_ELEMENT_TYPES } from 'i-render'
 import { startFPS, stopFPS } from './fps';
 
 export default {
@@ -66,7 +66,7 @@ export function IrenderTest() {
             list.push ( 
         
               glRender.createElement(
-                GL_ELEMENT_TYPES.GL_IMAGE, 
+                I_ELEMENT_TYPES.I_IMAGE, 
                 { 
                   imgId:list.length%2? circleImgId: halfImgId , 
                   position:  {x: i *circleR * 0.3  , y: j * circleR * 0.3}

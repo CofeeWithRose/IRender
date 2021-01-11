@@ -1,31 +1,12 @@
-import { Iimage, UpdateHandle } from './Ielement/Iimage'
-import { FRAGMENT_SHADER, VERTEX_SHADER } from './shader';
-import { compileShader, SHADER_TYPE } from './util';
-import { Vec2 } from './Data/Vec2'
+import { Iimage } from '../Ielement/Iimage'
+import { FRAGMENT_SHADER, VERTEX_SHADER } from '../shader';
+import { compileShader, SHADER_TYPE } from '../util';
 import { TextureCanvasManager } from './TextureCanvasManager'
-import {  Ielement } from './Ielement/IElement'
+import {  Ielement, UpdateHandle } from '../Ielement/IElement'
+import { IElementParams, IElements, IElementTypes, I_ELEMENT_TYPES } from './infer';
 
 
-export enum GL_ELEMENT_TYPES {
-  
-    GL_IMAGE='GL_IMAGE'
-}
-
-export interface GLElements {
-
-    [GL_ELEMENT_TYPES.GL_IMAGE]: Iimage
-}
-
-export interface GLElementTypes {
-
-    [GL_ELEMENT_TYPES.GL_IMAGE]: typeof Iimage
-}
-
-
-export interface GLElementParams{
-
-    [GL_ELEMENT_TYPES.GL_IMAGE]: { imgId: number, position:Vec2 }
-}
+export * from './infer/index'
 
 
 const DEFAULT_OPTION = { maxNumber: 50000, textureSize: 2048 }
@@ -35,8 +16,8 @@ export class IRender {
   
     private elemetList: Ielement[] = []
 
-    private GLElemetMap: GLElementTypes = {
-        [GL_ELEMENT_TYPES.GL_IMAGE]: Iimage
+    private GLElemetMap: IElementTypes = {
+        [I_ELEMENT_TYPES.I_IMAGE]: Iimage
     }
 
     private gl:WebGLRenderingContext;
@@ -64,11 +45,11 @@ export class IRender {
         a_texCoord: WebGLBuffer
     }
   
-    private needSort = false
+    // private needSort = false
 
-    private positionChanged = false
+    private positionBufferChanged = false
 
-    private imageIdChanged = false
+    private imageIdBufferChanged = false
 
     private textureChange = true
 
@@ -77,6 +58,8 @@ export class IRender {
     private texture: WebGLTexture
 
     private options: typeof DEFAULT_OPTION 
+
+    private elementPool = new Set<Ielement>()
 
 
     constructor( glCanvas: HTMLCanvasElement,   options?: Partial<typeof DEFAULT_OPTION>   ){
@@ -111,63 +94,16 @@ export class IRender {
         return this.textureCanvas.canvas
     }
 
+    
     updateImidiatly = () => {
-
-        if(this.needSort) {
-            this.positionChanged = true
-            this.imageIdChanged = true
-            this.elemetList.sort(( {zIndex: z1}, {zIndex: z2} ) =>  z1 -z2 )
-            this.attrData.a_position.fill(0)
-            this.attrData.a_size.fill(0)
-            this.attrData.a_texCoord.fill(0)
-        }
-        
-        if(this.positionChanged) {
-            this.elemetList.forEach(({ position, imgId }, index) => {
-                const startIndex = index * 3 *3
-                this.attrData.a_position[startIndex] = position.x
-                this.attrData.a_position[startIndex + 1] = position.y
-                this.attrData.a_position[startIndex + 2] = 1
-
-                this.attrData.a_position[startIndex + 3] = position.x
-                this.attrData.a_position[startIndex + 4] = position.y
-                this.attrData.a_position[startIndex + 5] = 2
-
-                this.attrData.a_position[startIndex + 6] = position.x
-                this.attrData.a_position[startIndex + 7] = position.y
-                this.attrData.a_position[startIndex + 8] = 3
-            })
+        // console.log('this.attrBuffer.a_position', this.attrData.a_position)
+        if(this.positionBufferChanged) {
+           
             this.gl.bindBuffer( this.gl.ARRAY_BUFFER, this.attrBuffer.a_position )
             this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_position, this.gl.DYNAMIC_DRAW)
-            // console.log('positionChanged....')
         }
 
-        if(this.imageIdChanged ) {
-
-          this.elemetList.forEach(({ position, imgId }, index) => {
-
-            const startIndex = index * 3*2
-  
-            const [{ x,y, w, h }] = this.textureCanvas.getImageInfos([imgId])
-  
-            this.attrData.a_texCoord[startIndex] = x
-            this.attrData.a_texCoord[startIndex + 1] = y
-  
-            this.attrData.a_texCoord[startIndex+ 2] = x
-            this.attrData.a_texCoord[startIndex + 3] = y
-  
-            this.attrData.a_texCoord[startIndex+4] = x
-            this.attrData.a_texCoord[startIndex + 5] = y
-  
-            this.attrData.a_size[startIndex] = w
-            this.attrData.a_size[startIndex + 1] = h
-  
-            this.attrData.a_size[startIndex+ 2] = w
-            this.attrData.a_size[startIndex + 3] = h
-  
-            this.attrData.a_size[startIndex+4] = w
-            this.attrData.a_size[startIndex + 5] = h
-          })
+        if(this.imageIdBufferChanged ) {
 
           this.gl.bindBuffer( this.gl.ARRAY_BUFFER, this.attrBuffer.a_texCoord )
           this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_texCoord, this.gl.DYNAMIC_DRAW)
@@ -181,9 +117,8 @@ export class IRender {
 
         this.gl.drawArrays(this.gl.TRIANGLES, 0, this.elemetList.length *3)
 
-        this.needSort = false
-        this.imageIdChanged = false
-        this.positionChanged = false
+        this.imageIdBufferChanged = false
+        this.positionBufferChanged = false
         this.textureChange = false
     }
 
@@ -243,27 +178,62 @@ export class IRender {
         this.gl.uniform2f(this.uniformLocations.u_windowSize, this.gl.canvas.width, this.gl.canvas.height )
     }
   
-    createElement<T extends GL_ELEMENT_TYPES>( type: T, params: GLElementParams[T] ): GLElements[T] {
+    createElement<T extends I_ELEMENT_TYPES>( type: T, params: IElementParams[T] ): IElements[T] {
         const handle: UpdateHandle = { 
             updatePosition: this.updatePosition,
-            updatezIndex: this.updateSort,
             updateImg: this.updateImage,
         }
-        const img =  new this.GLElemetMap[type](handle, params)
-        this.elemetList.push(img)
-        this.needSort = true
-        this.update()
-        return img
+        if(this.elementPool.size <=0) {
+
+            const el =  new this.GLElemetMap[type](handle, params)
+            el.bufferIndex = this.elemetList.length
+            this.elemetList.push(el)
+            this.updatePosition(el.bufferIndex, el.position)
+            this.updateImage(el.bufferIndex, el.imgId)
+            // this.update()
+            return el
+
+        }else{
+
+            const el = this.elementPool[0]
+            this.elementPool.delete(el)
+            el.update = handle
+            for (let attr in params){
+                el[attr] = params
+            }
+            this.elemetList.push(el)
+            this.updatePosition(el.bufferIndex, el.position)
+            this.updateImage(el.bufferIndex, el.imgId)
+            // this.update()
+            return el
+        }
+      
     }
-    private updatePosition = () => {
-        this.positionChanged = true
+    private updatePosition: UpdateHandle['updatePosition'] = (bufferIndex, position ) => {
+
+        const startIndex = bufferIndex * 3 *3
+        this.attrData.a_position[startIndex] = position.x
+        this.attrData.a_position[startIndex + 1] = position.y
+        this.attrData.a_position[startIndex + 2] = 1
+
+        this.attrData.a_position[startIndex + 3] = position.x
+        this.attrData.a_position[startIndex + 4] = position.y
+        this.attrData.a_position[startIndex + 5] = 2
+
+        this.attrData.a_position[startIndex + 6] = position.x
+        this.attrData.a_position[startIndex + 7] = position.y
+        this.attrData.a_position[startIndex + 8] = 3
+
+        this.positionBufferChanged = true
         this.update()
     }
 
     destoryElement(ele: Ielement){
         const ind = this.elemetList.findIndex(el => el === ele)
         if(ind > -1){
-            this.elemetList.splice(ind, 1)
+           const [deleted] =  this.elemetList.splice(ind, 1)
+           this.elementPool.add(deleted)
+           deleted.position = { x: Number.MIN_VALUE, y:Number.MIN_VALUE }
         }
     }
 
@@ -282,13 +252,36 @@ export class IRender {
         } )
     }
 
-    private updateSort = () => {
-        this.needSort = true
-        this.update()
-    }
+    // private updateSort = () => {
+    //     this.needSort = true
+    //     this.update()
+    // }
 
-    private updateImage = () => {
-        this.imageIdChanged = true
+    private updateImage: UpdateHandle['updateImg'] = (bufferIndex, imgId) => {
+
+        const startIndex = bufferIndex * 3*2
+
+        const [{ x,y, w, h }] = this.textureCanvas.getImageInfo(imgId)
+
+        this.attrData.a_texCoord[startIndex] = x
+        this.attrData.a_texCoord[startIndex + 1] = y
+
+        this.attrData.a_texCoord[startIndex+ 2] = x
+        this.attrData.a_texCoord[startIndex + 3] = y
+
+        this.attrData.a_texCoord[startIndex+4] = x
+        this.attrData.a_texCoord[startIndex + 5] = y
+
+        this.attrData.a_size[startIndex] = w
+        this.attrData.a_size[startIndex + 1] = h
+
+        this.attrData.a_size[startIndex+ 2] = w
+        this.attrData.a_size[startIndex + 3] = h
+
+        this.attrData.a_size[startIndex+4] = w
+        this.attrData.a_size[startIndex + 5] = h
+
+        this.imageIdBufferChanged = true
         this.update()
     }
   

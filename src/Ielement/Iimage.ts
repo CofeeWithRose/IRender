@@ -5,18 +5,14 @@
  */
 
 import { Vec2 } from '../Data/Vec2'
-import {Ielement} from './Ielement'
+import {Ielement, UpdateHandle} from './Ielement'
 
-export interface UpdateHandle {
-  updatePosition: () => void
-  updatezIndex : () => void
-  updateImg: () => void
-}
+
 
 export class Iimage extends Ielement  {
 
     constructor( 
-      private update:UpdateHandle,
+      public update:UpdateHandle,
       initInfo : { imgId: number,  position: Vec2},
      ){
       super()
@@ -27,12 +23,12 @@ export class Iimage extends Ielement  {
     setPosition(x: number, y: number){
         this.position.x = x
         this.position.y = y
-        this.update.updatePosition()
+        this.update.updatePosition(this.bufferIndex, this.position)
     }
 
     setImgId(imgId: number){
       this.imgId = imgId
-      this.update.updateImg()
+      this.update.updateImg(this.bufferIndex, this.imgId)
     }
-    
+
 }

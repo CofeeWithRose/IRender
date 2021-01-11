@@ -69,8 +69,8 @@ export class TextureCanvasManager {
         // const nextHeight =  this.curLineHeight + c.height
     }
 
-    getImageInfos(imgIds: number[]): {x: number, y: number, w: number, h: number}[] {
-      return [this.positionInfo[imgIds[0]]]
+    getImageInfo(imgId: number): {x: number, y: number, w: number, h: number}[] {
+      return [this.positionInfo[imgId]]
     }
   
   }
