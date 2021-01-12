@@ -88,7 +88,7 @@ export function IrenderTest() {
             // list[i].setPosition(list[i].position.x + Math.sign(frameCount) , list[i].position.y)
           }
 
-          glRender.updateImidiatly()
+          // glRender.updateImidiatly()
           reqH.a =requestAnimationFrame(req)
         }
         startFPS()
