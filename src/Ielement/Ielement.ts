@@ -16,11 +16,11 @@ export interface UpdateHandle {
 }
 
 export class Ielement {
-    // zIndex: number = 0
+
     update:UpdateHandle
     position: Vec2
     imgId: number
-    bufferIndex: number
+    elementIndex: number
     color: RGBA
 
     readonly IELEMENT_TYPE: I_ELEMENT_TYPES

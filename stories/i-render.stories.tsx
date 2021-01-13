@@ -19,10 +19,10 @@ const canvasHeight = 1300
 
 
 
-const xCount = 85 * 2
-const yCount = 25 * 10
+const xCount = 85 * 10
+const yCount = 25 * 14
 
-const circleR = 12
+const circleR = 24
 
 const borderR = 0
 
@@ -68,7 +68,6 @@ export function PerformenceTest() {
                 { 
                   imgId:list.length%2? circleImgId: halfImgId , 
                   position:  {x: i *circleR * 0.3  , y: j * circleR * 0.3},
-                  color: { r: 255, g: 255, b: 255, a: 255 },
                 }
               ),
             )
@@ -166,8 +165,15 @@ export function ColorTest() {
         I_ELEMENT_TYPES.I_IMAGE, 
         { 
           imgId: redId , 
-          position:  {x: circleR *5 , y: circleR *5},
-          color: { r: 255, g: 255, b: 255, a: 255 },
+          position:  {x: circleR *3 , y: circleR},
+        }
+      )
+
+      glRender.createElement(
+        I_ELEMENT_TYPES.I_IMAGE, 
+        { 
+          imgId: redId , 
+          position:  {x: circleR *2.3 , y: circleR},
         }
       )
 

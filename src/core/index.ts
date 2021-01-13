@@ -48,8 +48,6 @@ export class IRender {
         a_color: WebGLBuffer,
     }
   
-    // private needSort = false
-
     private positionBufferChanged = false
 
     private imageIdBufferChanged = false
@@ -117,8 +115,6 @@ export class IRender {
 
         if(this.colorBufferChanged){
             this.bufferData(this.attrBuffer.a_color, this.attrData.a_color)
-            console.log(this.attrData.a_color)
-            console.log('buffer-color')
         }
 
         this.checkReloadTexure()
@@ -204,27 +200,28 @@ export class IRender {
         if(this.elementPool.size <=0) {
 
             const el =  new this.GLElemetMap[type](handle, params)
-            el.bufferIndex = this.elemetList.length
+            el.elementIndex = this.elemetList.length
             this.elemetList.push(el)
-            this.updatePosition(el.bufferIndex, el.position)
-            this.updateImage(el.bufferIndex, el.imgId)
-            this.updateColor(el.bufferIndex, el.color)
+            this.updatePosition(el.elementIndex, el.position)
+            this.updateImage(el.elementIndex, el.imgId)
+            this.updateColor(el.elementIndex, el.color)
             // this.update()
             return el
 
         }else{
 
-            const el = this.elementPool[0]
+            const el = Array.from(this.elementPool)[0]
             this.elementPool.delete(el)
             el.update = handle
+            el.color= { r: 255, g: 255, b:255, a: 255  }
             for (let attr in params){
-                el[attr] = params
+                (el as any)[attr] = params
             }
             this.elemetList.push(el)
-            this.updatePosition(el.bufferIndex, el.position)
-            this.updateImage(el.bufferIndex, el.imgId)
-            // this.update()
-            return el
+            this.updatePosition(el.elementIndex, el.position)
+            this.updateImage(el.elementIndex, el.imgId)
+            this.updateColor(el.elementIndex, el.color)
+            return el as IElements[T]
         }
       
     }
@@ -271,10 +268,6 @@ export class IRender {
         } )
     }
 
-    // private updateSort = () => {
-    //     this.needSort = true
-    //     this.update()
-    // }
 
     private updateImage: UpdateHandle['updateImg'] = (bufferIndex, imgId) => {
 
