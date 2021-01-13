@@ -1,5 +1,5 @@
 import { Vec2 } from "Data/Vec2";
-import { Iimage } from "Ielement/Iimage";
+import { Iimage, IimageInfo } from "Ielement/Iimage";
 
 export enum I_ELEMENT_TYPES {
   
@@ -19,5 +19,5 @@ export interface IElementTypes {
 
 export interface IElementParams{
 
-    [I_ELEMENT_TYPES.I_IMAGE]: { imgId: number, position:Vec2 }
+    [I_ELEMENT_TYPES.I_IMAGE]: IimageInfo
 }

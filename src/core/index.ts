@@ -31,18 +31,21 @@ export class IRender {
         a_position: number
         a_size: number;
         a_texCoord: number;
+        a_color: number
     };
 
     private attrData: {
         a_position: Float32Array,
         a_size: Float32Array,
-        a_texCoord: Float32Array
+        a_texCoord: Float32Array,
+        a_color: Uint8Array,
     }
 
     private attrBuffer: {
         a_position: WebGLBuffer,
         a_size: WebGLBuffer,
-        a_texCoord: WebGLBuffer
+        a_texCoord: WebGLBuffer,
+        a_color: WebGLBuffer,
     }
   
     // private needSort = false
@@ -50,6 +53,8 @@ export class IRender {
     private positionBufferChanged = false
 
     private imageIdBufferChanged = false
+
+    private colorBufferChanged = false
 
     private textureChange = true
 
@@ -81,7 +86,8 @@ export class IRender {
         this.attribuitesLocations = {
             a_position: this.gl.getAttribLocation(program, 'a_position'),
             a_size: this.gl.getAttribLocation(program, 'a_size'),
-            a_texCoord: this.gl.getAttribLocation(program, 'a_texCoord')
+            a_texCoord: this.gl.getAttribLocation(program, 'a_texCoord'),
+            a_color: this.gl.getAttribLocation(program, 'a_color'),
         }
         this.initBuffer()
         this.initTexture()
@@ -109,6 +115,12 @@ export class IRender {
             this.bufferData(this.attrBuffer.a_size, this.attrData.a_size)
         }
 
+        if(this.colorBufferChanged){
+            this.bufferData(this.attrBuffer.a_color, this.attrData.a_color)
+            console.log(this.attrData.a_color)
+            console.log('buffer-color')
+        }
+
         this.checkReloadTexure()
 
         this.gl.drawArrays(this.gl.TRIANGLES, 0, this.elemetList.length *3)
@@ -116,6 +128,7 @@ export class IRender {
         this.imageIdBufferChanged = false
         this.positionBufferChanged = false
         this.textureChange = false
+        this.colorBufferChanged = false
     }
 
     private checkReloadTexure = () => {
@@ -143,6 +156,7 @@ export class IRender {
             a_position: new Float32Array(this.options.maxNumber * 3 * 3 ),
             a_size: new Float32Array(this.options.maxNumber * 3 *2 ),
             a_texCoord: new Float32Array(this.options.maxNumber * 3 *2 ),
+            a_color: new Uint8Array(this.options.maxNumber * 3 * 4 ),
         }
         const positionBuffer = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer)
@@ -162,10 +176,17 @@ export class IRender {
         this.gl.enableVertexAttribArray(this.attribuitesLocations.a_texCoord)
         this.gl.vertexAttribPointer(this.attribuitesLocations.a_texCoord, 2, this.gl.FLOAT, false, 0,0)
 
+        const color = this.gl.createBuffer()
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, color)
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_color, this.gl.STREAM_DRAW )
+        this.gl.enableVertexAttribArray(this.attribuitesLocations.a_color)
+        this.gl.vertexAttribPointer(this.attribuitesLocations.a_color, 4, this.gl.UNSIGNED_BYTE, true, 0,0)
+
         this.attrBuffer = {
             a_position : positionBuffer,
             a_size: sizeBuffer,
             a_texCoord: texCoord,
+            a_color: color
         }
     }
 
@@ -178,6 +199,7 @@ export class IRender {
         const handle: UpdateHandle = { 
             updatePosition: this.updatePosition,
             updateImg: this.updateImage,
+            updateColor: this.updateColor,
         }
         if(this.elementPool.size <=0) {
 
@@ -186,6 +208,7 @@ export class IRender {
             this.elemetList.push(el)
             this.updatePosition(el.bufferIndex, el.position)
             this.updateImage(el.bufferIndex, el.imgId)
+            this.updateColor(el.bufferIndex, el.color)
             // this.update()
             return el
 
@@ -281,5 +304,28 @@ export class IRender {
         this.update()
     }
   
+    private updateColor: UpdateHandle['updateColor']=(bufferIndex, color) => {
+
+        const startIndex = bufferIndex * 3*4
+
+        this.attrData.a_color[startIndex] = color.r
+        this.attrData.a_color[startIndex + 1] = color.g
+        this.attrData.a_color[startIndex +2] = color.b
+        this.attrData.a_color[startIndex + 3] = color.a
+
+        this.attrData.a_color[startIndex + 4] = color.r
+        this.attrData.a_color[startIndex + 5] = color.g
+        this.attrData.a_color[startIndex + 6] = color.b
+        this.attrData.a_color[startIndex + 7] = color.a
+
+        this.attrData.a_color[startIndex + 8] = color.r
+        this.attrData.a_color[startIndex + 9] = color.g
+        this.attrData.a_color[startIndex + 10] = color.b
+        this.attrData.a_color[startIndex + 11] = color.a
+
+        this.colorBufferChanged = true
+        this.update()
+    }
+
   }
 

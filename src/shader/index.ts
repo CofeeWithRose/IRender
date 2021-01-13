@@ -15,32 +15,36 @@ export const VERTEX_SHADER = `
     attribute vec2 a_size;
     attribute vec2 a_texCoord;
 
+    attribute vec4 a_color;
+
     varying vec2 v_texCoord;
     varying vec2 v_end;
+    varying vec4 v_color;
 
     void main() {
         
+        
         vec2 position = vec2(a_position.x, a_position.y);
+        v_color = a_color;
+        v_end = position + a_size;
 
         if(a_position.z <= 1.0){
             // 第1个点
             gl_Position = vec4((position/u_windowSize *2.0 -1.0) * vec2(1, -1), 1,1);
             v_texCoord = a_texCoord/u_textureSize;
-            v_end = position + a_size;
+            
             return;
         } 
         if( a_position.z <= 2.0  ){
             // 第二个点
             gl_Position = vec4(( (position + vec2( a_size.x*2.0, 0 ))/u_windowSize *2.0 -1.0) * vec2(1, -1), 1,1);
             v_texCoord = (a_texCoord + vec2( a_size.x*2.0, 0 ))/u_textureSize;
-            v_end = position + a_size;
             return;
         }
         if( a_position.z <= 3.0  ){
             // 第3个点
             gl_Position = vec4(( (position + vec2(0, a_size.y*2.0))/u_windowSize *2.0 -1.0) * vec2(1, -1), 1,1);
             v_texCoord = (a_texCoord + vec2(0, a_size.y*2.0))/u_textureSize;
-            v_end = position + a_size;
             return;
         }
         
@@ -57,6 +61,8 @@ export const FRAGMENT_SHADER =`
 
     varying vec2 v_texCoord;
     varying vec2 v_end;
+    varying vec4 v_color;
+
 
     void main(){
       // gl_PointCoord
@@ -67,6 +73,8 @@ export const FRAGMENT_SHADER =`
             discard;
             return;
         }
-        gl_FragColor = texture2D(u_image, v_texCoord);
+        vec4 textColor = texture2D(u_image, v_texCoord);
+        // gl_FragColor = v_color;
+        gl_FragColor = textColor * v_color;
     }
 `

@@ -27,7 +27,7 @@ const circleR = 40
 const borderR = 0
 
 
-export function IrenderTest() {
+export function PerformenceTest() {
     const cRef = useRef()
 
     const textureRef = useRef<HTMLCanvasElement>()
@@ -35,8 +35,6 @@ export function IrenderTest() {
     const glRenderRef  =  useRef<IRender>()
 
     useEffect(() =>{
-
-       
 
         const glRender = new IRender(cRef.current, { maxNumber: xCount * yCount })
         glRenderRef.current = glRender
@@ -69,7 +67,8 @@ export function IrenderTest() {
                 I_ELEMENT_TYPES.I_IMAGE, 
                 { 
                   imgId:list.length%2? circleImgId: halfImgId , 
-                  position:  {x: i *circleR * 0.3  , y: j * circleR * 0.3}
+                  position:  {x: i *circleR * 0.3  , y: j * circleR * 0.3},
+                  color: { r: 255, g: 0, b:0, a: 255 },
                 }
               ),
             )
@@ -127,6 +126,100 @@ export function IrenderTest() {
 }
 
 
+
+export function ColorTest() {
+  const cRef = useRef()
+
+  const textureRef = useRef<HTMLCanvasElement>()
+
+  const glRenderRef  =  useRef<IRender>()
+
+  useEffect(() =>{
+
+      const glRender = new IRender(cRef.current, { })
+      const circleR = 50;
+
+      glRenderRef.current = glRender
+      const circle = document.createElement('canvas')
+      circle.width = circleR *2
+      circle.height = circleR  *2
+      const ctx = circle.getContext('2d')
+      ctx.fillStyle= "rgba(255, 255, 255, 1)"
+      ctx.strokeStyle="rgba(0,0,255, 1)"
+      ctx.lineWidth= 10
+      ctx.arc(circleR, circleR, circleR -10,0,  Math.PI *2)
+      // ctx.stroke()
+      ctx.fill()
+      const [whiteId] = glRender.loadImgs([circle])
+
+      
+      ctx.clearRect(0,0, circleR *2, circleR *2)
+      ctx.fillStyle= "rgba(255,0,0,0.8)"
+      ctx.arc(circleR, circleR , circleR, 0,  Math.PI *2 )
+      ctx.fill()
+      const [redId] = glRender.loadImgs([circle])
+
+
+      let reqH = { a : 0};
+      
+      glRender.createElement(
+        I_ELEMENT_TYPES.I_IMAGE, 
+        { 
+          imgId: redId , 
+          position:  {x: circleR *5 , y: circleR *5},
+          color: { r: 255, g: 255, b: 255, a: 255 },
+        }
+      )
+
+      glRender.createElement(
+        I_ELEMENT_TYPES.I_IMAGE, 
+        { 
+          imgId: whiteId , 
+          position:  {x: circleR , y: circleR},
+          color: { r: 255, g: 0, b: 0, a: 255 * 0.8 },
+        }
+      )
+      glRender.createElement(
+        I_ELEMENT_TYPES.I_IMAGE, 
+        { 
+          imgId: whiteId , 
+          position:  {x: circleR *0.5 , y: circleR *0.5},
+          color: { r: 255, g: 0, b: 0, a: 255 * 0.8 },
+        }
+      )
+     
+      
+      return () => { 
+        cancelAnimationFrame(reqH.a)
+      }
+  }, [])
+
+  useEffect(() => {
+    const ctx = textureRef.current.getContext('2d')
+    ctx.drawImage( glRenderRef.current.getTexture(), 0,0, 200,200, 0,0, 200,200 )
+  }, [])
+
+  // style={{ backgroundColor: 'black' }} 
+  return <div >
+    <canvas ref={cRef} width={canvasWidth} height={canvasHeight} 
+      style={{ 
+        width : canvasWidth / devicePixelRatio, 
+        height: canvasHeight/devicePixelRatio,
+        backgroundColor: 'rgb(122,122,122,1)'
+      }} />
+    <canvas ref={textureRef} width={200} height={200} style={{backgroundColor:'rgb(122,122,122,1)'}} ></canvas>
+
+    <div 
+      id="fps"
+      style={{
+        backgroundColor:'white',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+      }}
+    />
+ </ div >
+}
 
   
   // ToStorybook.story = {
