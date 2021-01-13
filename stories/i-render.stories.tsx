@@ -19,10 +19,10 @@ const canvasHeight = 1300
 
 
 
-const xCount = 85 * 10
-const yCount = 25 * 14
+const xCount = 85 * 2
+const yCount = 25 * 10
 
-const circleR = 40
+const circleR = 12
 
 const borderR = 0
 
