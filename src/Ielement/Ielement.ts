@@ -8,11 +8,11 @@ import { RGBA } from "Data/RGBA"
 import { Vec2 } from "../Data/Vec2"
 
 export interface UpdateHandle {
-    updatePosition: (bufferIndex:number, position: Vec2) => void
+    updatePosition: (elementIndex:number, position: Vec2) => void
     // updatezIndex : () => void
-    updateImg: (bufferIndex:number, imgId: number) => void
+    updateImg: (elementIndex:number, imgId: number) => void
 
-    updateColor: (bufferIndex:number, color: RGBA) => void
+    updateColor: (elementIndex:number, color: RGBA) => void
 }
 
 export class Ielement {

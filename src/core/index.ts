@@ -225,9 +225,9 @@ export class IRender {
         }
       
     }
-    private updatePosition: UpdateHandle['updatePosition'] = (bufferIndex, position ) => {
+    private updatePosition: UpdateHandle['updatePosition'] = (elementIndex, position ) => {
 
-        const startIndex = bufferIndex * 3 *3
+        const startIndex = elementIndex * 3 *3
         this.attrData.a_position[startIndex] = position.x
         this.attrData.a_position[startIndex + 1] = position.y
         this.attrData.a_position[startIndex + 2] = 1
@@ -269,9 +269,9 @@ export class IRender {
     }
 
 
-    private updateImage: UpdateHandle['updateImg'] = (bufferIndex, imgId) => {
+    private updateImage: UpdateHandle['updateImg'] = (elementIndex, imgId) => {
 
-        const startIndex = bufferIndex * 3*2
+        const startIndex = elementIndex * 3*2
 
         const [{ x,y, w, h }] = this.textureCanvas.getImageInfo(imgId)
 
@@ -297,9 +297,9 @@ export class IRender {
         this.update()
     }
   
-    private updateColor: UpdateHandle['updateColor']=(bufferIndex, color) => {
+    private updateColor: UpdateHandle['updateColor']=(elementIndex, color) => {
 
-        const startIndex = bufferIndex * 3*4
+        const startIndex = elementIndex * 3*4
 
         this.attrData.a_color[startIndex] = color.r
         this.attrData.a_color[startIndex + 1] = color.g
