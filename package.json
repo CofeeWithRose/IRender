@@ -1,6 +1,6 @@
 {
   "name": "i-render",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "light and fast image render based on webgl.",
   "main": "lib/src/index.js",
   "scripts": {
