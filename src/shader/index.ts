@@ -25,7 +25,7 @@ export const VERTEX_SHADER = `
         
         
         vec2 position = vec2(a_position.x, a_position.y);
-        v_color = a_color;
+        v_color = vec4( a_color.r, a_color.g, a_color.b, 1 ) * a_color.a;
         v_end = position + a_size;
 
         if(a_position.z <= 1.0){
