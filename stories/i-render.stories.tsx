@@ -68,7 +68,7 @@ export function PerformenceTest() {
                 { 
                   imgId:list.length%2? circleImgId: halfImgId , 
                   position:  {x: i *circleR * 0.3  , y: j * circleR * 0.3},
-                  color: { r: 255, g: 0, b:0, a: 255 },
+                  color: { r: 255, g: 255, b: 255, a: 255 },
                 }
               ),
             )
