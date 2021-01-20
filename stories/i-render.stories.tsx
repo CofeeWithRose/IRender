@@ -19,8 +19,8 @@ const canvasHeight = 1300
 
 
 
-const xCount = 85 * 10
-const yCount = 25 * 14
+const xCount = 85 * 20
+const yCount = 20 * 10
 
 const circleR = 24
 
@@ -77,15 +77,18 @@ export function PerformenceTest() {
         console.log('total:', list.length)
        
         let frameCount = 0
+        function update(el, i){
+          el.setImgId((frameCount+i)%60? circleImgId: halfImgId)
+          // list[i].setPosition(list[i].position.x + Math.sign(frameCount) , list[i].position.y)
+        }
         const req = () => {
           frameCount++
           
-          const l = list.length
-          for(let i = 0; i<l; ++i ) {
-            list[i].setImgId((frameCount+i)%60? circleImgId: halfImgId)
-            // list[i].setPosition(list[i].position.x + Math.sign(frameCount) , list[i].position.y)
-          }
+          list.forEach(update) 
 
+          // for (let i =0; i< list.length; ++i ){
+          //   list[i].setImgId((frameCount+i)%60? circleImgId: halfImgId)
+          // }
           // glRender.updateImidiatly()
           reqH.a =requestAnimationFrame(req)
         }
@@ -101,6 +104,73 @@ export function PerformenceTest() {
       const ctx = textureRef.current.getContext('2d')
       ctx.drawImage( glRenderRef.current.getTexture(), 0,0, 200,200, 0,0, 200,200 )
     }, [])
+
+    // style={{ backgroundColor: 'black' }} 
+    return <div >
+      <canvas ref={cRef} width={canvasWidth} height={canvasHeight} 
+        style={{ 
+          width : canvasWidth / devicePixelRatio, 
+          height: canvasHeight/devicePixelRatio,
+          backgroundColor: 'rgb(122,122,122,1)'
+        }} />
+      <canvas ref={textureRef} width={200} height={200} style={{backgroundColor:'rgb(122,122,122,1)'}} ></canvas>
+
+      <div 
+        id="fps"
+        style={{
+          backgroundColor:'white',
+          position: 'fixed',
+          left: 0,
+          top: 0,
+        }}
+      />
+   </ div >
+}
+
+export function Canvas2dPerformenceTest() {
+  const cRef = useRef()
+
+    const textureRef = useRef<HTMLCanvasElement>()
+
+    const glRenderRef  =  useRef<IRender>()
+
+    useEffect(() =>{
+      console.log('total:', xCount* yCount)
+      const canvas:HTMLCanvasElement = cRef.current
+      if (! canvas) return
+      const ctx = canvas.getContext('2d')
+       
+      let frameCount = 0
+      let reqH = { a : 0};
+      ctx.fillStyle = 'rgba(255,125,0,0.3)'
+      const req = () => {
+        ctx.clearRect(0,0,canvas.width, canvas.height)
+        frameCount++
+        
+        for(let i =0; i< xCount; i++){
+          for( let j =0; j< yCount; j++ ){
+            ctx.beginPath()
+            ctx.arc( i *circleR * 0.3, j * circleR * 0.3, circleR, 0, Math.PI *2 )
+            ctx.fill()
+          }
+        }
+        
+
+        // glRender.updateImidiatly()
+        reqH.a =requestAnimationFrame(req)
+      }
+      startFPS()
+      req()
+      return () => { 
+        stopFPS()
+        cancelAnimationFrame(reqH.a)
+      }
+    }, [])
+
+    // useEffect(() => {
+    //   const ctx = textureRef.current.getContext('2d')
+    //   ctx.drawImage( glRenderRef.current.getTexture(), 0,0, 200,200, 0,0, 200,200 )
+    // }, [])
 
     // style={{ backgroundColor: 'black' }} 
     return <div >
@@ -226,6 +296,8 @@ export function ColorTest() {
     />
  </ div >
 }
+
+
 
   
   // ToStorybook.story = {
