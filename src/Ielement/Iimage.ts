@@ -4,19 +4,31 @@
  * @email: muyin.ph@alibaba-inc.com
  */
 
+import { I_ELEMENT_TYPES } from '../core'
 import { RGBA } from 'Data/RGBA'
 import { Vec2 } from '../Data/Vec2'
 import {Ielement, UpdateHandle} from './Ielement'
 
 
 export interface IimageInfo { imgId: number,  position: Vec2, color?: RGBA}
-export class Iimage extends Ielement  {
+export class Iimage implements Ielement  {
+
+    position: Vec2
+
+    imgId: number
+
+    color: RGBA 
+
+    elementIndex: number
+
+    zIndex =  0
+
+    readonly IELEMENT_TYPE = I_ELEMENT_TYPES.I_IMAGE
 
     constructor( 
       public update:UpdateHandle,
       initInfo: IimageInfo
      ){
-      super()
       this.position = initInfo.position
       this.imgId = initInfo.imgId
       this.color = initInfo.color || { r: 255, g: 255, b: 255, a:255 }
@@ -39,6 +51,12 @@ export class Iimage extends Ielement  {
       this.color.b = b
       this.color.a = a
       this.update.updateColor(this.elementIndex, this.color)
+    }
+
+    setZIndex(zIndex: number) {
+      if(this.zIndex === zIndex) return
+      this.zIndex = zIndex
+      this.update.updateZindex()
     }
 
 }

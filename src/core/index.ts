@@ -8,13 +8,14 @@ import { IElementParams, IElements, IElementTypes, I_ELEMENT_TYPES } from './inf
 
 export * from './infer/index'
 
+const POINT_NUMBER = 3
 
 const DEFAULT_OPTION = { maxNumber: 50000, textureSize: 2048 }
 export class IRender {
 
     private  textureCanvas: TextureCanvasManager;
   
-    private elemetList: Ielement[] = []
+    private elementList: Ielement[] = []
 
     private GLElemetMap: IElementTypes = {
         [I_ELEMENT_TYPES.I_IMAGE]: Iimage
@@ -55,6 +56,8 @@ export class IRender {
     private colorBufferChanged = false
 
     private textureChange = true
+
+    private zIndexChange = false
 
     private rafing = false
 
@@ -104,6 +107,8 @@ export class IRender {
     }
     
     updateImidiatly = () => {
+        this.handleZindexChange()
+
         if(this.positionBufferChanged) {
             this.bufferData(this.attrBuffer.a_position, this.attrData.a_position)
         }
@@ -119,7 +124,7 @@ export class IRender {
 
         this.checkReloadTexure()
 
-        this.gl.drawArrays(this.gl.TRIANGLES, 0, this.elemetList.length *3)
+        this.gl.drawArrays(this.gl.TRIANGLES, 0, this.elementList.length * POINT_NUMBER)
 
         this.imageIdBufferChanged = false
         this.positionBufferChanged = false
@@ -149,10 +154,10 @@ export class IRender {
     private initBuffer(){
 
         this.attrData  = {
-            a_position: new Float32Array(this.options.maxNumber * 3 * 3 ),
-            a_size: new Float32Array(this.options.maxNumber * 3 *2 ),
-            a_texCoord: new Float32Array(this.options.maxNumber * 3 *2 ),
-            a_color: new Uint8Array(this.options.maxNumber * 3 * 4 ),
+            a_position: new Float32Array(this.options.maxNumber * POINT_NUMBER * 3 ),
+            a_size: new Float32Array(this.options.maxNumber * POINT_NUMBER *2 ),
+            a_texCoord: new Float32Array(this.options.maxNumber * POINT_NUMBER *2 ),
+            a_color: new Uint8Array(this.options.maxNumber * POINT_NUMBER * 4 ),
         }
         const positionBuffer = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer)
@@ -196,12 +201,14 @@ export class IRender {
             updatePosition: this.updatePosition,
             updateImg: this.updateImage,
             updateColor: this.updateColor,
+            updateZindex: this.updateZindex,
         }
         if(this.elementPool.size <=0) {
 
             const el =  new this.GLElemetMap[type](handle, params)
-            el.elementIndex = this.elemetList.length
-            this.elemetList.push(el)
+            el.elementIndex = this.elementList.length
+            this.elementList.push(el)
+            this.updateZindex()
             this.updatePosition(el.elementIndex, el.position)
             this.updateImage(el.elementIndex, el.imgId)
             this.updateColor(el.elementIndex, el.color)
@@ -217,7 +224,8 @@ export class IRender {
             for (let attr in params){
                 (el as any)[attr] = params
             }
-            this.elemetList.push(el)
+            this.elementList.push(el)
+            this.updateZindex()
             this.updatePosition(el.elementIndex, el.position)
             this.updateImage(el.elementIndex, el.imgId)
             this.updateColor(el.elementIndex, el.color)
@@ -227,7 +235,7 @@ export class IRender {
     }
     private updatePosition: UpdateHandle['updatePosition'] = (elementIndex, position ) => {
 
-        const startIndex = elementIndex * 3 *3
+        const startIndex = elementIndex * POINT_NUMBER * 3
         this.attrData.a_position[startIndex] = position.x
         this.attrData.a_position[startIndex + 1] = position.y
         this.attrData.a_position[startIndex + 2] = 1
@@ -245,9 +253,9 @@ export class IRender {
     }
 
     destoryElement(ele: Ielement){
-        const ind = this.elemetList.findIndex(el => el === ele)
+        const ind = this.elementList.findIndex(el => el === ele)
         if(ind > -1){
-           const [deleted] =  this.elemetList.splice(ind, 1)
+           const [deleted] =  this.elementList.splice(ind, 1)
            this.elementPool.add(deleted)
            deleted.position = { x: Number.MIN_VALUE, y:Number.MIN_VALUE }
         }
@@ -271,7 +279,7 @@ export class IRender {
 
     private updateImage: UpdateHandle['updateImg'] = (elementIndex, imgId) => {
 
-        const startIndex = elementIndex * 3*2
+        const startIndex = elementIndex * POINT_NUMBER *2
 
         const [{ x,y, w, h }] = this.textureCanvas.getImageInfo(imgId)
 
@@ -299,7 +307,7 @@ export class IRender {
   
     private updateColor: UpdateHandle['updateColor']=(elementIndex, color) => {
 
-        const startIndex = elementIndex * 3*4
+        const startIndex = elementIndex * POINT_NUMBER * 4
 
         this.attrData.a_color[startIndex] = color.r
         this.attrData.a_color[startIndex + 1] = color.g
@@ -318,6 +326,29 @@ export class IRender {
 
         this.colorBufferChanged = true
         this.update()
+    }
+
+    private handleZindexChange() {
+      if(this.zIndexChange) {
+      console.time('handleZindexChange')
+
+        this.elementList.sort((el1, el2) =>  el1.zIndex - el2.zIndex)
+        this.elementList.forEach((el, index) => {
+          if(index !==el.elementIndex) {
+            el.elementIndex = index
+            this.updatePosition(index, el.position)
+            this.updateImage(index, el.imgId)
+            this.updateColor(index, el.color)
+          }
+        })
+        this.zIndexChange = false
+      console.timeEnd('handleZindexChange')
+
+      }
+    }
+
+    private updateZindex: UpdateHandle['updateZindex'] = () => {
+      this.zIndexChange = true
     }
 
   }

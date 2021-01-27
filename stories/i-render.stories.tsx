@@ -19,8 +19,8 @@ const canvasHeight = 1300
 
 
 
-const xCount = 85 * 20
-const yCount = 20 * 10
+const xCount = 85 * 2
+const yCount = 20 * 1
 
 const circleR = 24
 
@@ -276,6 +276,96 @@ export function ColorTest() {
   }, [])
 
   // style={{ backgroundColor: 'black' }} 
+  return <div >
+    <canvas ref={cRef} width={canvasWidth} height={canvasHeight} 
+      style={{ 
+        width : canvasWidth / devicePixelRatio, 
+        height: canvasHeight/devicePixelRatio,
+        backgroundColor: 'rgb(122,122,122,1)'
+      }} />
+    <canvas ref={textureRef} width={200} height={200} style={{backgroundColor:'rgb(122,122,122,1)'}} ></canvas>
+
+    <div 
+      id="fps"
+      style={{
+        backgroundColor:'white',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+      }}
+    />
+ </ div >
+}
+
+export function zIndexTest() {
+
+  const cRef = useRef()
+
+  const textureRef = useRef<HTMLCanvasElement>()
+
+  const glRenderRef  =  useRef<IRender>()
+
+  useEffect(() =>{
+
+      const glRender = new IRender(cRef.current, { maxNumber: xCount * yCount })
+      glRenderRef.current = glRender
+      const circle = document.createElement('canvas')
+      circle.width = (circleR+ borderR) *2
+      circle.height = (circleR+ borderR)  *2
+      const ctx = circle.getContext('2d')
+      ctx.fillStyle= "rgba(255,255,255,1)"
+      ctx.lineWidth= borderR
+      ctx.arc(circleR, circleR, circleR,0,  Math.PI *2)
+      ctx.fill()
+
+
+      const [cirle] = glRender.loadImgs([circle])
+      
+      const list:Iimage[] = []
+
+      const green =  glRender.createElement(
+        I_ELEMENT_TYPES.I_IMAGE, 
+        { 
+          imgId: cirle , 
+          position:  {x: 70, y:70},
+          color: { r: 0, g: 255, b: 0, a: 255 }
+        }
+      )
+
+     const red =  glRender.createElement(
+        I_ELEMENT_TYPES.I_IMAGE, 
+        { 
+          imgId: cirle , 
+          position:  {x: 50, y:50},
+          color: { r: 255, g: 0, b: 0, a: 255 }
+        }
+      )
+      green.setZIndex(2)
+      red.setZIndex(3)
+
+      const blue =  glRender.createElement(
+        I_ELEMENT_TYPES.I_IMAGE, 
+        { 
+          imgId: cirle , 
+          position:  {x: 80, y: 50},
+          color: { r: 0, g: 0, b: 255, a: 255 }
+        }
+      )
+
+     
+
+     
+      startFPS()
+      return () => { 
+        stopFPS()
+      }
+  }, [])
+
+  useEffect(() => {
+    const ctx = textureRef.current.getContext('2d')
+    ctx.drawImage( glRenderRef.current.getTexture(), 0,0, 200,200, 0,0, 200,200 )
+  }, [])
+  
   return <div >
     <canvas ref={cRef} width={canvasWidth} height={canvasHeight} 
       style={{ 

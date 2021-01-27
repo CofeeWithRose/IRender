@@ -1,8 +1,11 @@
 {
   "name": "i-render",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "light and fast image render based on webgl.",
   "main": "lib/src/index.js",
+  "files": [
+    "lib/src/*"
+  ],
   "scripts": {
     "start": "tsc --watch | npm run dev",
     "build": "tsc&&node ./build/index.js",
@@ -34,9 +37,6 @@
   "dependencies": {
     "zrender": "^5.0.1"
   },
-  "files": [
-    "lib"
-  ],
   "keywords": [],
   "repository": {
     "type": "git",
