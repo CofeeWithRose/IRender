@@ -38,6 +38,7 @@ export class TextureCanvasManager {
       for( let i =0; i< canvasList.length; i++ ){
         const id = this.id++
         const c = canvasList[i]
+        this.checkSpace(c.width, c.height)
         this.ctx.drawImage(c, this.curX , this.curY, c.width, c.height)
         idList.push(id)
         this.positionInfo[id] = { 
@@ -46,22 +47,27 @@ export class TextureCanvasManager {
           w: c.width,
           h: c.height,
         }
-        this.handlePosition(c.width, c.height)
+        this.movePosition(c.width, c.height)
       }
       return idList
     }
 
-
-    private handlePosition = (w: number, h: number) =>  {
+    private checkSpace = (w: number, h: number) => {
+      const lefW = this.canvas.width - this.curX
+      if(lefW < w) {
+        this.movePosition(w,h)
+      }
+    }
+    private movePosition = (w: number, h: number) =>  {
 
       if(this.curMaxHeight < h) this.curMaxHeight = h
 
-      const nextX = this.curX + w + 1
+      const nextX = this.curX + w + this.pading
       
       if(nextX >= this.canvas.width) {
         //换行
-        this.curX = 1
-        this.curY += this.curMaxHeight +1
+        this.curX = this.pading
+        this.curY += this.curMaxHeight + this.pading
         this.curMaxHeight = 0
       }else{
         this.curX = nextX

@@ -387,6 +387,81 @@ export function zIndexTest() {
  </ div >
 }
 
+export function TextureTest() {
+
+  const cRef = useRef()
+
+  const wrapRef = useRef<HTMLDivElement>()
+
+  const textureRef = useRef<HTMLCanvasElement>()
+
+  const glRenderRef  =  useRef<IRender>()
+
+  const addNumberTexture = (): { [ number: number]: number } => {
+    const { current: glRender } =  glRenderRef
+    const imgIdMap: { [ number: number]: number } = {}
+    const canvas = document.createElement('canvas')
+    canvas.width = 80
+    canvas.height = 50
+    const ctx = canvas.getContext('2d')
+    ctx.textAlign='left'
+    ctx.textBaseline ='top'
+    ctx.fillStyle= 'red'
+    ctx.font="50px 微软雅黑";
+
+    for(let t = 1; t< 1000; t++) {
+      ctx.clearRect(0,0,canvas.width, canvas.height)
+
+      ctx.fillText(t+'', 0, 0, 80)
+      imgIdMap[t] = glRender.loadImgs([canvas])[0]
+    }
+    return imgIdMap
+  }
+
+  useEffect(() => {
+    const glRender = new IRender(cRef.current, { maxNumber: xCount * yCount })
+    glRenderRef.current = glRender
+   
+    const numberIdMap = addNumberTexture()
+
+    if(wrapRef.current) {
+      const cc = glRenderRef.current.getTexture()
+      cc.style.width="1000px"
+      wrapRef.current.appendChild(cc)
+    }
+
+    Object.values(numberIdMap).forEach( (imgId, indx) => {
+      const x = (indx%28) * 100
+      const y = Math.floor(indx/28) * 50
+      glRender.createElement(I_ELEMENT_TYPES.I_IMAGE, {
+        position: { x, y },
+        imgId
+      })
+    })
+
+  }, [])
+
+  return <div ref={wrapRef}>
+    <canvas ref={cRef} width={canvasWidth} height={canvasHeight} 
+      style={{ 
+        width : canvasWidth / devicePixelRatio, 
+        height: canvasHeight/devicePixelRatio,
+        backgroundColor: 'rgb(122,122,122,1)'
+      }} />
+    <canvas ref={textureRef} width={200} height={200} style={{backgroundColor:'rgb(122,122,122,1)'}} ></canvas>
+
+    <div 
+      id="fps"
+      style={{
+        backgroundColor:'white',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+      }}
+    />
+ </ div >
+}
+
 
 
   
