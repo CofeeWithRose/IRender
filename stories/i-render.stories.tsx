@@ -22,7 +22,7 @@ const canvasHeight = 1300
 const xCount = 85 * 2
 const yCount = 20 * 1
 
-const circleR = 24
+const circleR = 50
 
 const borderR = 0
 
@@ -67,7 +67,7 @@ export function PerformenceTest() {
                 I_ELEMENT_TYPES.I_IMAGE, 
                 { 
                   imgId:list.length%2? circleImgId: halfImgId , 
-                  position:  {x: i *circleR * 0.3  , y: j * circleR * 0.3},
+                  position:  {x: (i+1) *circleR  , y: (j +1) * circleR },
                 }
               ),
             )
@@ -323,8 +323,8 @@ export function zIndexTest() {
         I_ELEMENT_TYPES.I_IMAGE, 
         { 
           imgId: cirle, 
-          position:  { x: 70, y: 70 },
-          color: { r: 0, g: 255, b: 0, a: 255 }
+          position:  { x: circleR * 3, y: circleR * 1.5 },
+          color: { r: 0, g: 255, b: 0, a: 255 * 0.8 }
         }
       )
 
@@ -332,22 +332,21 @@ export function zIndexTest() {
         I_ELEMENT_TYPES.I_IMAGE, 
         { 
           imgId: cirle , 
-          position:  { x: 50, y:50 },
-          color: { r: 255, g: 0, b: 0, a: 255 }
+          position:  { x: circleR * 1.5, y: circleR * 1.5 },
+          color: { r: 255, g: 0, b: 0, a: 255 * 0.8 }
         }
       )
-      green.setZIndex(2)
-      red.setZIndex(3)
 
       const blue =  glRender.createElement(
         I_ELEMENT_TYPES.I_IMAGE, 
         { 
           imgId: cirle , 
-          position:  {x: 80, y: 50},
-          color: { r: 0, g: 0, b: 255, a: 255 }
+          position:  {x: circleR * 2.25, y: circleR * 2.5},
+          color: { r: 0, g: 0, b: 255, a: 255 * 0.8 }
         }
       )
-
+      green.setZIndex(2)
+      red.setZIndex(3)
      
 
      
