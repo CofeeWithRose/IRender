@@ -154,8 +154,6 @@ export function Canvas2dPerformenceTest() {
             ctx.fill()
           }
         }
-        
-
         // glRender.updateImidiatly()
         reqH.a =requestAnimationFrame(req)
       }
@@ -217,7 +215,6 @@ export function ColorTest() {
       ctx.strokeStyle="rgba(0,0,255, 1)"
       ctx.lineWidth= 10
       ctx.arc(circleR, circleR, circleR -10,0,  Math.PI *2)
-      // ctx.stroke()
       ctx.fill()
       const [whiteId] = glRender.loadImgs([circle])
 
@@ -307,7 +304,7 @@ export function zIndexTest() {
 
   useEffect(() =>{
 
-      const glRender = new IRender(cRef.current, { maxNumber: xCount * yCount })
+      const glRender = new IRender(cRef.current, { maxNumber: 30 })
       glRenderRef.current = glRender
       const circle = document.createElement('canvas')
       circle.width = (circleR+ borderR) *2
@@ -315,8 +312,7 @@ export function zIndexTest() {
       const ctx = circle.getContext('2d')
       ctx.fillStyle= "rgba(255,255,255,1)"
       ctx.lineWidth= borderR
-      ctx.arc(circleR, circleR, circleR,0,  Math.PI *2)
-      ctx.fill()
+      ctx.fillRect(0,0,circleR*2,circleR*2)
 
 
       const [cirle] = glRender.loadImgs([circle])
@@ -326,17 +322,17 @@ export function zIndexTest() {
       const green =  glRender.createElement(
         I_ELEMENT_TYPES.I_IMAGE, 
         { 
-          imgId: cirle , 
-          position:  {x: 70, y:70},
+          imgId: cirle, 
+          position:  { x: 70, y: 70 },
           color: { r: 0, g: 255, b: 0, a: 255 }
         }
       )
 
-     const red =  glRender.createElement(
+      const red =  glRender.createElement(
         I_ELEMENT_TYPES.I_IMAGE, 
         { 
           imgId: cirle , 
-          position:  {x: 50, y:50},
+          position:  { x: 50, y:50 },
           color: { r: 255, g: 0, b: 0, a: 255 }
         }
       )
@@ -431,8 +427,8 @@ export function TextureTest() {
     }
 
     Object.values(numberIdMap).forEach( (imgId, indx) => {
-      const x = (indx%28) * 100
-      const y = Math.floor(indx/28) * 50
+      const x = ((indx%28) + 0.5) * 100
+      const y = ( 0.5 + Math.floor(indx/28) )*100
       glRender.createElement(I_ELEMENT_TYPES.I_IMAGE, {
         position: { x, y },
         imgId

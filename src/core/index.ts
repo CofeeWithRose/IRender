@@ -8,7 +8,7 @@ import { IElementParams, IElements, IElementTypes, I_ELEMENT_TYPES } from './inf
 
 export * from './infer/index'
 
-const POINT_NUMBER = 3
+const POINT_NUMBER = 4
 
 const DEFAULT_OPTION = { maxNumber: 50000, textureSize: 2048 }
 export class IRender {
@@ -32,7 +32,7 @@ export class IRender {
         a_position: number
         a_size: number;
         a_texCoord: number;
-        a_color: number
+        a_color: number;
     };
 
     private attrData: {
@@ -40,6 +40,7 @@ export class IRender {
         a_size: Float32Array,
         a_texCoord: Float32Array,
         a_color: Uint8Array,
+        indicate: Uint16Array,
     }
 
     private attrBuffer: {
@@ -101,30 +102,34 @@ export class IRender {
         return this.textureCanvas.canvas
     }
 
-    private bufferData = (target: WebGLBuffer, data: BufferSource ) => {
-        this.gl.bindBuffer( this.gl.ARRAY_BUFFER, target )
-        this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, data)
+    private bufferData = (target: number, glBuffer: WebGLBuffer, data: BufferSource ) => {
+      this.gl.bindBuffer( target, glBuffer )
+      this.gl.bufferSubData( target, 0, data )
     }
     
     updateImidiatly = () => {
         this.handleZindexChange()
 
         if(this.positionBufferChanged) {
-            this.bufferData(this.attrBuffer.a_position, this.attrData.a_position)
+            this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_position, this.attrData.a_position)
         }
 
         if(this.imageIdBufferChanged ) {
-            this.bufferData(this.attrBuffer.a_texCoord, this.attrData.a_texCoord)
-            this.bufferData(this.attrBuffer.a_size, this.attrData.a_size)
+            this.bufferData(this.gl.ARRAY_BUFFER, this.attrBuffer.a_texCoord, this.attrData.a_texCoord)
+            this.bufferData(this.gl.ARRAY_BUFFER, this.attrBuffer.a_size, this.attrData.a_size)
         }
 
         if(this.colorBufferChanged){
-            this.bufferData(this.attrBuffer.a_color, this.attrData.a_color)
+            this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_color, this.attrData.a_color)
         }
 
         this.checkReloadTexure()
 
-        this.gl.drawArrays(this.gl.TRIANGLES, 0, this.elementList.length * POINT_NUMBER)
+        this.gl.drawElements( 
+          this.gl.TRIANGLES,
+          this.elementList.length * 6,
+          this.gl.UNSIGNED_SHORT, 0,
+        )
 
         this.imageIdBufferChanged = false
         this.positionBufferChanged = false
@@ -158,7 +163,16 @@ export class IRender {
             a_size: new Float32Array(this.options.maxNumber * POINT_NUMBER *2 ),
             a_texCoord: new Float32Array(this.options.maxNumber * POINT_NUMBER *2 ),
             a_color: new Uint8Array(this.options.maxNumber * POINT_NUMBER * 4 ),
+            indicate: new Uint16Array( this.options.maxNumber * 6 ),
         }
+        
+        this.attrData.indicate.forEach((v, ind) => {
+          const val = ind % 6
+          const base = Math.floor(ind/6) * 4
+          const b = [ 0, 1, 2, 1, 3, 2 ]
+          this.attrData.indicate[ind] = base + b[val]
+        })
+
         const positionBuffer = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer)
         this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_position, this.gl.STREAM_DRAW )
@@ -183,11 +197,15 @@ export class IRender {
         this.gl.enableVertexAttribArray(this.attribuitesLocations.a_color)
         this.gl.vertexAttribPointer(this.attribuitesLocations.a_color, 4, this.gl.UNSIGNED_BYTE, true, 0,0)
 
+        const indicate = this.gl.createBuffer()
+        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indicate )
+        this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.attrData.indicate, this.gl.STATIC_DRAW )
+
         this.attrBuffer = {
-            a_position : positionBuffer,
-            a_size: sizeBuffer,
-            a_texCoord: texCoord,
-            a_color: color
+          a_position : positionBuffer,
+          a_size: sizeBuffer,
+          a_texCoord: texCoord,
+          a_color: color,
         }
     }
 
@@ -248,6 +266,11 @@ export class IRender {
         this.attrData.a_position[startIndex + 7] = position.y
         this.attrData.a_position[startIndex + 8] = 3
 
+        /** ---------------------------------------------- */
+        this.attrData.a_position[startIndex + 9] = position.x
+        this.attrData.a_position[startIndex + 10] = position.y
+        this.attrData.a_position[startIndex + 11] = 4
+
         this.positionBufferChanged = true
         this.update()
     }
@@ -292,6 +315,11 @@ export class IRender {
         this.attrData.a_texCoord[startIndex+4] = x
         this.attrData.a_texCoord[startIndex + 5] = y
 
+        /** ---------------------------------- */
+        this.attrData.a_texCoord[startIndex+6] = x
+        this.attrData.a_texCoord[startIndex + 7] = y
+
+
         this.attrData.a_size[startIndex] = w
         this.attrData.a_size[startIndex + 1] = h
 
@@ -300,6 +328,10 @@ export class IRender {
 
         this.attrData.a_size[startIndex+4] = w
         this.attrData.a_size[startIndex + 5] = h
+
+        /** -------------------------------- */
+        this.attrData.a_size[startIndex+6] = w
+        this.attrData.a_size[startIndex + 7] = h
 
         this.imageIdBufferChanged = true
         this.update()
@@ -324,13 +356,18 @@ export class IRender {
         this.attrData.a_color[startIndex + 10] = color.b
         this.attrData.a_color[startIndex + 11] = color.a
 
+        /** ------------------------------------------ */
+        this.attrData.a_color[startIndex + 12] = color.r
+        this.attrData.a_color[startIndex + 13] = color.g
+        this.attrData.a_color[startIndex + 14] = color.b
+        this.attrData.a_color[startIndex + 15] = color.a
+
         this.colorBufferChanged = true
         this.update()
     }
 
     private handleZindexChange() {
       if(this.zIndexChange) {
-      console.time('handleZindexChange')
 
         this.elementList.sort((el1, el2) =>  el1.zIndex - el2.zIndex)
         this.elementList.forEach((el, index) => {
@@ -342,8 +379,6 @@ export class IRender {
           }
         })
         this.zIndexChange = false
-      console.timeEnd('handleZindexChange')
-
       }
     }
 
