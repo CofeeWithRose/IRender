@@ -30,24 +30,30 @@ export class IRender {
 
     private attribuitesLocations: {
         a_position: number
-        a_size: number;
+        a_texSize: number;
         a_texCoord: number;
         a_color: number;
+        a_scale: number;
+        a_rotation: number;
     };
 
     private attrData: {
         a_position: Float32Array,
-        a_size: Float32Array,
+        a_texSize: Float32Array,
         a_texCoord: Float32Array,
         a_color: Uint8Array,
+        a_scale: Float32Array,
+        a_rotation: Float32Array,
         indicate: Uint16Array,
     }
 
     private attrBuffer: {
         a_position: WebGLBuffer,
-        a_size: WebGLBuffer,
+        a_texSize: WebGLBuffer,
         a_texCoord: WebGLBuffer,
         a_color: WebGLBuffer,
+        a_scale: WebGLBuffer,
+        a_rotation: WebGLBuffer,
     }
   
     private positionBufferChanged = false
@@ -59,6 +65,10 @@ export class IRender {
     private textureChange = true
 
     private zIndexChange = false
+
+    private scaleChange = false
+
+    private rotationChange = false
 
     private rafing = false
 
@@ -87,9 +97,12 @@ export class IRender {
         }
         this.attribuitesLocations = {
             a_position: this.gl.getAttribLocation(program, 'a_position'),
-            a_size: this.gl.getAttribLocation(program, 'a_size'),
+            a_texSize: this.gl.getAttribLocation(program, 'a_texSize'),
             a_texCoord: this.gl.getAttribLocation(program, 'a_texCoord'),
             a_color: this.gl.getAttribLocation(program, 'a_color'),
+            a_rotation: this.gl.getAttribLocation(program, 'a_rotation' ),
+            a_scale: this.gl.getAttribLocation(program, 'a_scale' ),
+
         }
         this.initBuffer()
         this.initTexture()
@@ -116,11 +129,19 @@ export class IRender {
 
         if(this.imageIdBufferChanged ) {
             this.bufferData(this.gl.ARRAY_BUFFER, this.attrBuffer.a_texCoord, this.attrData.a_texCoord)
-            this.bufferData(this.gl.ARRAY_BUFFER, this.attrBuffer.a_size, this.attrData.a_size)
+            this.bufferData(this.gl.ARRAY_BUFFER, this.attrBuffer.a_texSize, this.attrData.a_texSize)
         }
 
         if(this.colorBufferChanged){
-            this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_color, this.attrData.a_color)
+          this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_color, this.attrData.a_color)
+        }
+
+        if (this.scaleChange) {
+          this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_scale, this.attrData.a_scale )
+        }
+
+        if (this.rotationChange) {
+          this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_rotation, this.attrData.a_rotation )
         }
 
         this.checkReloadTexure()
@@ -150,8 +171,8 @@ export class IRender {
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture)
         this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
         this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
-        this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
-        this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+        this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+        this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
         this.gl.pixelStorei(this.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.textureCanvas.canvas)
     }
@@ -160,9 +181,11 @@ export class IRender {
 
         this.attrData  = {
             a_position: new Float32Array(this.options.maxNumber * POINT_NUMBER * 3 ),
-            a_size: new Float32Array(this.options.maxNumber * POINT_NUMBER *2 ),
+            a_texSize: new Float32Array(this.options.maxNumber * POINT_NUMBER *2 ),
             a_texCoord: new Float32Array(this.options.maxNumber * POINT_NUMBER *2 ),
             a_color: new Uint8Array(this.options.maxNumber * POINT_NUMBER * 4 ),
+            a_scale: new Float32Array(this.options.maxNumber * POINT_NUMBER *2 ),
+            a_rotation: new Float32Array(this.options.maxNumber * POINT_NUMBER * 1),
             indicate: new Uint16Array( this.options.maxNumber * 6 ),
         }
         
@@ -181,9 +204,9 @@ export class IRender {
 
         const sizeBuffer = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, sizeBuffer)
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_size, this.gl.STREAM_DRAW )
-        this.gl.enableVertexAttribArray(this.attribuitesLocations.a_size)
-        this.gl.vertexAttribPointer(this.attribuitesLocations.a_size, 2, this.gl.FLOAT, false, 0,0)
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_texSize, this.gl.STREAM_DRAW )
+        this.gl.enableVertexAttribArray(this.attribuitesLocations.a_texSize)
+        this.gl.vertexAttribPointer(this.attribuitesLocations.a_texSize, 2, this.gl.FLOAT, false, 0,0)
 
         const texCoord = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, texCoord)
@@ -197,15 +220,31 @@ export class IRender {
         this.gl.enableVertexAttribArray(this.attribuitesLocations.a_color)
         this.gl.vertexAttribPointer(this.attribuitesLocations.a_color, 4, this.gl.UNSIGNED_BYTE, true, 0,0)
 
+
+        const scale = this.gl.createBuffer()
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, scale)
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_scale, this.gl.STREAM_DRAW )
+        this.gl.enableVertexAttribArray(this.attribuitesLocations.a_scale)
+        this.gl.vertexAttribPointer(this.attribuitesLocations.a_scale, 2, this.gl.FLOAT, false, 0,0)
+
+        const rotation = this.gl.createBuffer()
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, rotation)
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_rotation, this.gl.STREAM_DRAW )
+        this.gl.enableVertexAttribArray(this.attribuitesLocations.a_rotation)
+        this.gl.vertexAttribPointer(this.attribuitesLocations.a_rotation, 1, this.gl.FLOAT, false, 0,0)
+
         const indicate = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indicate )
         this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.attrData.indicate, this.gl.STATIC_DRAW )
 
+
         this.attrBuffer = {
           a_position : positionBuffer,
-          a_size: sizeBuffer,
+          a_texSize: sizeBuffer,
           a_texCoord: texCoord,
           a_color: color,
+          a_scale: scale,
+          a_rotation: rotation,
         }
     }
 
@@ -220,6 +259,8 @@ export class IRender {
             updateImg: this.updateImage,
             updateColor: this.updateColor,
             updateZindex: this.updateZindex,
+            updateScale: this.updateScale,
+            updateRotation: this.updateRotation,
         }
         if(this.elementPool.size <=0) {
 
@@ -230,6 +271,8 @@ export class IRender {
             this.updatePosition(el.elementIndex, el.position)
             this.updateImage(el.elementIndex, el.imgId)
             this.updateColor(el.elementIndex, el.color)
+            this.updateRotation(el.elementIndex, el.rotation)
+            this.updateScale(el.elementIndex, el.scale)
             // this.update()
             return el
 
@@ -266,7 +309,6 @@ export class IRender {
         this.attrData.a_position[startIndex + 7] = position.y
         this.attrData.a_position[startIndex + 8] = 3
 
-        /** ---------------------------------------------- */
         this.attrData.a_position[startIndex + 9] = position.x
         this.attrData.a_position[startIndex + 10] = position.y
         this.attrData.a_position[startIndex + 11] = 4
@@ -315,23 +357,21 @@ export class IRender {
         this.attrData.a_texCoord[startIndex+4] = x
         this.attrData.a_texCoord[startIndex + 5] = y
 
-        /** ---------------------------------- */
         this.attrData.a_texCoord[startIndex+6] = x
         this.attrData.a_texCoord[startIndex + 7] = y
 
 
-        this.attrData.a_size[startIndex] = w
-        this.attrData.a_size[startIndex + 1] = h
+        this.attrData.a_texSize[startIndex] = w
+        this.attrData.a_texSize[startIndex + 1] = h
 
-        this.attrData.a_size[startIndex+ 2] = w
-        this.attrData.a_size[startIndex + 3] = h
+        this.attrData.a_texSize[startIndex+ 2] = w
+        this.attrData.a_texSize[startIndex + 3] = h
 
-        this.attrData.a_size[startIndex+4] = w
-        this.attrData.a_size[startIndex + 5] = h
+        this.attrData.a_texSize[startIndex+4] = w
+        this.attrData.a_texSize[startIndex + 5] = h
 
-        /** -------------------------------- */
-        this.attrData.a_size[startIndex+6] = w
-        this.attrData.a_size[startIndex + 7] = h
+        this.attrData.a_texSize[startIndex+6] = w
+        this.attrData.a_texSize[startIndex + 7] = h
 
         this.imageIdBufferChanged = true
         this.update()
@@ -356,7 +396,6 @@ export class IRender {
         this.attrData.a_color[startIndex + 10] = color.b
         this.attrData.a_color[startIndex + 11] = color.a
 
-        /** ------------------------------------------ */
         this.attrData.a_color[startIndex + 12] = color.r
         this.attrData.a_color[startIndex + 13] = color.g
         this.attrData.a_color[startIndex + 14] = color.b
@@ -364,6 +403,44 @@ export class IRender {
 
         this.colorBufferChanged = true
         this.update()
+    }
+
+    private updateScale: UpdateHandle['updateScale'] = (elementIndex, scale) => {
+
+      const startIndex = elementIndex * POINT_NUMBER * 2
+
+      this.attrData.a_scale[startIndex] = scale.x
+      this.attrData.a_scale[startIndex + 1] = scale.y
+
+      this.attrData.a_scale[startIndex + 2] = scale.x
+      this.attrData.a_scale[startIndex + 3] = scale.y
+
+      this.attrData.a_scale[startIndex + 4] = scale.x
+      this.attrData.a_scale[startIndex + 5] = scale.y
+
+      this.attrData.a_scale[startIndex + 6] = scale.x
+      this.attrData.a_scale[startIndex + 7] = scale.y
+
+      this.scaleChange = true
+      this.update()
+    }
+
+    private updateRotation: UpdateHandle['updateRotation'] = (elementIndex, rotation) => {
+      const startIndex = elementIndex * POINT_NUMBER * 1
+
+      this.attrData.a_rotation[startIndex] = rotation
+
+      this.attrData.a_rotation[startIndex + 1] = rotation
+
+      this.attrData.a_rotation[startIndex + 2] = rotation
+
+      this.attrData.a_rotation[startIndex + 3] = rotation
+
+      this.attrData.a_rotation[startIndex + 4] = rotation
+
+      this.rotationChange = true
+      this.update()
+
     }
 
     private handleZindexChange() {
@@ -385,6 +462,8 @@ export class IRender {
     private updateZindex: UpdateHandle['updateZindex'] = () => {
       this.zIndexChange = true
     }
+
+   
 
   }
 

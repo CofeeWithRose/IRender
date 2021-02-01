@@ -19,7 +19,7 @@ const canvasHeight = 1300
 
 
 
-const xCount = 85 * 2
+const xCount = 85 * 10
 const yCount = 20 * 1
 
 const circleR = 50
@@ -260,8 +260,6 @@ export function ColorTest() {
           color: { r: 255, g: 0, b: 0, a: 255 * 0.8 },
         }
       )
-     
-      
       return () => { 
         cancelAnimationFrame(reqH.a)
       }
@@ -428,10 +426,12 @@ export function TextureTest() {
     Object.values(numberIdMap).forEach( (imgId, indx) => {
       const x = ((indx%28) + 0.5) * 100
       const y = ( 0.5 + Math.floor(indx/28) )*100
-      glRender.createElement(I_ELEMENT_TYPES.I_IMAGE, {
+     const el =  glRender.createElement(I_ELEMENT_TYPES.I_IMAGE, {
         position: { x, y },
         imgId
       })
+      el.setRotation(45)
+      el.setScale(1, -1)
     })
 
   }, [])

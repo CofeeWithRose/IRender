@@ -15,16 +15,20 @@ export const VERTEX_SHADER = `
 
     // 实际品目坐标.
     attribute vec3 a_position;
-    attribute vec2 a_size;
+    attribute vec2 a_texSize;
     attribute vec2 a_texCoord;
+
+    attribute vec2 a_scale;
 
     // 单位 deg 0-360;
     attribute float a_rotation;
 
+
     attribute vec4 a_color;
 
     varying vec2 v_texCoord;
-    varying vec2 v_end;
+
+    
     varying vec4 v_color;
 
     float atant2 (float y, float x) {
@@ -54,17 +58,23 @@ export const VERTEX_SHADER = `
     }
 
     void main() {
-      // vec2(a_position.x, a_position.y)
+
+        vec2 scale = a_scale;
+        vec2 size = a_texSize * scale;
         vec2 center = vec2(a_position.x, a_position.y);
-        vec2 position = center -  0.5 * a_size;
+        vec2 position = center -  0.5 * size;
         v_color = vec4( a_color.r, a_color.g, a_color.b, 1 ) * a_color.a;
         
         float dist = distance(position,center);
         float rotation = radians(a_rotation);
 
-        v_end = rotateVec2( rotation, center, position + a_size );
-
-        if(a_position.z <= 1.0){
+        /**
+         *  P1 ++++++ P2
+         *  +         +
+         *  +         +
+         *  P3 ++++++ P4
+        */
+        if( a_position.z <= 1.0 ){
             // 第1个点
             gl_Position = vec4((rotateVec2( rotation, center, position)/u_windowSize *2.0 -1.0) * vec2(1, -1), 1,1);
             v_texCoord = a_texCoord/u_textureSize;
@@ -72,20 +82,20 @@ export const VERTEX_SHADER = `
         } 
         if( a_position.z <= 2.0  ){
             // 第二个点
-            gl_Position = vec4(( rotateVec2( rotation, center,  position + vec2( a_size.x, 0 ))/u_windowSize *2.0 -1.0) * vec2(1, -1), 1,1);
-            v_texCoord = (a_texCoord + vec2( a_size.x, 0 ))/u_textureSize;
+            gl_Position = vec4(( rotateVec2( rotation, center,  position + vec2( size.x, 0 ))/u_windowSize *2.0 -1.0) * vec2(1, -1), 1,1);
+            v_texCoord = (a_texCoord + vec2( a_texSize.x, 0 ))/u_textureSize;
             return;
         }
         if( a_position.z <= 3.0  ){
             // 第3个点
-            gl_Position = vec4(( rotateVec2(rotation, center, position + vec2(0, a_size.y))/u_windowSize *2.0 -1.0) * vec2(1, -1), 1,1);
-            v_texCoord = (a_texCoord + vec2(0, a_size.y))/u_textureSize;
+            gl_Position = vec4(( rotateVec2(rotation, center, position + vec2(0, size.y))/u_windowSize *2.0 -1.0) * vec2(1, -1), 1,1);
+            v_texCoord = (a_texCoord + vec2(0, a_texSize.y))/u_textureSize;
             return;
         }
         if( a_position.z <= 4.0  ){
-          // 第3个点
-          gl_Position = vec4(( rotateVec2( rotation, center, position + a_size )/u_windowSize *2.0 -1.0) * vec2(1, -1), 1,1);
-          v_texCoord = (a_texCoord + a_size)/u_textureSize;
+          // 第4个点
+          gl_Position = vec4(( rotateVec2( rotation, center, position + size )/u_windowSize *2.0 -1.0) * vec2(1, -1), 1,1);
+          v_texCoord = (a_texCoord + a_texSize)/u_textureSize;
           return;
         }
         gl_Position = vec4((position/u_windowSize *2.0 -1.0) * vec2(1, -1), 1,1);
@@ -100,7 +110,7 @@ export const FRAGMENT_SHADER =`
     uniform vec2 u_windowSize;
 
     varying vec2 v_texCoord;
-    varying vec2 v_end;
+
     varying vec4 v_color;
 
     void main(){

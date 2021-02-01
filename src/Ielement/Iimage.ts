@@ -23,6 +23,10 @@ export class Iimage implements Ielement  {
 
     zIndex =  0
 
+    scale = { x: 1, y: 1 }
+
+    rotation = 0
+
     readonly IELEMENT_TYPE = I_ELEMENT_TYPES.I_IMAGE
 
     constructor( 
@@ -57,6 +61,17 @@ export class Iimage implements Ielement  {
       if(this.zIndex === zIndex) return
       this.zIndex = zIndex
       this.update.updateZindex()
+    }
+
+    setRotation(rotation: number) {
+      this.rotation = rotation
+      this.update.updateRotation(this.elementIndex, rotation)
+    }
+
+    setScale(scaleX: number, scaleY: number) {
+      this.scale.x = scaleX
+      this.scale.y = scaleY
+      this.update.updateScale(this.elementIndex, this.scale)
     }
 
 }
