@@ -62,12 +62,11 @@ export function PerformenceTest() {
         for(let i =0; i< xCount; i++){
           for( let j =0; j< yCount; j++ ){
             list.push ( 
-        
               glRender.createElement(
                 I_ELEMENT_TYPES.I_IMAGE, 
                 { 
                   imgId:list.length%2? circleImgId: halfImgId , 
-                  position:  {x: (i+1) *circleR  , y: (j +1) * circleR },
+                  position:  [ (i+1) *circleR  ,  (j +1) * circleR ],
                 }
               ),
             )
@@ -234,7 +233,7 @@ export function ColorTest() {
         I_ELEMENT_TYPES.I_IMAGE, 
         { 
           imgId: redId , 
-          position:  {x: circleR *3 , y: circleR},
+          position:  [ circleR *3 ,  circleR ],
         }
       )
 
@@ -242,7 +241,7 @@ export function ColorTest() {
         I_ELEMENT_TYPES.I_IMAGE, 
         { 
           imgId: redId , 
-          position:  {x: circleR *2.3 , y: circleR},
+          position:  [ circleR *2.3 , circleR ],
         }
       )
 
@@ -250,16 +249,16 @@ export function ColorTest() {
         I_ELEMENT_TYPES.I_IMAGE, 
         { 
           imgId: whiteId , 
-          position:  {x: circleR , y: circleR},
-          color: { r: 255, g: 0, b: 0, a: 255 * 0.8 },
+          position:  [ circleR , circleR ],
+          color: [ 255, 0, 0,  255 * 0.8 ],
         }
       )
       glRender.createElement(
         I_ELEMENT_TYPES.I_IMAGE, 
         { 
           imgId: whiteId , 
-          position:  {x: circleR *0.5 , y: circleR *0.5},
-          color: { r: 255, g: 0, b: 0, a: 255 * 0.8 },
+          position:  [ circleR *0.5 ,  circleR *0.5 ],
+          color: [ 255, 0,  0,  255 * 0.8 ],
         }
       )
       return () => { 
@@ -323,8 +322,8 @@ export function zIndexTest() {
         I_ELEMENT_TYPES.I_IMAGE, 
         { 
           imgId: cirle, 
-          position:  { x: circleR * 3, y: circleR * 1.5 },
-          color: { r: 0, g: 255, b: 0, a: 255 * 0.8 }
+          position:  [ circleR * 3,  circleR * 1.5 ],
+          color: [ 0, 255,  0, 255 * 0.8 ]
         }
       )
 
@@ -332,8 +331,8 @@ export function zIndexTest() {
         I_ELEMENT_TYPES.I_IMAGE, 
         { 
           imgId: cirle , 
-          position:  { x: circleR * 1.5, y: circleR * 1.5 },
-          color: { r: 255, g: 0, b: 0, a: 255 * 0.8 }
+          position:  [ circleR * 1.5, circleR * 1.5 ],
+          color: [ 255, 0,  0,  255 * 0.8 ]
         }
       )
 
@@ -341,8 +340,8 @@ export function zIndexTest() {
         I_ELEMENT_TYPES.I_IMAGE, 
         { 
           imgId: cirle , 
-          position:  {x: circleR * 2.25, y: circleR * 2.5},
-          color: { r: 0, g: 0, b: 255, a: 255 * 0.8 }
+          position:  [ circleR * 2.25,  circleR * 2.5 ],
+          color: [ 0,  0,  255,  255 * 0.8 ]
         }
       )
       green.setZIndex(2)
@@ -429,7 +428,7 @@ export function TextureTest() {
       const x = ((indx%28) + 0.5) * 100
       const y = ( 0.5 + Math.floor(indx/28) )*100
      const el =  glRender.createElement(I_ELEMENT_TYPES.I_IMAGE, {
-        position: { x, y },
+        position: [ x, y ],
         imgId
       })
       el.setRotation(45)

@@ -13,34 +13,33 @@ import {Ielement, UpdateHandle} from './Ielement'
 export interface IimageInfo { imgId: number,  position: Vec2, color?: RGBA}
 export class Iimage implements Ielement  {
 
-    position: Vec2
+    readonly position: Vec2 = [ 0, 0 ]
 
     imgId: number
 
-    color: RGBA 
+    color: RGBA = [255, 255, 255 , 255]
 
     elementIndex: number
 
     zIndex =  0
 
-    scale = { x: 1, y: 1 }
+    readonly scale: Vec2 = [ 1, 1 ]
 
     rotation = 0
+
+    readonly offset: Vec2 = [ 0, 0 ]
+
+    readonly size: Vec2 = [ 100, 100 ];
 
     readonly IELEMENT_TYPE = I_ELEMENT_TYPES.I_IMAGE
 
     constructor( 
       public update:UpdateHandle,
-      initInfo: IimageInfo
-     ){
-      this.position = initInfo.position
-      this.imgId = initInfo.imgId
-      this.color = initInfo.color || { r: 255, g: 255, b: 255, a:255 }
-    }
+     ){ }
   
     setPosition(x: number, y: number){
-        this.position.x = x
-        this.position.y = y
+        this.position[0] = x
+        this.position[1] = y
         this.update.updatePosition(this.elementIndex, this.position)
     }
 
@@ -50,10 +49,10 @@ export class Iimage implements Ielement  {
     }
 
     setColor(r: number, g: number, b: number, a:number){
-      this.color.r = r
-      this.color.g = g
-      this.color.b = b
-      this.color.a = a
+      this.color[0] = r
+      this.color[1] = g
+      this.color[2] = b
+      this.color[3] = a
       this.update.updateColor(this.elementIndex, this.color)
     }
 
@@ -69,9 +68,21 @@ export class Iimage implements Ielement  {
     }
 
     setScale(scaleX: number, scaleY: number) {
-      this.scale.x = scaleX
-      this.scale.y = scaleY
+      this.scale[0] = scaleX
+      this.scale[1] = scaleY
       this.update.updateScale(this.elementIndex, this.scale)
+    }
+
+    setOffset( offsetX: number, offsetY: number) {
+      this.offset[0] = offsetX
+      this.offset[1] = offsetY
+      this.update.updateOffset(this.elementIndex, this.offset)
+    }
+
+    setSize(w: number, h: number) {
+      this.size[0] = w
+      this.size[1] = h
+      this.update.updateSize(this.elementIndex, this.size)
     }
 
 }

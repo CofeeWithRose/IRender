@@ -1,3 +1,3 @@
-export interface Vec2 {
-    x: number, y: number
-  }
+import { type } from "os"
+
+export type Vec2= [ number, number ]

@@ -19,28 +19,39 @@ export interface UpdateHandle {
     updateRotation: ( elementIndex: number, rotation: number ) => void
 
     updateScale: ( elementIndex: number, scale: Vec2 ) => void
+
+    updateSize: (elementIndex: number, size: Vec2) => void
+
+    updateOffset: (elementIndex: number, offset: Vec2) => void
+    
 }
 
 export interface Ielement {
 
-    update:UpdateHandle
-    position: Vec2
+  readonly update:UpdateHandle
+  readonly position: Vec2
+  
     imgId: number
+
     elementIndex: number
-    color: RGBA
+
+    readonly color: RGBA
 
     zIndex: number
 
     /**
      * 缩放后的size.
      */
-    scale: Vec2
+    readonly scale: Vec2
 
     /**
      * 0～360
      */
     rotation: number
 
+    readonly offset: Vec2
+
+    readonly size: Vec2
 
     readonly IELEMENT_TYPE: I_ELEMENT_TYPES
 
@@ -55,6 +66,10 @@ export interface Ielement {
     setRotation( rotation: number ): void
 
     setScale(scaleX: number, scaleY: number): void
+
+    setOffset( offsetX: number, offsetY: number): void
+
+    setSize( w: number, h: number ): void
 
 }
   
