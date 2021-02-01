@@ -326,8 +326,8 @@ export class IRender {
         }
     }
 
-    loadImgs( imgs: HTMLCanvasElement[] ): number[] {
-      const ids = this.textureCanvas.setImages(imgs)
+    loadImg( imgs: HTMLCanvasElement|HTMLImageElement ): number {
+      const ids = this.textureCanvas.setImage(imgs)
       this.textureChange = true
       return ids
     }

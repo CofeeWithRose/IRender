@@ -31,25 +31,19 @@ export class TextureCanvasManager {
       this.ctx = this.canvas.getContext('2d')
     }
   
-    setImages(canvasList: HTMLCanvasElement[]): number[]{
+    setImage(img: HTMLCanvasElement|HTMLImageElement): number{
       
-      const idList = []
-  
-      for( let i =0; i< canvasList.length; i++ ){
-        const id = this.id++
-        const c = canvasList[i]
-        this.checkSpace(c.width, c.height)
-        this.ctx.drawImage(c, this.curX , this.curY, c.width, c.height)
-        idList.push(id)
-        this.positionInfo[id] = { 
-          x: this.curX,
-          y: this.curY,
-          w: c.width,
-          h: c.height,
-        }
-        this.movePosition(c.width, c.height)
+      const id = this.id++
+      this.checkSpace(img.width, img.height)
+      this.ctx.drawImage(img, this.curX , this.curY, img.width, img.height)
+      this.positionInfo[id] = { 
+        x: this.curX,
+        y: this.curY,
+        w: img.width,
+        h: img.height,
       }
-      return idList
+      this.movePosition(img.width, img.height)
+      return id
     }
 
     private checkSpace = (w: number, h: number) => {

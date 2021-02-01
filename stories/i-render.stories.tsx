@@ -4,7 +4,7 @@ import { IRender, Iimage, I_ELEMENT_TYPES } from 'i-render'
 import { startFPS, stopFPS } from './fps';
 
 export default {
-  title: 'GL RENDER',
+  title: 'Demo RENDER',
   component: Test,
 };
 
@@ -48,14 +48,14 @@ export function PerformenceTest() {
         ctx.fill()
 
         
-        const [circleImgId] = glRender.loadImgs([circle])
+        const circleImgId = glRender.loadImg(circle)
 
         ctx.clearRect(0,0, circleR *2, circleR *2)
         ctx.fillStyle= "rgba(255,125,125,0.2)"
         ctx.arc(circleR, circleR , circleR, 0,  Math.PI *2 )
         ctx.fill()
 
-        const [halfImgId] = glRender.loadImgs([circle])
+        const halfImgId = glRender.loadImg(circle)
         let reqH = { a : 0};
         
         const list:Iimage[] = []
@@ -81,7 +81,8 @@ export function PerformenceTest() {
           el.setImgId((frameCount+i)%60? circleImgId: halfImgId)
           // list[i].setPosition(list[i].position.x + Math.sign(frameCount) , list[i].position.y)
         }
-        const req = () => {
+        const req = (tt?: number) => {
+
           frameCount++
           
           list.forEach(update) 
@@ -91,9 +92,10 @@ export function PerformenceTest() {
           // }
           // glRender.updateImidiatly()
           reqH.a =requestAnimationFrame(req)
+          
         }
-        startFPS()
         req()
+        startFPS()
         return () => { 
           stopFPS()
           cancelAnimationFrame(reqH.a)
@@ -216,14 +218,14 @@ export function ColorTest() {
       ctx.lineWidth= 10
       ctx.arc(circleR, circleR, circleR -10,0,  Math.PI *2)
       ctx.fill()
-      const [whiteId] = glRender.loadImgs([circle])
+      const whiteId = glRender.loadImg(circle)
 
       
       ctx.clearRect(0,0, circleR *2, circleR *2)
       ctx.fillStyle= "rgba(255,0,0,0.8)"
       ctx.arc(circleR, circleR , circleR, 0,  Math.PI *2 )
       ctx.fill()
-      const [redId] = glRender.loadImgs([circle])
+      const redId = glRender.loadImg(circle)
 
 
       let reqH = { a : 0};
@@ -313,7 +315,7 @@ export function zIndexTest() {
       ctx.fillRect(0,0,circleR*2,circleR*2)
 
 
-      const [cirle] = glRender.loadImgs([circle])
+      const cirle = glRender.loadImg(circle)
       
       const list:Iimage[] = []
 
@@ -406,7 +408,7 @@ export function TextureTest() {
       ctx.clearRect(0,0,canvas.width, canvas.height)
 
       ctx.fillText(t+'', 0, 0, 80)
-      imgIdMap[t] = glRender.loadImgs([canvas])[0]
+      imgIdMap[t] = glRender.loadImg(canvas)
     }
     return imgIdMap
   }
