@@ -133,7 +133,6 @@ export class IRender {
         }
 
         if ( this.sizeChanged ) {
-          console.log('this.attrBuffer.a_spriteSize', this.attrData)
           this.bufferData(this.gl.ARRAY_BUFFER, this.attrBuffer.a_spriteSize, this.attrData.a_spriteSize)
         }
 
@@ -354,7 +353,6 @@ export class IRender {
         } )
     }
 
-
     private updateImage: UpdateHandle['updateImg'] = (elementIndex, imgId) => {
 
         const startIndex = elementIndex * POINT_NUMBER *2
@@ -372,8 +370,6 @@ export class IRender {
 
         this.attrData.a_texCoord[startIndex+6] = x
         this.attrData.a_texCoord[startIndex + 7] = y
-
-
        
 
         this.imageIdBufferChanged = true

@@ -38,8 +38,9 @@ async function init(iRender: IRender) {
     imgId: stand,
     position: [200, 200]
   })
-  // player.setScale( -1, 1 )
-  player.setSize(90, 90)
+  player.setScale( -1, 1 )
+  player.setColor( 0, 0, 0, 125 )
+  // player.setSize(90, 90)
   
   console.log(player.size)
 
