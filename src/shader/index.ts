@@ -70,18 +70,21 @@ export const VERTEX_SHADER = `
         vec2 center = vec2(a_position.x, a_position.y);
 
         vec2 position = center -  0.5 * spriteSize;
-        v_color = vec4( a_color.r, a_color.g, a_color.b, 1 ) * a_color.a;
-        
+       
+        v_color = a_color;
         float dist = distance(position,center);
         float rotation = radians(a_rotation);
 
         vec2 texCoord = vec2(a_texCoord.x, a_spriteSize.y - a_texCoord.y); 
 
         /**
-         *  P1 ++++++ P2
+         *  P1 ++++++ P3
          *  +         +
          *  +         +
-         *  P3 ++++++ P4
+         *  P2 ++++++ P4
+         * 
+         *  P1 -> P2 -> P3
+         *  P3 -> P2 -> P4
         */
         if( a_position.z <= 1.0 ){
             // 第1个点
@@ -91,14 +94,14 @@ export const VERTEX_SHADER = `
         } 
         if( a_position.z <= 2.0  ){
             // 第二个点
-            gl_Position = vec4(( rotateVec2( rotation, center,  position + vec2( spriteSize.x, 0 ))/u_windowSize *2.0 -1.0) * vec2(1, -1), 1,1);
-            v_texCoord = (a_texCoord + a_offset + vec2( a_spriteSize.x, 0 ))/u_textureSize;
+            gl_Position = vec4(( rotateVec2(rotation, center, position + vec2(0, spriteSize.y))/u_windowSize *2.0 -1.0) * vec2(1, -1), 1,1);
+            v_texCoord = (a_texCoord + a_offset + vec2(0, a_spriteSize.y))/u_textureSize;
             return;
         }
         if( a_position.z <= 3.0  ){
             // 第3个点
-            gl_Position = vec4(( rotateVec2(rotation, center, position + vec2(0, spriteSize.y))/u_windowSize *2.0 -1.0) * vec2(1, -1), 1,1);
-            v_texCoord = (a_texCoord + a_offset + vec2(0, a_spriteSize.y))/u_textureSize;
+            gl_Position = vec4(( rotateVec2( rotation, center,  position + vec2( spriteSize.x, 0 ))/u_windowSize *2.0 -1.0) * vec2(1, -1), 1,1);
+            v_texCoord = (a_texCoord + a_offset + vec2( a_spriteSize.x, 0 ))/u_textureSize;
             return;
         }
         if( a_position.z <= 4.0  ){
@@ -122,6 +125,6 @@ export const FRAGMENT_SHADER =`
 
     void main(){
         vec4 textColor = texture2D(u_image, v_texCoord);
-        gl_FragColor = textColor * v_color;
+        gl_FragColor = textColor * vec4( v_color.r, v_color.g, v_color.b, 1 ) * v_color.a;;
     }
 `

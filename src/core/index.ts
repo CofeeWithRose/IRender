@@ -194,10 +194,19 @@ export class IRender {
             indicate: new Uint16Array( this.options.maxNumber * 6 ),
         }
         
+         /**
+         *  P0 ++++++ P2
+         *  +         +
+         *  +         +
+         *  P1 ++++++ P3
+         * 
+         *  P0 -> P1 -> P2
+         *  P2 -> P1 -> P3
+        */
         this.attrData.indicate.forEach((v, ind) => {
           const val = ind % 6
           const base = Math.floor(ind/6) * 4
-          const b = [ 0, 1, 2, 1, 3, 2 ]
+          const b = [ 0, 1, 2, 2, 1, 3 ]
           this.attrData.indicate[ind] = base + b[val]
         })
 
