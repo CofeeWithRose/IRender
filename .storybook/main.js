@@ -6,7 +6,7 @@
 const path = require('path')
 
  module.exports = {
-  stories: ['../stories/**/*.stories.tsx'],
+  stories: ['../stories/**/*.sb.tsx'],
   addons: ['@storybook/addon-actions', '@storybook/addon-links'],
   webpackFinal: config => {
 

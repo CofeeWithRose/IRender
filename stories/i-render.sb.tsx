@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 
 import { IRender, Iimage, I_ELEMENT_TYPES } from 'i-render'
 import { startFPS, stopFPS } from './fps';
+import './fps.css'
 
 export default {
   title: 'Demo RENDER',
@@ -20,7 +21,7 @@ const canvasHeight = 1300
 
 
 const xCount = 85 * 10
-const yCount = 20 * 1
+const yCount = 20 * 5
 
 const circleR = 50
 
@@ -118,12 +119,6 @@ export function PerformenceTest() {
 
       <div 
         id="fps"
-        style={{
-          backgroundColor:'white',
-          position: 'fixed',
-          left: 0,
-          top: 0,
-        }}
       />
    </ div >
 }

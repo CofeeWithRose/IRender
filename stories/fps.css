@@ -1,0 +1,11 @@
+#fps{
+  background: black;
+  color: white;
+  padding: 2px;
+  opacity: 0.5;
+  position: fixed;
+  left: 0;
+  top: 0;
+  min-width: 57px;
+  min-height: 26px;
+}

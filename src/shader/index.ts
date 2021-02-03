@@ -72,10 +72,8 @@ export const VERTEX_SHADER = `
         vec2 position = center -  0.5 * spriteSize;
        
         v_color = a_color;
-        float dist = distance(position,center);
+        
         float rotation = radians(a_rotation);
-
-        vec2 texCoord = vec2(a_texCoord.x, a_spriteSize.y - a_texCoord.y); 
 
         /**
          *  P1 ++++++ P3

@@ -48,11 +48,18 @@ export class Iimage implements Ielement  {
       this.update.updateImg(this.elementIndex, this.imgId)
     }
 
+    /**
+     * 
+     * @param r 0~255
+     * @param g 0~255
+     * @param b 0~255
+     * @param a 0~1
+     */
     setColor(r: number, g: number, b: number, a:number){
       this.color[0] = r
       this.color[1] = g
       this.color[2] = b
-      this.color[3] = a
+      this.color[3] = a * 255
       this.update.updateColor(this.elementIndex, this.color)
     }
 

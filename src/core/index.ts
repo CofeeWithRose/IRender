@@ -4,13 +4,18 @@ import { compileShader, SHADER_TYPE } from '../util';
 import { TextureCanvasManager } from './TextureCanvasManager'
 import {  Ielement, UpdateHandle } from '../Ielement/IElement'
 import { IElementParams, IElements, IElementTypes, I_ELEMENT_TYPES } from './infer';
+import { RGBA } from 'Data/RGBA';
 
 
 export * from './infer/index'
 
 const POINT_NUMBER = 4
 
-const DEFAULT_OPTION = { maxNumber: 50000, textureSize: 2048 }
+const DEFAULT_OPTION = { 
+  maxNumber: 50000, 
+  textureSize: 2048, 
+  backgroundColor: [ 0, 0, 0, 0 ] as RGBA
+}
 export class IRender {
 
     private  textureManager: TextureCanvasManager;
@@ -83,7 +88,7 @@ export class IRender {
 
     constructor( glCanvas: HTMLCanvasElement,   options?: Partial<typeof DEFAULT_OPTION>   ){
         this.options = { ...DEFAULT_OPTION,  ...options}
-        this.textureManager =  new  TextureCanvasManager( options.textureSize )
+        this.textureManager =  new  TextureCanvasManager( this.options.textureSize )
         this.gl = glCanvas.getContext('webgl', { alpha: true })
         const program = this.gl.createProgram()
         compileShader(this.gl, program, VERTEX_SHADER,SHADER_TYPE.VERTEX_SHADER )
@@ -92,6 +97,7 @@ export class IRender {
         this.gl.useProgram(program)
         this.gl.enable(this.gl.BLEND)
         this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
+       
 
         this.uniformLocations = {
             u_windowSize: this.gl.getUniformLocation(program, 'u_windowSize'),
@@ -108,6 +114,8 @@ export class IRender {
         this.initBuffer()
         this.initTexture()
         this.setViewPort()
+
+        
        
     }
 
@@ -122,6 +130,7 @@ export class IRender {
     }
     
     updateImidiatly = () => {
+      
         this.handleZindexChange()
         
         if(this.positionBufferChanged) {
@@ -150,11 +159,15 @@ export class IRender {
 
         this.checkReloadTexure()
 
+       
+        this.gl.clearColor(...this.options.backgroundColor);
+        this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
         this.gl.drawElements( 
           this.gl.TRIANGLES,
           this.elementList.length * 6,
           this.gl.UNSIGNED_SHORT, 0,
         )
+       
 
         this.imageIdBufferChanged = false
         this.positionBufferChanged = false
@@ -176,8 +189,8 @@ export class IRender {
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture)
         this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
         this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
-        this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
-        this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+        this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+        this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
         this.gl.pixelStorei(this.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.textureManager.canvas)
     }
@@ -286,7 +299,7 @@ export class IRender {
             this.updateZindex()
             el.setPosition(...params.position)
             el.setImgId(params.imgId)
-            el.setColor(...(params.color||[255,255,255,255]))
+            el.setColor(...(params.color||[255,255,255,1]))
             el.setRotation(0)
             el.setScale(1,1)
             const { w, h } = this.textureManager.getImageInfo(el.imgId)
