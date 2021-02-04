@@ -2,10 +2,12 @@ body{
   margin: 0;
   padding: 0;
   user-select: none;
-  overflow: hidden;
+  /* overflow: hidden; */
   
 }
-
+/* div{
+  overflow: hidden;
+} */
 
 /* canvas{
   background: black;

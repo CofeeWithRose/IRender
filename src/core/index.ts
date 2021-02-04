@@ -49,7 +49,7 @@ export class IRender {
         a_color: Uint8Array,
         a_scale: Float32Array,
         a_rotation: Float32Array,
-        indicate: Uint16Array,
+        indicate: Uint32Array,
     }
 
     private attrBuffer: {
@@ -90,6 +90,8 @@ export class IRender {
         this.options = { ...DEFAULT_OPTION,  ...options}
         this.textureManager =  new  TextureCanvasManager( this.options.textureSize )
         this.gl = glCanvas.getContext('webgl', { alpha: true })
+        this.gl.getExtension('OES_element_index_uint');
+        
         const program = this.gl.createProgram()
         compileShader(this.gl, program, VERTEX_SHADER,SHADER_TYPE.VERTEX_SHADER )
         compileShader(this.gl, program, FRAGMENT_SHADER, SHADER_TYPE.FRAGMENT_SHADER)
@@ -98,7 +100,7 @@ export class IRender {
         this.gl.enable(this.gl.BLEND)
         this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
        
-
+        
         this.uniformLocations = {
             u_windowSize: this.gl.getUniformLocation(program, 'u_windowSize'),
             u_textureSize: this.gl.getUniformLocation(program, 'u_textureSize')
@@ -165,7 +167,7 @@ export class IRender {
         this.gl.drawElements( 
           this.gl.TRIANGLES,
           this.elementList.length * 6,
-          this.gl.UNSIGNED_SHORT, 0,
+          this.gl.UNSIGNED_INT, 0,
         )
        
 
@@ -204,9 +206,9 @@ export class IRender {
             a_color: new Uint8Array(this.options.maxNumber * POINT_NUMBER * 4 ),
             a_scale: new Float32Array(this.options.maxNumber * POINT_NUMBER *2 ),
             a_rotation: new Float32Array(this.options.maxNumber * POINT_NUMBER * 1),
-            indicate: new Uint16Array( this.options.maxNumber * 6 ),
+            indicate: new Uint32Array( this.options.maxNumber * 6 ),
         }
-        
+        console.log('attrData', this.attrData)
          /**
          *  P0 ++++++ P2
          *  +         +
