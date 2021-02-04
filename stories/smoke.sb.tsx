@@ -27,11 +27,11 @@ function loadCircle(irender: IRender, r: number){
 
 class SmokeObj {
 
-  public v = [0, 0.1]
+  public v = [0, -10]
 
-  INIT_A = [ 0, -0.001 ]
+  INIT_A = [ 0, -50 ]
 
-  public a = [0.1,-0.005]
+  public a = [10,-500]
 
   
   constructor(public img:Iimage){
@@ -39,13 +39,13 @@ class SmokeObj {
     this.a[1] = this.INIT_A[1]
   }
 
-  update() {
-    this.v[0] += this.a[0]
-    this.v[1] += this.a[1]
-    this.v[0] = Math.min(Math.max(this.v[0], -1), 1)
+  update(deltaTime: number) {
+    this.v[0] += this.a[0] * deltaTime
+    this.v[1] += this.a[1] * deltaTime
+    this.v[0] = Math.min(Math.max(this.v[0], -100), 100)
     
     const [x, y ] = this.img.position
-    this.img.setPosition(this.v[0] + x, this.v[1] +y)
+    this.img.setPosition(this.v[0] * deltaTime + x, this.v[1] *deltaTime +y)
 
   }
 }
@@ -53,13 +53,14 @@ class SmokeObj {
 function distance (p1: Vec2, p2: Vec2) {
   return Math.sqrt( Math.pow(p2[0] - p1[0], 2) + Math.pow( p2[1] - p1[1], 2 ) )
 }
-function smokeAnim(smokeList: SmokeObj[], w: number, h: number, point:[ number, number, number ]) {
+function smokeAnim(smokeList: SmokeObj[], w: number, h: number, point:[ number, number, number ], deltaTime: number) {
  const [pX, pY , pR] = point
   smokeList.forEach( (smoke) => {
 
     let [x, y] = smoke.img.position
     const vy =  (h- y) * 0.002
-    smoke.a[0] = 0.05 *( Math.random()<0.5? 1  : -1)
+    const random = Math.random()
+    smoke.a[0] = 500 *( random<0.5? 1  : -1)
 
     y -= vy< 1? 1 : vy
     // x += vx * w * 0.001
@@ -71,15 +72,15 @@ function smokeAnim(smokeList: SmokeObj[], w: number, h: number, point:[ number, 
       smoke.img.setPosition(x, y)
       smoke.a[1] = smoke.INIT_A[1]
       smoke.v[0] = 0
-      smoke.v[1] = -Math.random()
+      smoke.v[1] = -random*500
     }
 
     const dist = distance([pX, pY], smoke.img.position)
     if(dist < pR + smoke.img.size[0]) {
-      smoke.v[0] = pX> x? -10 : 10
-      smoke.v[1] = 0.05
+      smoke.v[0] = pX> x? -100 : 100
+      // smoke.v[1] = 0.05
     }
-    smoke.update()
+    smoke.update(deltaTime)
   })
 }
 
@@ -93,7 +94,7 @@ export function Smoke() {
   useEffect(() => {
     const canvas = canvasRef.current
     if(!canvas) return
-    const num = 25000
+    const num = 30000
     irenderRef.current = new IRender(canvas, { maxNumber: num + 1, backgroundColor: [1,0.5,0.5,1] })
     const smockId = loadCircle(irenderRef.current, 10)
     const pointId = loadCircle(irenderRef.current, 35)
@@ -101,7 +102,7 @@ export function Smoke() {
     for(let i=0; i< num; i++){
       const smoke = irenderRef.current.createElement(I_ELEMENT_TYPES.I_IMAGE, {
         imgId: smockId,
-        position: [ 0.5 * canvas.width, ( 0.5 + 0.5 * Math.sin( 10 * i/num * Math.PI))* canvas.height]
+        position: [ 0.5 * canvas.width, Math.random()* canvas.height]
       })
       smoke.setColor(  Math.random() * 205, 255 * Math.random(), Math.random() * 127+127, 0.2)
       const obj = new SmokeObj(smoke)
@@ -116,10 +117,9 @@ export function Smoke() {
       imgId: pointId,
       position: [ point[0], point[1] ]
     })
-    pointImg.setColor(255, 225, 50, 1)
-    // pointImg.setScale(5,5 )
+    pointImg.setColor(255, 200, 0, 1)
+
     canvas.addEventListener('mousemove', e => {
-      // e.preventDefault()
       point[0] = e.clientX *devicePixelRatio
       point[1] = e.clientY * devicePixelRatio
       pointImg.setPosition(point[0], point[1])
@@ -137,10 +137,14 @@ export function Smoke() {
      
     }, { passive: false })
 
-  const reqHandle = { id: 0 };
+  const reqHandle = { id: 0, deltaTime: 0 };
+  let lastTime = Date.now() * 0.001
 
   const start = () => {
-    smokeAnim(smokeList, canvas.width, canvas.height, point)
+    const now = Date.now() * 0.001
+    reqHandle.deltaTime = now - lastTime
+    lastTime = now;
+    smokeAnim(smokeList, canvas.width, canvas.height, point, reqHandle.deltaTime )
     reqHandle.id = requestAnimationFrame(start)
   }
 
