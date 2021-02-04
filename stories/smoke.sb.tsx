@@ -42,7 +42,7 @@ class SmokeObj {
   update(deltaTime: number) {
     this.v[0] += this.a[0] * deltaTime
     this.v[1] += this.a[1] * deltaTime
-    this.v[0] = Math.min(Math.max(this.v[0], -100), 100)
+    this.v[0] = Math.min(Math.max(this.v[0], -200), 200)
     
     const [x, y ] = this.img.position
     this.img.setPosition(this.v[0] * deltaTime + x, this.v[1] *deltaTime +y)
@@ -60,7 +60,7 @@ function smokeAnim(smokeList: SmokeObj[], w: number, h: number, point:[ number, 
     let [x, y] = smoke.img.position
     const vy =  (h- y) * 0.002
     const random = Math.random()
-    smoke.a[0] = 500 *( random<0.5? 1  : -1)
+    smoke.a[0] = 200 *( random<0.5? 1  : -1)
 
     y -= vy< 1? 1 : vy
     // x += vx * w * 0.001
@@ -77,7 +77,7 @@ function smokeAnim(smokeList: SmokeObj[], w: number, h: number, point:[ number, 
 
     const dist = distance([pX, pY], smoke.img.position)
     if(dist < pR + smoke.img.size[0]) {
-      smoke.v[0] = pX> x? -100 : 100
+      smoke.v[0] = pX> x? -200 : 200
       // smoke.v[1] = 0.05
     }
     smoke.update(deltaTime)
@@ -90,11 +90,11 @@ export function Smoke() {
   const canvasRef = useRef<HTMLCanvasElement>()
 
   const irenderRef = useRef<IRender>()
-
+  const num = 25000
   useEffect(() => {
     const canvas = canvasRef.current
     if(!canvas) return
-    const num = 25000
+  
     irenderRef.current = new IRender(canvas, { maxNumber: num + 1, backgroundColor: [1,0.5,0.5,1] })
     const smockId = loadCircle(irenderRef.current, 10)
     const pointId = loadCircle(irenderRef.current, 35)
@@ -104,7 +104,7 @@ export function Smoke() {
         imgId: smockId,
         position: [ 0.5 * canvas.width, Math.random()* canvas.height]
       })
-      smoke.setColor(  Math.random() * 205, 255 * Math.random(), Math.random() * 127+127, 0.2)
+      smoke.setColor(  Math.random() * 127+127, 127+127 * Math.random(), Math.random() * 127+128, 0.8)
       const obj = new SmokeObj(smoke)
       smokeList.push(obj)
     }
@@ -159,7 +159,10 @@ export function Smoke() {
 
 
   return <div>
-   <div id="fps" ></div>
+  
+      <div id="fps" />
+      <div className="pannel" >粒子数量：{num}</div>
+  
     <canvas
       ref={canvasRef}
       style={{ width: '100%', height: '100%'}} 

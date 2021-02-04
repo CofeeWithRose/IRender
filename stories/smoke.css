@@ -5,6 +5,17 @@ body{
   overflow: hidden;
   
 }
+
+.pannel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: black;
+  opacity: 0.5;
+  color: white;
+  padding: 5px;
+  z-index: 10;
+}
 /* 
  */
 
