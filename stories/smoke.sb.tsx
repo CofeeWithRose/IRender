@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { IRender, Iimage, I_ELEMENT_TYPES } from 'i-render'
 
-import './fire.css'
+import './smoke.css'
 import './fps.css'
 import { startFPS, stopFPS } from './fps';
 import { Vec2 } from 'Data/Vec2';
@@ -10,8 +10,8 @@ import { Vec2 } from 'Data/Vec2';
 
 
 export default {
-  title: 'Fire RENDER',
-  component: Fire,
+  title: 'smoke RENDER',
+  component: Smoke,
 };
 
 function loadCircle(irender: IRender, r: number){
@@ -25,7 +25,7 @@ function loadCircle(irender: IRender, r: number){
   return irender.loadImg(tempTexture)
 }
 
-class FireObj {
+class SmokeObj {
 
   public v = [0, 0.1]
 
@@ -42,7 +42,7 @@ class FireObj {
   update() {
     this.v[0] += this.a[0]
     this.v[1] += this.a[1]
-    this.v[0] = Math.min(Math.max(this.v[0], -0.5), 0.5)
+    this.v[0] = Math.min(Math.max(this.v[0], -1), 1)
     
     const [x, y ] = this.img.position
     this.img.setPosition(this.v[0] + x, this.v[1] +y)
@@ -53,43 +53,39 @@ class FireObj {
 function distance (p1: Vec2, p2: Vec2) {
   return Math.sqrt( Math.pow(p2[0] - p1[0], 2) + Math.pow( p2[1] - p1[1], 2 ) )
 }
-function smokeAnim(fireList: FireObj[], w: number, h: number, point:[ number, number, number ]) {
+function smokeAnim(smokeList: SmokeObj[], w: number, h: number, point:[ number, number, number ]) {
  const [pX, pY , pR] = point
-  fireList.forEach( (fire, index) => {
-   
+  smokeList.forEach( (smoke) => {
 
-    let [x, y] = fire.img.position
+    let [x, y] = smoke.img.position
     const vy =  (h- y) * 0.002
-    fire.a[0] = 0.05 *( Math.random()<0.5? 1  : -1)
+    smoke.a[0] = 0.05 *( Math.random()<0.5? 1  : -1)
 
     y -= vy< 1? 1 : vy
     // x += vx * w * 0.001
 
     if(y <-10 ) {
       y = h;
-      x = (Math.random() * 0.1 + 0.45)  * w
-      fire.img.setPosition(x, y)
-      fire.a[1] = fire.INIT_A[1]
-      fire.v[0] = 0
-      fire.v[1] = -Math.random()
+      x = (Math.random())  * w
+      // x = (Math.random() * 0.1 + 0.45)  * w
+      smoke.img.setPosition(x, y)
+      smoke.a[1] = smoke.INIT_A[1]
+      smoke.v[0] = 0
+      smoke.v[1] = -Math.random()
     }
-    // const scale = y/h * 10
-    // fire.setScale(scale, scale)
-    // fire.setPosition( x, y)
 
-    const dist = distance([pX, pY], fire.img.position)
-    if(dist < pR + fire.img.size[0]) {
-      fire.v[0] = pX> x? -10 : 10
-       fire.v[1] = 0.05
+    const dist = distance([pX, pY], smoke.img.position)
+    if(dist < pR + smoke.img.size[0]) {
+      smoke.v[0] = pX> x? -10 : 10
+      smoke.v[1] = 0.05
     }
-    fire.update()
-    // fire.setColor(Math.random() * 255, 255 , 0, 1)
+    smoke.update()
   })
 }
 
 
 
-export function Fire() {
+export function Smoke() {
   const canvasRef = useRef<HTMLCanvasElement>()
 
   const irenderRef = useRef<IRender>()
@@ -97,21 +93,21 @@ export function Fire() {
   useEffect(() => {
     const canvas = canvasRef.current
     if(!canvas) return
-    const num = 40000
-    irenderRef.current = new IRender(canvas, { maxNumber: num + 1, backgroundColor: [0,0,0,1] })
+    const num = 25000
+    irenderRef.current = new IRender(canvas, { maxNumber: num + 1, backgroundColor: [1,0.5,0.5,1] })
     const smockId = loadCircle(irenderRef.current, 10)
     const pointId = loadCircle(irenderRef.current, 35)
-    const fireList: FireObj[] = []
+    const smokeList: SmokeObj[] = []
     for(let i=0; i< num; i++){
-      const fire = irenderRef.current.createElement(I_ELEMENT_TYPES.I_IMAGE, {
+      const smoke = irenderRef.current.createElement(I_ELEMENT_TYPES.I_IMAGE, {
         imgId: smockId,
         position: [ 0.5 * canvas.width, ( 0.5 + 0.5 * Math.sin( 10 * i/num * Math.PI))* canvas.height]
       })
-      fire.setColor( 255, 255, 0, 0.1)
-      const obj = new FireObj(fire)
-      fireList.push(obj)
+      smoke.setColor(  Math.random() * 205, 255 * Math.random(), Math.random() * 127+127, 0.2)
+      const obj = new SmokeObj(smoke)
+      smokeList.push(obj)
     }
-    console.log('fireList.length',fireList.length)
+    console.log('smokeList.length',smokeList.length)
 
 
    
@@ -120,7 +116,7 @@ export function Fire() {
       imgId: pointId,
       position: [ point[0], point[1] ]
     })
-    pointImg.setColor(255, 125, 50, 1)
+    pointImg.setColor(255, 225, 50, 1)
     // pointImg.setScale(5,5 )
     canvas.addEventListener('mousemove', e => {
       // e.preventDefault()
@@ -144,7 +140,7 @@ export function Fire() {
   const reqHandle = { id: 0 };
 
   const start = () => {
-    smokeAnim(fireList, canvas.width, canvas.height, point)
+    smokeAnim(smokeList, canvas.width, canvas.height, point)
     reqHandle.id = requestAnimationFrame(start)
   }
 

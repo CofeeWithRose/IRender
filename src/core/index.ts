@@ -197,6 +197,19 @@ export class IRender {
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.textureManager.canvas)
     }
 
+    private initPositionValue = () => {
+      const positionV = [
+        0, 0, 0, 0,
+        0, 0, 0, 1,
+        0, 0, 1, 0,
+        0, 0, 1, 1,
+      ]
+      const positionValCount = POINT_NUMBER * 4
+      this.attrData.a_position.forEach( (v, ind) => {
+        const pIndex = ind%positionValCount
+        this.attrData.a_position[ind] =   positionV[pIndex]
+      })
+    }
     private initBuffer(){
 
         this.attrData  = {
@@ -208,7 +221,7 @@ export class IRender {
             a_rotation: new Float32Array(this.options.maxNumber * POINT_NUMBER * 1),
             indicate: new Uint32Array( this.options.maxNumber * 6 ),
         }
-        console.log('attrData', this.attrData)
+        this.initPositionValue()
          /**
          *  P0 ++++++ P2
          *  +         +
@@ -334,23 +347,15 @@ export class IRender {
         const [ x, y ] = position
         this.attrData.a_position[startIndex + 0] = x
         this.attrData.a_position[startIndex + 1] = y
-        this.attrData.a_position[startIndex + 2] = 0
-        this.attrData.a_position[startIndex + 3] = 0
 
         this.attrData.a_position[startIndex + 4] = x
         this.attrData.a_position[startIndex + 5] = y
-        this.attrData.a_position[startIndex + 6] = 0
-        this.attrData.a_position[startIndex + 7] = 1
 
         this.attrData.a_position[startIndex + 8] = x
         this.attrData.a_position[startIndex + 9] = y
-        this.attrData.a_position[startIndex + 10] = 1
-        this.attrData.a_position[startIndex + 11] = 0
 
         this.attrData.a_position[startIndex + 12] = x
         this.attrData.a_position[startIndex + 13] = y
-        this.attrData.a_position[startIndex + 14] = 1
-        this.attrData.a_position[startIndex + 15] = 1
 
         this.positionBufferChanged = true
         this.update()
