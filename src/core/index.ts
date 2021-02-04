@@ -198,7 +198,7 @@ export class IRender {
     private initBuffer(){
 
         this.attrData  = {
-            a_position: new Float32Array(this.options.maxNumber * POINT_NUMBER * 3 ),
+            a_position: new Float32Array(this.options.maxNumber * POINT_NUMBER * 4 ),
             a_spriteSize: new Float32Array(this.options.maxNumber * POINT_NUMBER *2 ),
             a_texCoord: new Float32Array(this.options.maxNumber * POINT_NUMBER *2 ),
             a_color: new Uint8Array(this.options.maxNumber * POINT_NUMBER * 4 ),
@@ -227,7 +227,7 @@ export class IRender {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer)
         this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_position, this.gl.STREAM_DRAW )
         this.gl.enableVertexAttribArray(this.attribuitesLocations.a_position)
-        this.gl.vertexAttribPointer(this.attribuitesLocations.a_position, 3, this.gl.FLOAT, false, 0,0)
+        this.gl.vertexAttribPointer(this.attribuitesLocations.a_position, 4, this.gl.FLOAT, false, 0,0)
 
         const sizeBuffer = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, sizeBuffer)
@@ -328,23 +328,27 @@ export class IRender {
     }
     private updatePosition: UpdateHandle['updatePosition'] = (elementIndex, position ) => {
 
-        const startIndex = elementIndex * POINT_NUMBER * 3
+        const startIndex = elementIndex * POINT_NUMBER * 4
         const [ x, y ] = position
-        this.attrData.a_position[startIndex] = x
+        this.attrData.a_position[startIndex + 0] = x
         this.attrData.a_position[startIndex + 1] = y
-        this.attrData.a_position[startIndex + 2] = 1
+        this.attrData.a_position[startIndex + 2] = 0
+        this.attrData.a_position[startIndex + 3] = 0
 
-        this.attrData.a_position[startIndex + 3] =x
-        this.attrData.a_position[startIndex + 4] = y
-        this.attrData.a_position[startIndex + 5] = 2
+        this.attrData.a_position[startIndex + 4] = x
+        this.attrData.a_position[startIndex + 5] = y
+        this.attrData.a_position[startIndex + 6] = 0
+        this.attrData.a_position[startIndex + 7] = 1
 
-        this.attrData.a_position[startIndex + 6] = x
-        this.attrData.a_position[startIndex + 7] = y
-        this.attrData.a_position[startIndex + 8] = 3
+        this.attrData.a_position[startIndex + 8] = x
+        this.attrData.a_position[startIndex + 9] = y
+        this.attrData.a_position[startIndex + 10] = 1
+        this.attrData.a_position[startIndex + 11] = 0
 
-        this.attrData.a_position[startIndex + 9] = x
-        this.attrData.a_position[startIndex + 10] = y
-        this.attrData.a_position[startIndex + 11] = 4
+        this.attrData.a_position[startIndex + 12] = x
+        this.attrData.a_position[startIndex + 13] = y
+        this.attrData.a_position[startIndex + 14] = 1
+        this.attrData.a_position[startIndex + 15] = 1
 
         this.positionBufferChanged = true
         this.update()

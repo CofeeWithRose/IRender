@@ -15,7 +15,7 @@ export default {
 
 function loadPixi(irender: IRender){
   const tempTexture = document.createElement('canvas')
-  const r = 50
+  const r = 35
   tempTexture.width = r *2
   tempTexture.height = r *2
   const tempCtx = tempTexture.getContext('2d', {alpha: true})
@@ -42,6 +42,7 @@ function fireAnim(fireList: Iimage[], w: number, h: number) {
     // const scale = y/h * 10
     // fire.setScale(scale, scale)
     fire.setPosition( fire.position[0], y)
+    // fire.setColor(Math.random() * 255, 255 , 0, 1)
   })
 }
 
@@ -53,19 +54,19 @@ export function Fire() {
   useEffect(() => {
     const canvas = canvasRef.current
     if(!canvas) return
-    const num = 5000
-    irenderRef.current = new IRender(canvas, { backgroundColor: [0,0,0,1] })
+    const num = 12000
+    irenderRef.current = new IRender(canvas, { maxNumber: num, backgroundColor: [0,0,0,1] })
     const id = loadPixi(irenderRef.current)
     
     const fireList: Iimage[] = []
     for(let i=0; i< num; i++){
       const fire = irenderRef.current.createElement(I_ELEMENT_TYPES.I_IMAGE, {
         imgId: id,
-        position: [ Math.random() * canvas.width, Math.random() * canvas.height]
+        position: [ Math.random() * canvas.width, Math.random()* canvas.height]
       })
-      // const scale = Math.random() * 10
+      // const scale = Math.random()
       // fire.setScale(scale, scale)
-      fire.setColor( 255, 255, 0, 0.1)
+      fire.setColor( 255, 255, 0, 1)
       fireList.push(fire)
     }
     console.log('fireList.length',fireList.length)
