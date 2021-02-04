@@ -94,7 +94,7 @@ export function Smoke() {
   useEffect(() => {
     const canvas = canvasRef.current
     if(!canvas) return
-    const num = 30000
+    const num = 25000
     irenderRef.current = new IRender(canvas, { maxNumber: num + 1, backgroundColor: [1,0.5,0.5,1] })
     const smockId = loadCircle(irenderRef.current, 10)
     const pointId = loadCircle(irenderRef.current, 35)
