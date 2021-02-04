@@ -10,7 +10,7 @@
     "start": "tsc --watch | npm run dev",
     "build": "tsc&&node ./build/index.js",
     "dev": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook -o ./docs"
   },
   "author": "cofeewithrose",
   "license": "MIT",
