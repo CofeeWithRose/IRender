@@ -80,6 +80,13 @@ function smokeAnim(smokeList: SmokeObj[], w: number, h: number, point:[ number, 
       smoke.v[0] = pX> x? -200 : 200
       // smoke.v[1] = 0.05
     }
+    if(x< 0){
+      smoke.v[0] = Math.abs(smoke.v[0])
+    }
+    if(x> w) {
+      smoke.v[0] = -Math.abs(smoke.v[0])
+    }
+    
     smoke.update(deltaTime)
   })
 }
@@ -104,7 +111,7 @@ export function Smoke() {
         imgId: smockId,
         position: [ 0.5 * canvas.width, Math.random()* canvas.height]
       })
-      smoke.setColor(  Math.random() * 127+127, 127+127 * Math.random(), Math.random() * 127+128, 0.8)
+      smoke.setColor(  Math.random() * 127+127, 127+127 * Math.random(), Math.random() * 127+128, 1)
       const obj = new SmokeObj(smoke)
       smokeList.push(obj)
     }
