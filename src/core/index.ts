@@ -214,6 +214,10 @@ export class IRender {
     }
     private initBuffer(){
 
+        Float32Array.prototype.forEach = Float32Array.prototype.forEach || Array.prototype.forEach as any as typeof Float32Array.prototype.forEach;
+        Uint8Array.prototype.forEach = Uint8Array.prototype.forEach || Array.prototype.forEach as any as typeof Uint8Array.prototype.forEach;
+        Uint32Array.prototype.forEach = Uint32Array.prototype.forEach ||  Array.prototype.forEach as any as typeof Uint32Array.prototype.forEach;
+
         this.attrData  = {
             a_position: new Float32Array(this.options.maxNumber * POINT_NUMBER * 4 ),
             a_spriteSize: new Float32Array(this.options.maxNumber * POINT_NUMBER *2 ),

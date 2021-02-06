@@ -40,10 +40,7 @@ export const VERTEX_SHADER = `
         return y > 0.0? 0.5 * PI : - 0.5 * PI;
       }
 
-      if ( x < 0.0 ) {
-        return y >= 0.0? (atan(y/x) + PI) : (atan(y/x) - PI);
-      }
-     
+      return y >= 0.0? (atan(y/x) + PI) : (atan(y/x) - PI);
     }
 
 
@@ -84,7 +81,7 @@ export const VERTEX_SHADER = `
          *  P3 -> P2 -> P4
         */
         gl_Position = vec4((rotateVec2( rotation, center, position)/u_windowSize *2.0 -1.0) * vec2(1, -1), 1,1);
-      
+
     }
 `
 
