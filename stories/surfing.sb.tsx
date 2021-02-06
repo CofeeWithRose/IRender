@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { IRender, Iimage, I_ELEMENT_TYPES } from 'i-render'
 
-import './smoke.css'
+import './surfing.css'
 import './fps.css'
 import { startFPS, stopFPS } from './fps';
 import { Vec2 } from 'Data/Vec2';
@@ -10,9 +10,10 @@ import { Vec2 } from 'Data/Vec2';
 
 
 export default {
-  title: 'smoke RENDER',
-  component: Smoke,
+  title: 'Surfing',
+  component: Surfing,
 };
+
 
 function loadCircle(irender: IRender, r: number){
   const tempTexture = document.createElement('canvas')
@@ -25,7 +26,7 @@ function loadCircle(irender: IRender, r: number){
   return irender.loadImg(tempTexture)
 }
 
-class SmokeObj {
+class SurfingElementObj {
 
   public v = [0, -10]
 
@@ -53,14 +54,14 @@ class SmokeObj {
 function distance (p1: Vec2, p2: Vec2) {
   return Math.sqrt( Math.pow(p2[0] - p1[0], 2) + Math.pow( p2[1] - p1[1], 2 ) )
 }
-function smokeAnim(smokeList: SmokeObj[], w: number, h: number, point:[ number, number, number ], deltaTime: number) {
+function surfingAnim(surfingElementObjList: SurfingElementObj[], w: number, h: number, point:[ number, number, number ], deltaTime: number) {
  const [pX, pY , pR] = point
-  smokeList.forEach( (smoke) => {
+  surfingElementObjList.forEach( (surfingElementObj) => {
 
-    let [x, y] = smoke.img.position
+    let [x, y] = surfingElementObj.img.position
     const vy =  (h- y) * 0.002
     const random = Math.random()
-    smoke.a[0] = 200 *( random<0.5? 1  : -1)
+    surfingElementObj.a[0] = 200 *( random<0.5? 1  : -1)
 
     y -= vy< 1? 1 : vy
     // x += vx * w * 0.001
@@ -69,31 +70,43 @@ function smokeAnim(smokeList: SmokeObj[], w: number, h: number, point:[ number, 
       y = h;
       x = (Math.random())  * w
       // x = (Math.random() * 0.1 + 0.45)  * w
-      smoke.img.setPosition(x, y)
-      smoke.a[1] = smoke.INIT_A[1]
-      smoke.v[0] = 0
-      smoke.v[1] = -random*500
+      surfingElementObj.img.setPosition(x, y)
+      surfingElementObj.a[1] = surfingElementObj.INIT_A[1]
+      surfingElementObj.v[0] = 0
+      surfingElementObj.v[1] = -random*500
     }
 
-    const dist = distance([pX, pY], smoke.img.position)
-    if(dist < pR + smoke.img.size[0]) {
-      smoke.v[0] = pX> x? -200 : 200
-      // smoke.v[1] = 0.05
+    const dist = distance([pX, pY], surfingElementObj.img.position)
+    if(dist < pR + surfingElementObj.img.size[0]) {
+      surfingElementObj.v[0] = pX> x? -200 : 200
     }
     if(x< 0){
-      smoke.v[0] = Math.abs(smoke.v[0])
+      surfingElementObj.v[0] = Math.abs(surfingElementObj.v[0])
     }
     if(x> w) {
-      smoke.v[0] = -Math.abs(smoke.v[0])
+      surfingElementObj.v[0] = -Math.abs(surfingElementObj.v[0])
     }
     
-    smoke.update(deltaTime)
+    surfingElementObj.update(deltaTime)
   })
 }
 
+function createSurfingElementObj (irender:IRender,smockId: number,  num: number) {
+  const surfingElementObjList: SurfingElementObj[] = []
+  for(let i=0; i< num; i++){
+    const surfingElement = irender.createElement(I_ELEMENT_TYPES.I_IMAGE, {
+      imgId: smockId,
+      position: [ 0.5 * irender.glCanvas.width, Math.random()* irender.glCanvas.height]
+    })
+    surfingElement.setColor(  Math.random() * 127+127, 127+127 * Math.random(), Math.random() * 127+128, 1)
+    const obj = new SurfingElementObj(surfingElement)
+    surfingElementObjList.push(obj)
+  }
+  return surfingElementObjList
+}
 
 
-export function Smoke() {
+export function Surfing() {
   const canvasRef = useRef<HTMLCanvasElement>()
 
   const irenderRef = useRef<IRender>()
@@ -105,19 +118,7 @@ export function Smoke() {
     irenderRef.current = new IRender(canvas, { maxNumber: num + 1, backgroundColor: [1,0.5,0.5,1] })
     const smockId = loadCircle(irenderRef.current, 10)
     const pointId = loadCircle(irenderRef.current, 35)
-    const smokeList: SmokeObj[] = []
-    for(let i=0; i< num; i++){
-      const smoke = irenderRef.current.createElement(I_ELEMENT_TYPES.I_IMAGE, {
-        imgId: smockId,
-        position: [ 0.5 * canvas.width, Math.random()* canvas.height]
-      })
-      smoke.setColor(  Math.random() * 127+127, 127+127 * Math.random(), Math.random() * 127+128, 1)
-      const obj = new SmokeObj(smoke)
-      smokeList.push(obj)
-    }
-    console.log('smokeList.length',smokeList.length)
-
-
+    const surfingElementObjList = createSurfingElementObj( irenderRef.current, smockId, num)
    
     const point =[0,0,35] as [number, number, number]
     const pointImg = irenderRef.current.createElement(I_ELEMENT_TYPES.I_IMAGE, {
@@ -144,6 +145,8 @@ export function Smoke() {
      
     }, { passive: false })
 
+    
+
   const reqHandle = { id: 0, deltaTime: 0 };
   let lastTime = Date.now() * 0.001
 
@@ -151,7 +154,7 @@ export function Smoke() {
     const now = Date.now() * 0.001
     reqHandle.deltaTime = now - lastTime
     lastTime = now;
-    smokeAnim(smokeList, canvas.width, canvas.height, point, reqHandle.deltaTime )
+    surfingAnim(surfingElementObjList, canvas.width, canvas.height, point, reqHandle.deltaTime )
     reqHandle.id = requestAnimationFrame(start)
   }
 

@@ -86,7 +86,7 @@ export class IRender {
     private elementPool = new Set<Ielement>()
 
 
-    constructor( glCanvas: HTMLCanvasElement,   options?: Partial<typeof DEFAULT_OPTION>   ){
+    constructor( public glCanvas: HTMLCanvasElement,   options?: Partial<typeof DEFAULT_OPTION>   ){
         this.options = { ...DEFAULT_OPTION,  ...options}
         this.textureManager =  new  TextureCanvasManager( this.options.textureSize )
         this.gl = glCanvas.getContext('webgl', { alpha: true })
