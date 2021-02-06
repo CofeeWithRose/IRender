@@ -98,7 +98,7 @@ export class IRender {
         compileShader(this.gl, program, FRAGMENT_SHADER, SHADER_TYPE.FRAGMENT_SHADER)
         this.gl.linkProgram(program)
 
-        console.log('getProgramInfoLog:', this.gl.getProgramInfoLog(program);
+        console.log('getProgramInfoLog:', this.gl.getProgramInfoLog(program));
         this.gl.useProgram(program)
         this.gl.enable(this.gl.BLEND)
         this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
