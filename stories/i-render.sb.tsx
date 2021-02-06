@@ -63,13 +63,10 @@ export function PerformenceTest() {
         for(let i =0; i< xCount; i++){
           for( let j =0; j< yCount; j++ ){
             list.push ( 
-              glRender.createElement(
-                I_ELEMENT_TYPES.I_IMAGE, 
-                { 
+              glRender.createElement({ 
                   imgId:list.length%2? circleImgId: halfImgId , 
                   position:  [ (i+1) *circleR  ,  (j +1) * circleR ],
-                }
-              ),
+              })
             )
           }
         }
@@ -224,38 +221,26 @@ export function ColorTest() {
 
       let reqH = { a : 0};
       
-      glRender.createElement(
-        I_ELEMENT_TYPES.I_IMAGE, 
-        { 
+      glRender.createElement({ 
           imgId: redId , 
           position:  [ circleR *3 ,  circleR ],
-        }
-      )
+      })
 
-      glRender.createElement(
-        I_ELEMENT_TYPES.I_IMAGE, 
-        { 
+      glRender.createElement({ 
           imgId: redId , 
           position:  [ circleR *2.3 , circleR ],
-        }
-      )
+      })
 
-      glRender.createElement(
-        I_ELEMENT_TYPES.I_IMAGE, 
-        { 
+      glRender.createElement({ 
           imgId: whiteId , 
           position:  [ circleR , circleR ],
-          color: [ 255, 0, 0,  255 * 0.8 ],
-        }
-      )
-      glRender.createElement(
-        I_ELEMENT_TYPES.I_IMAGE, 
-        { 
+          color: [ 255, 0, 0,  0.8 ],
+      })
+      glRender.createElement({ 
           imgId: whiteId , 
           position:  [ circleR *0.5 ,  circleR *0.5 ],
-          color: [ 255, 0,  0,  255 * 0.8 ],
-        }
-      )
+          color: [ 255, 0,  0,  0.8 ],
+      })
       return () => { 
         cancelAnimationFrame(reqH.a)
       }
@@ -313,30 +298,24 @@ export function zIndexTest() {
       
       const list:Iimage[] = []
 
-      const green =  glRender.createElement(
-        I_ELEMENT_TYPES.I_IMAGE, 
-        { 
+      const green =  glRender.createElement({ 
           imgId: cirle, 
           position:  [ circleR * 3,  circleR * 1.5 ],
-          color: [ 0, 255,  0, 255 * 0.8 ]
-        }
-      )
+          color: [ 0, 255,  0, 0.8 ]
+      })
 
-      const red =  glRender.createElement(
-        I_ELEMENT_TYPES.I_IMAGE, 
-        { 
+      const red =  glRender.createElement({ 
           imgId: cirle , 
           position:  [ circleR * 1.5, circleR * 1.5 ],
-          color: [ 255, 0,  0,  255 * 0.8 ]
-        }
-      )
+          color: [ 255, 0,  0,  0.8 ]
+      })
 
       const blue =  glRender.createElement(
-        I_ELEMENT_TYPES.I_IMAGE, 
+        
         { 
           imgId: cirle , 
           position:  [ circleR * 2.25,  circleR * 2.5 ],
-          color: [ 0,  0,  255,  255 * 0.8 ]
+          color: [ 0,  0,  255,  0.8 ]
         }
       )
       green.setZIndex(2)
@@ -422,7 +401,7 @@ export function TextureTest() {
     Object.values(numberIdMap).forEach( (imgId, indx) => {
       const x = ((indx%28) + 0.5) * 100
       const y = ( 0.5 + Math.floor(indx/28) )*100
-     const el =  glRender.createElement(I_ELEMENT_TYPES.I_IMAGE, {
+     const el =  glRender.createElement({
         position: [ x, y ],
         imgId
       })

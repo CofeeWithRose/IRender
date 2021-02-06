@@ -10,7 +10,7 @@
     "outDir": "lib",
     "declaration": true,
     "allowSyntheticDefaultImports": true,
-    "removeComments": true,
+    "removeComments": false,
     "paths": { 
       "i-render": ["index.ts"]
     }

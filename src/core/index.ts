@@ -4,7 +4,7 @@ import { compileShader, SHADER_TYPE } from '../util';
 import { TextureCanvasManager } from './TextureCanvasManager'
 import {  Ielement, UpdateHandle } from '../Ielement/IElement'
 import { IElementParams, IElements, IElementTypes, I_ELEMENT_TYPES } from './infer';
-import { RGBA } from 'Data/RGBA';
+import { RGBA } from '../Data/RGBA';
 
 
 export * from './infer/index'
@@ -301,7 +301,7 @@ export class IRender {
         this.gl.uniform2f(this.uniformLocations.u_windowSize, this.gl.canvas.width, this.gl.canvas.height )
     }
   
-    createElement<T extends I_ELEMENT_TYPES>( type: T, params: IElementParams[T] ): IElements[T] {
+    createElement( params: IElementParams['I_IMAGE'] ): IElements['I_IMAGE'] {
         const handle: UpdateHandle = { 
             updatePosition: this.updatePosition,
             updateImg: this.updateImage,
@@ -314,7 +314,7 @@ export class IRender {
         }
         if(this.elementPool.size <=0) {
 
-            const el =  new this.GLElemetMap[type](handle)
+            const el =  new Iimage(handle)
             el.elementIndex = this.elementList.length
             this.elementList.push(el)
             this.updateZindex()
@@ -324,6 +324,7 @@ export class IRender {
             el.setRotation(0)
             el.setScale(1,1)
             const { w, h } = this.textureManager.getImageInfo(el.imgId)
+            el.setTextureSize(w, h)
             el.setSize(w, h)
             return el
 
@@ -343,7 +344,11 @@ export class IRender {
             this.updatePosition(el.elementIndex, el.position)
             this.updateImage(el.elementIndex, el.imgId)
             this.updateColor(el.elementIndex, el.color)
-            return el as IElements[T]
+            el.setScale(1,1)
+            const { w, h } = this.textureManager.getImageInfo(el.imgId)
+            el.setTextureSize(w, h)
+            el.setSize(w, h)
+            return el as IElements['I_IMAGE']
         }
       
     }

@@ -48,7 +48,7 @@ export interface Ielement {
 
     readonly size: Vec2
 
-    readonly IELEMENT_TYPE: I_ELEMENT_TYPES
+    // readonly IELEMENT_TYPE: I_ELEMENT_TYPES
 
     setPosition(x: number, y: number): void
 
@@ -65,6 +65,8 @@ export interface Ielement {
     setOffset( offsetX: number, offsetY: number): void
 
     setSize( w: number, h: number ): void
+
+    setTextureSize(w: number, h: number): void
 
 }
   

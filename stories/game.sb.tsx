@@ -42,7 +42,7 @@ async function init(iRender: IRender, runId: number, curRunId: { runId: number }
    
     const x = 120 * scale * Math.floor(i%xCount) + 60 * scale
     const y = 140 * scale * Math.floor(i/xCount) + 60 * scale
-    const player = iRender.createElement(I_ELEMENT_TYPES.I_IMAGE, {
+    const player = iRender.createElement({
       imgId: stand,
       position: [x, y]
     })

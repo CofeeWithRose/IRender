@@ -40,6 +40,7 @@ class SurfingElementObj {
     this.a[1] = this.INIT_A[1]
   }
 
+
   update(deltaTime: number) {
     this.v[0] += this.a[0] * deltaTime
     this.v[1] += this.a[1] * deltaTime
@@ -64,12 +65,10 @@ function surfingAnim(surfingElementObjList: SurfingElementObj[], w: number, h: n
     surfingElementObj.a[0] = 200 *( random<0.5? 1  : -1)
 
     y -= vy< 1? 1 : vy
-    // x += vx * w * 0.001
 
     if(y <-10 ) {
       y = h;
       x = (Math.random())  * w
-      // x = (Math.random() * 0.1 + 0.45)  * w
       surfingElementObj.img.setPosition(x, y)
       surfingElementObj.a[1] = surfingElementObj.INIT_A[1]
       surfingElementObj.v[0] = 0
@@ -77,13 +76,14 @@ function surfingAnim(surfingElementObjList: SurfingElementObj[], w: number, h: n
     }
 
     const dist = distance([pX, pY], surfingElementObj.img.position)
-    if(dist < pR + surfingElementObj.img.size[0]) {
+    const r = 0.5 * surfingElementObj.img.size[0]
+    if(dist <= (pR + r)) {
       surfingElementObj.v[0] = pX> x? -200 : 200
     }
-    if(x< 0){
+    if(x<= r){
       surfingElementObj.v[0] = Math.abs(surfingElementObj.v[0])
     }
-    if(x> w) {
+    if(x>= w-r) {
       surfingElementObj.v[0] = -Math.abs(surfingElementObj.v[0])
     }
     
@@ -94,10 +94,12 @@ function surfingAnim(surfingElementObjList: SurfingElementObj[], w: number, h: n
 function createSurfingElementObj (irender:IRender,smockId: number,  num: number) {
   const surfingElementObjList: SurfingElementObj[] = []
   for(let i=0; i< num; i++){
-    const surfingElement = irender.createElement(I_ELEMENT_TYPES.I_IMAGE, {
+    const surfingElement = irender.createElement({
       imgId: smockId,
       position: [ 0.5 * irender.glCanvas.width, Math.random()* irender.glCanvas.height]
     })
+    const scale = Math.random() * 0.05 + 0.05
+    surfingElement.setScale(scale, scale)
     surfingElement.setColor(  Math.random() * 127+127, 127+127 * Math.random(), Math.random() * 127+128, 1)
     const obj = new SurfingElementObj(surfingElement)
     surfingElementObjList.push(obj)
@@ -116,16 +118,17 @@ export function Surfing() {
     if(!canvas) return
   
     irenderRef.current = new IRender(canvas, { maxNumber: num + 1, backgroundColor: [1,0.5,0.5,1] })
-    const smockId = loadCircle(irenderRef.current, 10)
-    const pointId = loadCircle(irenderRef.current, 35)
-    const surfingElementObjList = createSurfingElementObj( irenderRef.current, smockId, num)
+    const circleTextureId = loadCircle(irenderRef.current, 100)
+    // const pointId = loadCircle(irenderRef.current, 35)
+    const surfingElementObjList = createSurfingElementObj( irenderRef.current, circleTextureId, num)
    
     const point =[0,0,35] as [number, number, number]
-    const pointImg = irenderRef.current.createElement(I_ELEMENT_TYPES.I_IMAGE, {
-      imgId: pointId,
+    const pointImg = irenderRef.current.createElement({
+      imgId: circleTextureId,
       position: [ point[0], point[1] ]
     })
     pointImg.setColor(255, 200, 0, 1)
+    pointImg.setScale(0.35, 0.35)
 
     canvas.addEventListener('mousemove', e => {
       point[0] = e.clientX *devicePixelRatio
