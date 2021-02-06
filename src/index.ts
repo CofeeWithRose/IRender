@@ -1,3 +1,7 @@
-export * from './core'
+export { IRender } from './core'
 
-export * from './Ielement/Iimage'
+export { Iimage } from './Ielement/Iimage'
+
+export { RGBA } from './Data/RGBA'
+
+export { Vec2 } from './Data/Vec2'

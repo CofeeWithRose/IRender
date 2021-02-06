@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { IRender, Iimage, I_ELEMENT_TYPES } from 'i-render'
+import { IRender, Iimage, RGBA, Vec2 } from 'i-render'
 
 import './surfing.css'
 import './fps.css'
 import { startFPS, stopFPS } from './fps';
-import { Vec2 } from 'Data/Vec2';
 
 
 
@@ -34,10 +33,12 @@ class SurfingElementObj {
 
   public a = [10,-500]
 
+  private color: RGBA
   
   constructor(public img:Iimage){
     this.a[0] = this.INIT_A[0]
     this.a[1] = this.INIT_A[1]
+    this.color = [ ...img.color ]
   }
 
 
@@ -48,7 +49,15 @@ class SurfingElementObj {
     
     const [x, y ] = this.img.position
     this.img.setPosition(this.v[0] * deltaTime + x, this.v[1] *deltaTime +y)
-
+    const [ r, g, b, a ] = this.img.color
+    const [tR, tG, tB, tA] = this.color
+    
+    this.img.setColor( 
+      (tR -r) * 0.5 * deltaTime + r,
+      (tG -g) * 0.5 *deltaTime + g,
+      (tB -b) * 0.5 * deltaTime + b,
+      (tA -a) * 0.5  * deltaTime+ a,  
+    )
   }
 }
 
@@ -68,7 +77,7 @@ function surfingAnim(surfingElementObjList: SurfingElementObj[], w: number, h: n
 
     if(y <-10 ) {
       y = h;
-      x = (Math.random())  * w
+      x = Math.random()  * w
       surfingElementObj.img.setPosition(x, y)
       surfingElementObj.a[1] = surfingElementObj.INIT_A[1]
       surfingElementObj.v[0] = 0
@@ -79,7 +88,9 @@ function surfingAnim(surfingElementObjList: SurfingElementObj[], w: number, h: n
     const r = 0.5 * surfingElementObj.img.size[0]
     if(dist <= (pR + r)) {
       surfingElementObj.v[0] = pX> x? -200 : 200
+      surfingElementObj.img.setColor( random * 10 + 245,  Math.random() * 30 + 220,  Math.random() * 20 +200,1)
     }
+
     if(x<= r){
       surfingElementObj.v[0] = Math.abs(surfingElementObj.v[0])
     }
@@ -100,7 +111,8 @@ function createSurfingElementObj (irender:IRender,smockId: number,  num: number)
     })
     const scale = Math.random() * 0.05 + 0.05
     surfingElement.setScale(scale, scale)
-    surfingElement.setColor(  Math.random() * 127+127, 127+127 * Math.random(), Math.random() * 127+128, 1)
+    surfingElement.setColor(  Math.random() * 127+117, 127+117 * Math.random(), Math.random() * 127+118, 1)
+   
     const obj = new SurfingElementObj(surfingElement)
     surfingElementObjList.push(obj)
   }

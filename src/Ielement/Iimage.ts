@@ -100,7 +100,7 @@ export class Iimage implements Ielement  {
       this.color[0] = r
       this.color[1] = g
       this.color[2] = b
-      this.color[3] = a * 255
+      this.color[3] = a
       this.update.updateColor(this.elementIndex, this.color)
     }
 

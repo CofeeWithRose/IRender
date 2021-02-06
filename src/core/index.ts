@@ -424,25 +424,25 @@ export class IRender {
 
         const startIndex = elementIndex * POINT_NUMBER * 4
         const [ r, g, b , a ] = color
+        const fa = a *255
         this.attrData.a_color[startIndex] = r
         this.attrData.a_color[startIndex + 1] = g
         this.attrData.a_color[startIndex +2] = b
-        this.attrData.a_color[startIndex + 3] = a
+        this.attrData.a_color[startIndex + 3] = fa
 
         this.attrData.a_color[startIndex + 4] = r
         this.attrData.a_color[startIndex + 5] = g
         this.attrData.a_color[startIndex + 6] = b
-        this.attrData.a_color[startIndex + 7] = a
-
+        this.attrData.a_color[startIndex + 7] = fa
         this.attrData.a_color[startIndex + 8] = r
         this.attrData.a_color[startIndex + 9] = g
         this.attrData.a_color[startIndex + 10] = b
-        this.attrData.a_color[startIndex + 11] = a
+        this.attrData.a_color[startIndex + 11] = fa
 
         this.attrData.a_color[startIndex + 12] = r
         this.attrData.a_color[startIndex + 13] = g
         this.attrData.a_color[startIndex + 14] = b
-        this.attrData.a_color[startIndex + 15] = a
+        this.attrData.a_color[startIndex + 15] = fa
 
         this.colorBufferChanged = true
         this.update()
