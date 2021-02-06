@@ -1,8 +1,3 @@
-/*
- * @Author: muyin
- * @Date: 2021-01-02 16:59:05
- * @email: muyin.ph@alibaba-inc.com
- */
 const path = require('path')
 
  module.exports = {

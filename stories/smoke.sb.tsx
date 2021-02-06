@@ -137,7 +137,7 @@ export function Smoke() {
       const p = e.touches[0]
       
       point[0] = p .clientX *devicePixelRatio
-      point[1] = p .clientY * devicePixelRatio
+      point[1] = (p .clientY -100) * devicePixelRatio
      
 
       pointImg.setPosition(point[0], point[1])

@@ -1,9 +1,3 @@
-/*
- * @Author: muyin
- * @Date: 2021-01-02 21:25:55
- * @email: muyin.ph@alibaba-inc.com
- */
-
 let id = 0
 
 

@@ -6,6 +6,7 @@
   "files": [
     "lib/src/*"
   ],
+  "sideEffects": false,
   "scripts": {
     "start": "tsc --watch | npm run dev",
     "build": "tsc&&node ./build/index.js",
@@ -33,9 +34,6 @@
   },
   "directories": {
     "lib": "lib"
-  },
-  "dependencies": {
-    "zrender": "^5.0.1"
   },
   "keywords": [],
   "repository": {

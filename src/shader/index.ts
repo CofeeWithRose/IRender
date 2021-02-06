@@ -1,8 +1,3 @@
-/*
- * @Author: muyin
- * @Date: 2020-12-19 09:44:46
- * @email: muyin.ph@alibaba-inc.com
- */
 export const VERTEX_SHADER = `
 
     #define PI 3.14159265358979323846264338327950288

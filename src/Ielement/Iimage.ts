@@ -1,9 +1,3 @@
-/*
- * @Author: muyin
- * @Date: 2021-01-02 16:58:06
- * @email: muyin.ph@alibaba-inc.com
- */
-
 import { I_ELEMENT_TYPES } from '../core'
 import { RGBA } from 'Data/RGBA'
 import { Vec2 } from '../Data/Vec2'

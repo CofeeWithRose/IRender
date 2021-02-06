@@ -90,16 +90,18 @@ export class IRender {
         this.options = { ...DEFAULT_OPTION,  ...options}
         this.textureManager =  new  TextureCanvasManager( this.options.textureSize )
         this.gl = glCanvas.getContext('webgl', { alpha: true })
-        this.gl.getExtension('OES_element_index_uint');
+         || glCanvas.getContext('experimental-webgl') as WebGLRenderingContext
+         this.gl.getExtension('OES_element_index_uint');
         
         const program = this.gl.createProgram()
         compileShader(this.gl, program, VERTEX_SHADER,SHADER_TYPE.VERTEX_SHADER )
         compileShader(this.gl, program, FRAGMENT_SHADER, SHADER_TYPE.FRAGMENT_SHADER)
         this.gl.linkProgram(program)
+
+        console.log('getProgramInfoLog:', this.gl.getProgramInfoLog(program);
         this.gl.useProgram(program)
         this.gl.enable(this.gl.BLEND)
         this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
-       
         
         this.uniformLocations = {
             u_windowSize: this.gl.getUniformLocation(program, 'u_windowSize'),
