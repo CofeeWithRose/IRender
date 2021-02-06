@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-import { IRender, Iimage, I_ELEMENT_TYPES } from 'i-render'
+import { IRender, Iimage } from 'i-render'
 import { startFPS, stopFPS } from './fps';
 import './fps.css'
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { IRender, Iimage, I_ELEMENT_TYPES } from 'i-render'
+import { IRender } from 'i-render'
 
 import standUrl from './assets/player2/stand1.png'
 import run1Url from './assets/player2/run1.png'
