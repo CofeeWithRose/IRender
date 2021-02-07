@@ -44,7 +44,7 @@ async function init(iRender: IRender, runId: number, curRunId: { runId: number }
     const y = 140 * scale * Math.floor(i/xCount) + 60 * scale
     const player = iRender.createElement({
       imgId: stand,
-      position: [x, y]
+      position: {x, y}
     })
     player.setScale( -scale, scale )
     playerList.push(player)

@@ -65,7 +65,7 @@ export function PerformenceTest() {
             list.push ( 
               glRender.createElement({ 
                   imgId:list.length%2? circleImgId: halfImgId , 
-                  position:  [ (i+1) *circleR  ,  (j +1) * circleR ],
+                  position:  { x:(i+1) *circleR , y:  (j +1) * circleR },
               })
             )
           }
@@ -223,23 +223,23 @@ export function ColorTest() {
       
       glRender.createElement({ 
           imgId: redId , 
-          position:  [ circleR *3 ,  circleR ],
+          position:  { x:circleR *3, y:  circleR },
       })
 
       glRender.createElement({ 
           imgId: redId , 
-          position:  [ circleR *2.3 , circleR ],
+          position:  { x:circleR *2.3, y: circleR },
       })
 
       glRender.createElement({ 
           imgId: whiteId , 
-          position:  [ circleR , circleR ],
-          color: [ 255, 0, 0,  0.8 ],
+          position:  { x:circleR, y: circleR },
+          color: {r:255, g:0, b: 0,  a:0.8},
       })
       glRender.createElement({ 
           imgId: whiteId , 
-          position:  [ circleR *0.5 ,  circleR *0.5 ],
-          color: [ 255, 0,  0,  0.8 ],
+          position:  { x:circleR *0.5, y:  circleR *0.5 },
+          color: { r:255, g:0,  b:0,  a: 0.8},
       })
       return () => { 
         cancelAnimationFrame(reqH.a)
@@ -300,22 +300,22 @@ export function zIndexTest() {
 
       const green =  glRender.createElement({ 
           imgId: cirle, 
-          position:  [ circleR * 3,  circleR * 1.5 ],
-          color: [ 0, 255,  0, 0.8 ]
+          position:  {x: circleR * 3,  y:circleR * 1.5 },
+          color: {r: 0, g:255,  b:0, a: 0.8 }
       })
 
       const red =  glRender.createElement({ 
           imgId: cirle , 
-          position:  [ circleR * 1.5, circleR * 1.5 ],
-          color: [ 255, 0,  0,  0.8 ]
+          position: { x: circleR * 1.5, y: circleR * 1.5 },
+          color: { r:255, g: 0,  b:0,  a:0.8 }
       })
 
       const blue =  glRender.createElement(
         
         { 
           imgId: cirle , 
-          position:  [ circleR * 2.25,  circleR * 2.5 ],
-          color: [ 0,  0,  255,  0.8 ]
+          position: {  x: circleR * 2.25,  y: circleR * 2.5 },
+          color:{ r: 0,  g:0,  b: 255, a: 0.8  }
         }
       )
       green.setZIndex(2)
@@ -402,7 +402,7 @@ export function TextureTest() {
       const x = ((indx%28) + 0.5) * 100
       const y = ( 0.5 + Math.floor(indx/28) )*100
      const el =  glRender.createElement({
-        position: [ x, y ],
+        position: {x, y },
         imgId
       })
       el.setRotation(45)

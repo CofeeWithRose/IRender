@@ -1,6 +1,5 @@
-import { I_ELEMENT_TYPES } from '../core'
-import { RGBA } from 'Data/RGBA'
-import { Vec2 } from '../Data/Vec2'
+import { RGBA, WHITE } from '../Data/RGBA'
+import { ONE, Vec2, ZERO } from '../Data/Vec2'
 import {Ielement, UpdateHandle} from './Ielement'
 
 
@@ -12,7 +11,7 @@ export class Iimage implements Ielement  {
     /**
      * 元素中心坐标.
      */
-    readonly position: Vec2 = [ 0, 0 ]
+    readonly position: Vec2 = { ...ZERO }
 
     /**
      * 被渲染的贴图ID.
@@ -22,7 +21,7 @@ export class Iimage implements Ielement  {
     /**
      * 渲染的颜色.
      */
-    readonly color: RGBA = [255, 255, 255 , 1]
+    readonly color: RGBA = {...WHITE}
 
     /**
      * 元素的渲染顺序下标, 由渲染引擎维护.
@@ -35,7 +34,7 @@ export class Iimage implements Ielement  {
     /**
      * 缩放.
      */
-    readonly scale: Vec2 = [ 1, 1 ]
+    readonly scale: Vec2 = {...ONE }
 
     /**
      * 以图形的中心为旋转中心的旋转角度
@@ -46,24 +45,24 @@ export class Iimage implements Ielement  {
     /**
      * 贴图的偏移位置.
      */
-    readonly offset: Vec2 = [ 0, 0 ]
+    readonly offset: Vec2 = { ...ZERO }
 
     /**
      * scale后的size.
      */
-    readonly size: Vec2 = [ 100, 100 ];
+    readonly size: Vec2 = { ...ONE };
 
     // readonly IELEMENT_TYPE = I_ELEMENT_TYPES.I_IMAGE
 
     /**
      * 贴图的size.
      */
-    readonly texTureSize: Vec2 = [0, 0]
+    readonly texTureSize: Vec2 = { ...ZERO }
 
     /**
      * scale前的size.
      */
-    readonly elementSize: Vec2 = [0, 0]
+    readonly elementSize: Vec2 = { ...ZERO }
 
     constructor( 
       public update:UpdateHandle,
@@ -75,8 +74,8 @@ export class Iimage implements Ielement  {
       * @param y 
       */
     setPosition(x: number, y: number){
-        this.position[0] = x
-        this.position[1] = y
+        this.position.x = x
+        this.position.y = y
         this.update.updatePosition(this.elementIndex, this.position)
     }
 
@@ -97,10 +96,10 @@ export class Iimage implements Ielement  {
      * @param a 0~1
      */
     setColor(r: number, g: number, b: number, a:number){
-      this.color[0] = r
-      this.color[1] = g
-      this.color[2] = b
-      this.color[3] = a
+      this.color.r = r
+      this.color.g = g
+      this.color.b = b
+      this.color.a = a
       this.update.updateColor(this.elementIndex, this.color)
     }
 
@@ -130,9 +129,9 @@ export class Iimage implements Ielement  {
      * @param scaleY 
      */
     setScale(scaleX: number, scaleY: number) {
-      this.scale[0] = scaleX
-      this.scale[1] = scaleY
-      this.setScaledSize(this.elementSize[0], this.elementSize[1])
+      this.scale.x = scaleX
+      this.scale.y = scaleY
+      this.setScaledSize(this.elementSize.x, this.elementSize.y)
       this.update.updateScale(this.elementIndex, this.scale)
     }
 
@@ -142,8 +141,8 @@ export class Iimage implements Ielement  {
      * @param offsetY 
      */
     setOffset( offsetX: number, offsetY: number) {
-      this.offset[0] = offsetX
-      this.offset[1] = offsetY
+      this.offset.x = offsetX
+      this.offset.y = offsetY
       this.update.updateOffset(this.elementIndex, this.offset)
     }
 
@@ -153,8 +152,8 @@ export class Iimage implements Ielement  {
      * @param h 
      */
     setTextureSize(w: number, h: number) {
-      this.texTureSize[0] = w
-      this.texTureSize[1] = h
+      this.texTureSize.x = w
+      this.texTureSize.y = h
     }
 
     /**
@@ -163,8 +162,8 @@ export class Iimage implements Ielement  {
      * @param h 
      */
     private setElelmentSize(w: number, h: number) {
-      this.elementSize[0] = w
-      this.elementSize[1] = h
+      this.elementSize.x = w
+      this.elementSize.y = h
     }
 
     /**
@@ -173,8 +172,8 @@ export class Iimage implements Ielement  {
      * @param h 
      */
     private setScaledSize(w: number, h: number) {
-      this.size[0] = w * this.scale[0]
-      this.size[1] = h * this.scale[1]
+      this.size.x = w * this.scale.x
+      this.size.y = h * this.scale.y
     }
 
     /**

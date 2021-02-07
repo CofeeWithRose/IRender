@@ -4,7 +4,7 @@ import { compileShader, SHADER_TYPE } from '../util';
 import { TextureCanvasManager } from './TextureCanvasManager'
 import {  Ielement, UpdateHandle } from '../Ielement/IElement'
 import { IElementParams, IElements, IElementTypes, I_ELEMENT_TYPES } from './infer';
-import { RGBA } from '../Data/RGBA';
+import { WHITE } from '../Data/RGBA';
 
 
 export * from './infer/index'
@@ -14,7 +14,7 @@ const POINT_NUMBER = 4
 const DEFAULT_OPTION = { 
   maxNumber: 50000, 
   textureSize: 2048, 
-  backgroundColor: [ 0, 0, 0, 0 ] as RGBA
+  backgroundColor: { r: 0, g: 0, b: 0, a: 0}
 }
 export class IRender {
 
@@ -163,8 +163,7 @@ export class IRender {
 
         this.checkReloadTexure()
 
-       
-        this.gl.clearColor(...this.options.backgroundColor);
+        this.gl.clearColor(this.options.backgroundColor.r, this.options.backgroundColor.g, this.options.backgroundColor.b, this.options.backgroundColor.a);
         this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
         this.gl.drawElements( 
           this.gl.TRIANGLES,
@@ -266,7 +265,7 @@ export class IRender {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, color)
         this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_color, this.gl.STREAM_DRAW )
         this.gl.enableVertexAttribArray(this.attribuitesLocations.a_color)
-        this.gl.vertexAttribPointer(this.attribuitesLocations.a_color, 4, this.gl.UNSIGNED_BYTE, true, 0,0)
+        this.gl.vertexAttribPointer(this.attribuitesLocations.a_color, 4, this.gl.UNSIGNED_BYTE, false, 0,0)
 
 
         const scale = this.gl.createBuffer()
@@ -318,9 +317,10 @@ export class IRender {
             el.elementIndex = this.elementList.length
             this.elementList.push(el)
             this.updateZindex()
-            el.setPosition(...params.position)
+            el.setPosition(params.position.x, params.position.y)
             el.setImgId(params.imgId)
-            el.setColor(...(params.color||[255,255,255,1]))
+            const { r, g, b, a } = params.color|| WHITE
+            el.setColor( r, g, b, a )
             el.setRotation(0)
             el.setScale(1,1)
             const { w, h } = this.textureManager.getImageInfo(el.imgId)
@@ -332,10 +332,10 @@ export class IRender {
 
             const el = Array.from(this.elementPool)[0]
             this.elementPool.delete(el)
-            el.color[0] =255
-            el.color[1] = 255
-            el.color[2] = 255
-            el.color[3] = 255
+            el.color.r =255
+            el.color.g = 255
+            el.color.b = 255
+            el.color.a = 1
             for (let attr in params){
                 (el as any)[attr] = params
             }
@@ -355,7 +355,7 @@ export class IRender {
     private updatePosition: UpdateHandle['updatePosition'] = (elementIndex, position ) => {
 
         const startIndex = elementIndex * POINT_NUMBER * 4
-        const [ x, y ] = position
+        const { x, y } = position
         this.attrData.a_position[startIndex + 0] = x
         this.attrData.a_position[startIndex + 1] = y
 
@@ -377,8 +377,8 @@ export class IRender {
         if(ind > -1){
            const [deleted] =  this.elementList.splice(ind, 1)
            this.elementPool.add(deleted)
-           deleted.position[0] = Number.MIN_VALUE 
-           deleted.position[1] = Number.MIN_VALUE
+           deleted.position.x = Number.MIN_VALUE 
+           deleted.position.y = Number.MIN_VALUE
         }
     }
 
@@ -423,26 +423,26 @@ export class IRender {
     private updateColor: UpdateHandle['updateColor']=(elementIndex, color) => {
 
         const startIndex = elementIndex * POINT_NUMBER * 4
-        const [ r, g, b , a ] = color
-        const fa = a *255
+        const { r, g, b , a } = color
+       
         this.attrData.a_color[startIndex] = r
         this.attrData.a_color[startIndex + 1] = g
         this.attrData.a_color[startIndex +2] = b
-        this.attrData.a_color[startIndex + 3] = fa
+        this.attrData.a_color[startIndex + 3] = a
 
         this.attrData.a_color[startIndex + 4] = r
         this.attrData.a_color[startIndex + 5] = g
         this.attrData.a_color[startIndex + 6] = b
-        this.attrData.a_color[startIndex + 7] = fa
+        this.attrData.a_color[startIndex + 7] = a
         this.attrData.a_color[startIndex + 8] = r
         this.attrData.a_color[startIndex + 9] = g
         this.attrData.a_color[startIndex + 10] = b
-        this.attrData.a_color[startIndex + 11] = fa
+        this.attrData.a_color[startIndex + 11] = a
 
         this.attrData.a_color[startIndex + 12] = r
         this.attrData.a_color[startIndex + 13] = g
         this.attrData.a_color[startIndex + 14] = b
-        this.attrData.a_color[startIndex + 15] = fa
+        this.attrData.a_color[startIndex + 15] = a
 
         this.colorBufferChanged = true
         this.update()
@@ -451,7 +451,7 @@ export class IRender {
     private updateScale: UpdateHandle['updateScale'] = (elementIndex, scale) => {
 
       const startIndex = elementIndex * POINT_NUMBER * 2
-      const [ x, y ] = scale
+      const {x, y} = scale
 
       this.attrData.a_scale[startIndex] = x
       this.attrData.a_scale[startIndex + 1] = y
@@ -487,7 +487,7 @@ export class IRender {
 
     }
 
-    private updateSize: UpdateHandle['updateSize'] = (elementIndex, [w, h]) => {
+    private updateSize: UpdateHandle['updateSize'] = (elementIndex, { x: w, y:h }) => {
 
       const startIndex = elementIndex * POINT_NUMBER *2
       
