@@ -126,6 +126,7 @@ export function Surfing() {
   const irenderRef = useRef<IRender>()
   const num = 25000
   useEffect(() => {
+    document.title = 'I Render'
     const canvas = canvasRef.current
     if(!canvas) return
   
