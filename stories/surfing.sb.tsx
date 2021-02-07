@@ -107,7 +107,7 @@ function createSurfingElementObj (irender:IRender,smockId: number,  num: number)
   for(let i=0; i< num; i++){
     const surfingElement = irender.createElement({
       imgId: smockId,
-      position: [ 0.5 * irender.glCanvas.width, Math.random()* irender.glCanvas.height]
+      position: [ Math.random() * irender.glCanvas.width, 0]
     })
     const scale = Math.random() * 0.05 + 0.05
     surfingElement.setScale(scale, scale)
@@ -131,10 +131,9 @@ export function Surfing() {
   
     irenderRef.current = new IRender(canvas, { maxNumber: num + 1, backgroundColor: [1,0.5,0.5,1] })
     const circleTextureId = loadCircle(irenderRef.current, 100)
-    // const pointId = loadCircle(irenderRef.current, 35)
     const surfingElementObjList = createSurfingElementObj( irenderRef.current, circleTextureId, num)
    
-    const point =[0,0,35] as [number, number, number]
+    const point =[canvas.width *0.5,canvas.height*0.5,35] as [number, number, number]
     const pointImg = irenderRef.current.createElement({
       imgId: circleTextureId,
       position: [ point[0], point[1] ]
