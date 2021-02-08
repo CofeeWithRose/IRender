@@ -137,7 +137,7 @@ export class IRender {
     }
     
     updateImidiatly = () => {
-      
+      this.rafing = false
         this.handleZindexChange()
         
         if(this.positionBufferChanged) {
@@ -389,14 +389,11 @@ export class IRender {
       this.textureChange = true
       return ids
     }
-  
+    
     private update = () => {
         if(this.rafing === true) return 
         this.rafing = true
-        requestAnimationFrame( () => {
-            this.updateImidiatly()
-            this.rafing = false
-        } )
+        requestAnimationFrame(this.updateImidiatly)
     }
 
     private updateImage: UpdateHandle['updateImg'] = (elementIndex, imgId) => {
