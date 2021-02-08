@@ -56,7 +56,7 @@ class SurfingElementObj {
     this.img.setPosition(this.v.x * deltaTime + x, this.v.y *deltaTime +y)
     const {r, g, b, a} = this.img.color
     const { r:tR, g:tG, b: tB, a: tA } = this.color
-    this.colorLerp += deltaTime
+    this.colorLerp += 0.05 * deltaTime
     if(this.colorLerp >1 ){
       this.colorLerp = 1
       this.img.setColor(tR, tG, tB, tA)
