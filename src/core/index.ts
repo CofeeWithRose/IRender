@@ -5,6 +5,9 @@ import { TextureCanvasManager } from './TextureCanvasManager'
 import {  Ielement, UpdateHandle } from '../Ielement/IElement'
 import { IElementParams, IElements, IElementTypes, I_ELEMENT_TYPES } from './infer';
 import { WHITE } from '../Data/RGBA';
+import { 
+  OFFEST1, OFFEST10, OFFEST11, OFFEST12, OFFEST13, OFFEST14, OFFEST15, OFFEST2, 
+  OFFEST3, OFFEST4, OFFEST5, OFFEST6, OFFEST7, OFFEST8, OFFEST9 } from '../Data/Number';
 
 
 export * from './infer/index'
@@ -355,18 +358,17 @@ export class IRender {
     private updatePosition: UpdateHandle['updatePosition'] = (elementIndex, position ) => {
 
         const startIndex = elementIndex * POINT_NUMBER * 4
-        const { x, y } = position
-        this.attrData.a_position[startIndex + 0] = x
-        this.attrData.a_position[startIndex + 1] = y
+        this.attrData.a_position[startIndex ] = position.x
+        this.attrData.a_position[startIndex + OFFEST1] = position.y
 
-        this.attrData.a_position[startIndex + 4] = x
-        this.attrData.a_position[startIndex + 5] = y
+        this.attrData.a_position[startIndex + OFFEST4] = position.x
+        this.attrData.a_position[startIndex + OFFEST5] = position.y
 
-        this.attrData.a_position[startIndex + 8] = x
-        this.attrData.a_position[startIndex + 9] = y
+        this.attrData.a_position[startIndex + OFFEST8] = position.x
+        this.attrData.a_position[startIndex + OFFEST9] = position.y
 
-        this.attrData.a_position[startIndex + 12] = x
-        this.attrData.a_position[startIndex + 13] = y
+        this.attrData.a_position[startIndex + OFFEST12] = position.x
+        this.attrData.a_position[startIndex + OFFEST13] = position.y
 
         this.positionBufferChanged = true
         this.update()
@@ -423,26 +425,26 @@ export class IRender {
     private updateColor: UpdateHandle['updateColor']=(elementIndex, color) => {
 
         const startIndex = elementIndex * POINT_NUMBER * 4
-        const { r, g, b , a } = color
-       
-        this.attrData.a_color[startIndex] = r
-        this.attrData.a_color[startIndex + 1] = g
-        this.attrData.a_color[startIndex +2] = b
-        this.attrData.a_color[startIndex + 3] = a
+        
+        this.attrData.a_color[startIndex] = color.r
+        this.attrData.a_color[startIndex + OFFEST1] = color.g
+        this.attrData.a_color[startIndex + OFFEST2] = color.b
+        this.attrData.a_color[startIndex + OFFEST3] = color.a
 
-        this.attrData.a_color[startIndex + 4] = r
-        this.attrData.a_color[startIndex + 5] = g
-        this.attrData.a_color[startIndex + 6] = b
-        this.attrData.a_color[startIndex + 7] = a
-        this.attrData.a_color[startIndex + 8] = r
-        this.attrData.a_color[startIndex + 9] = g
-        this.attrData.a_color[startIndex + 10] = b
-        this.attrData.a_color[startIndex + 11] = a
+        this.attrData.a_color[startIndex + OFFEST4] = color.r
+        this.attrData.a_color[startIndex + OFFEST5] = color.g
+        this.attrData.a_color[startIndex + OFFEST6] = color.b
+        this.attrData.a_color[startIndex + OFFEST7] = color.a
 
-        this.attrData.a_color[startIndex + 12] = r
-        this.attrData.a_color[startIndex + 13] = g
-        this.attrData.a_color[startIndex + 14] = b
-        this.attrData.a_color[startIndex + 15] = a
+        this.attrData.a_color[startIndex + OFFEST8] = color.r
+        this.attrData.a_color[startIndex + OFFEST9] = color.g
+        this.attrData.a_color[startIndex + OFFEST10] = color.b
+        this.attrData.a_color[startIndex + OFFEST11] = color.a
+
+        this.attrData.a_color[startIndex + OFFEST12] = color.r
+        this.attrData.a_color[startIndex + OFFEST13] = color.g
+        this.attrData.a_color[startIndex + OFFEST14] = color.b
+        this.attrData.a_color[startIndex + OFFEST15] = color.a
 
         this.colorBufferChanged = true
         this.update()

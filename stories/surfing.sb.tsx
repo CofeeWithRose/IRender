@@ -34,11 +34,16 @@ class SurfingElementObj {
   public a: Vec2 = { x: 10, y:-500}
 
   private color: RGBA
+
+  public colorLerp = 0
+
+  public r: number
   
   constructor(public img:Iimage){
     this.a.x = this.INIT_A.x
     this.a.y = this.INIT_A.y
     this.color = { ...img.color }
+    this.r = 0.5 * img.size.x
   }
 
 
@@ -51,13 +56,20 @@ class SurfingElementObj {
     this.img.setPosition(this.v.x * deltaTime + x, this.v.y *deltaTime +y)
     const {r, g, b, a} = this.img.color
     const { r:tR, g:tG, b: tB, a: tA } = this.color
+    this.colorLerp += deltaTime
+    if(this.colorLerp >1 ){
+      this.colorLerp = 1
+      this.img.setColor(tR, tG, tB, tA)
+    }
+    if(this.colorLerp < 1) {
+      this.img.setColor( 
+        (tR -r) * this.colorLerp + r,
+        (tG -g) * this.colorLerp + g,
+        (tB -b) * this.colorLerp + b,
+        (tA -a) * this.colorLerp + a,  
+      )
+    }
     
-    this.img.setColor( 
-      (tR -r) * 0.5 * deltaTime + r,
-      (tG -g) * 0.5 *deltaTime + g,
-      (tB -b) * 0.5 * deltaTime + b,
-      (tA -a) * 0.5  * deltaTime+ a,  
-    )
   }
 }
 
@@ -85,16 +97,16 @@ function surfingAnim(surfingElementObjList: SurfingElementObj[], w: number, h: n
     }
 
     const dist = distance(pX, pY, x, y )
-    const r = 0.5 * surfingElementObj.img.size.x
-    if(dist <= (pR + r)) {
+    if(dist <= (pR + surfingElementObj.r)) {
       surfingElementObj.v.x = pX> x? -200 : 200
       surfingElementObj.img.setColor( random * 10 + 245,  Math.random() * 30 + 220,  Math.random() * 20 +200,1)
+      surfingElementObj.colorLerp = 0
     }
 
-    if(x<= r){
+    if(x<= surfingElementObj.r){
       surfingElementObj.v.x = Math.abs(surfingElementObj.v.x)
     }
-    if(x>= w-r) {
+    if(x>= w-surfingElementObj.r) {
       surfingElementObj.v.x = -Math.abs(surfingElementObj.v.x)
     }
     
