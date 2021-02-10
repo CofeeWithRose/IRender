@@ -35,9 +35,26 @@ export interface Ielement {
     zIndex: number
 
     /**
-     * 缩放后的size.
+     * 缩放后.
      */
     readonly scale: Vec2
+
+     /**
+     * scale后的size.
+     */
+    readonly size: Vec2;
+
+    // readonly IELEMENT_TYPE = I_ELEMENT_TYPES.I_IMAGE
+
+    /**
+     * 贴图的size.
+     */
+    readonly texTureSize: Vec2;
+
+    /**
+     * scale前的size.
+     */
+    readonly elementSize: Vec2;
 
     /**
      * 0～360
@@ -46,7 +63,6 @@ export interface Ielement {
 
     readonly offset: Vec2
 
-    readonly size: Vec2
 
     // readonly IELEMENT_TYPE: I_ELEMENT_TYPES
 

@@ -463,6 +463,10 @@ export class IRender {
             this.updatePosition(index, el.position)
             this.updateImage(index, el.imgId)
             this.updateColor(index, el.color)
+            this.updateSize(index, el.elementSize)
+            this.updateRotation(index, el.rotation)
+            this.updateScale(index, el.scale)
+            this.updateOffset(index, el.offset)
           }
         })
         this.zIndexChange = false

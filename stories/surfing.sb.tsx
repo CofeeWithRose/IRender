@@ -144,7 +144,6 @@ export function Surfing() {
   
     irenderRef.current = new IRender(canvas, { maxNumber: num + 1, backgroundColor: {r: 1, g: 0.5, b: 0.5, a: 1} })
     const circleTextureId = loadCircle(irenderRef.current, 100)
-    const surfingElementObjList = createSurfingElementObj( irenderRef.current, circleTextureId, num)
    
     const point =[canvas.width *0.5,canvas.height*0.5,35] as [number, number, number]
     const pointImg = irenderRef.current.createElement({
@@ -154,6 +153,7 @@ export function Surfing() {
     pointImg.setColor(255, 200, 0, 1)
     pointImg.setScale(0.35, 0.35)
 
+    const surfingElementObjList = createSurfingElementObj( irenderRef.current, circleTextureId, num)
     canvas.addEventListener('mousemove', e => {
       e.preventDefault()
       point[0] = e.clientX *devicePixelRatio
