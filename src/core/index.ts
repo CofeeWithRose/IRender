@@ -163,7 +163,7 @@ export class IRender {
         if (this.rotationChange) {
           this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_rotation, this.attrData.a_rotation )
         }
-
+        
         this.checkReloadTexure()
 
         this.gl.clearColor(this.options.backgroundColor.r, this.options.backgroundColor.g, this.options.backgroundColor.b, this.options.backgroundColor.a);
@@ -268,7 +268,7 @@ export class IRender {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, color)
         this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_color, this.gl.STREAM_DRAW )
         this.gl.enableVertexAttribArray(this.attribuitesLocations.a_color)
-        this.gl.vertexAttribPointer(this.attribuitesLocations.a_color, 4, this.gl.UNSIGNED_BYTE, false, 0,0)
+        this.gl.vertexAttribPointer(this.attribuitesLocations.a_color, 4, this.gl.UNSIGNED_BYTE, true, 0,0)
 
 
         const scale = this.gl.createBuffer()
@@ -422,26 +422,27 @@ export class IRender {
     private updateColor: UpdateHandle['updateColor']=(elementIndex, color) => {
 
         const startIndex = elementIndex * POINT_NUMBER * 4
-        
+       
+        const a = color.a * 255
         this.attrData.a_color[startIndex] = color.r
         this.attrData.a_color[startIndex + OFFEST1] = color.g
         this.attrData.a_color[startIndex + OFFEST2] = color.b
-        this.attrData.a_color[startIndex + OFFEST3] = color.a
+        this.attrData.a_color[startIndex + OFFEST3] = a
 
         this.attrData.a_color[startIndex + OFFEST4] = color.r
         this.attrData.a_color[startIndex + OFFEST5] = color.g
         this.attrData.a_color[startIndex + OFFEST6] = color.b
-        this.attrData.a_color[startIndex + OFFEST7] = color.a
+        this.attrData.a_color[startIndex + OFFEST7] = a
 
         this.attrData.a_color[startIndex + OFFEST8] = color.r
         this.attrData.a_color[startIndex + OFFEST9] = color.g
         this.attrData.a_color[startIndex + OFFEST10] = color.b
-        this.attrData.a_color[startIndex + OFFEST11] = color.a
+        this.attrData.a_color[startIndex + OFFEST11] = a
 
         this.attrData.a_color[startIndex + OFFEST12] = color.r
         this.attrData.a_color[startIndex + OFFEST13] = color.g
         this.attrData.a_color[startIndex + OFFEST14] = color.b
-        this.attrData.a_color[startIndex + OFFEST15] = color.a
+        this.attrData.a_color[startIndex + OFFEST15] = a
 
         this.colorBufferChanged = true
         this.update()

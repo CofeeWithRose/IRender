@@ -55,7 +55,7 @@ export const VERTEX_SHADER = `
 
     void main() {
 
-        v_color = vec4(a_color.r/255.0, a_color.g/255.0, a_color.b/255.0, a_color.a);
+        v_color = a_color;
 
         vec2 spriteSize = a_spriteSize * a_scale;
 

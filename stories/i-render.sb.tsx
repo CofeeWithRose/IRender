@@ -196,7 +196,7 @@ export function ColorTest() {
 
   useEffect(() =>{
 
-      const glRender = new IRender(cRef.current, { })
+      const glRender = new IRender(cRef.current, { maxNumber: 4})
       const circleR = 50;
 
       glRenderRef.current = glRender
