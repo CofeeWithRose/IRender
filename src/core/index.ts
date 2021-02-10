@@ -5,14 +5,11 @@ import { TextureCanvasManager } from './TextureCanvasManager'
 import {  Ielement, UpdateHandle } from '../Ielement/IElement'
 import { IElementParams, IElements, IElementTypes, I_ELEMENT_TYPES } from './infer';
 import { WHITE } from '../Data/RGBA';
-import { 
-  OFFEST1, OFFEST10, OFFEST11, OFFEST12, OFFEST13, OFFEST14, OFFEST15, OFFEST2, 
-  OFFEST3, OFFEST4, OFFEST5, OFFEST6, OFFEST7, OFFEST8, OFFEST9 } from '../Data/Number';
+import { OFFEST1, OFFEST2, OFFEST3 } from '../Data/Number';
 
 
 export * from './infer/index'
 
-const POINT_NUMBER = 4
 
 const DEFAULT_OPTION = { 
   maxNumber: 50000, 
@@ -25,9 +22,6 @@ export class IRender {
   
     private elementList: Ielement[] = []
 
-    private GLElemetMap: IElementTypes = {
-        [I_ELEMENT_TYPES.I_IMAGE]: Iimage
-    }
 
     private gl:WebGLRenderingContext;
 
@@ -43,6 +37,7 @@ export class IRender {
         a_color: number;
         a_scale: number;
         a_rotation: number;
+        a_direction: number;
     };
 
     private attrData: {
@@ -52,6 +47,7 @@ export class IRender {
         a_color: Uint8Array,
         a_scale: Float32Array,
         a_rotation: Float32Array,
+        a_direction: Float32Array,
         indicate: Uint32Array,
     }
 
@@ -62,6 +58,7 @@ export class IRender {
         a_color: WebGLBuffer,
         a_scale: WebGLBuffer,
         a_rotation: WebGLBuffer,
+        a_direction: WebGLBuffer,
     }
   
     private positionBufferChanged = false
@@ -88,13 +85,16 @@ export class IRender {
 
     private elementPool = new Set<Ielement>()
 
+    private glExt: ANGLE_instanced_arrays
 
     constructor( public glCanvas: HTMLCanvasElement,   options?: Partial<typeof DEFAULT_OPTION>   ){
         this.options = { ...DEFAULT_OPTION,  ...options}
         this.textureManager =  new  TextureCanvasManager( this.options.textureSize )
         this.gl = glCanvas.getContext('webgl', { alpha: true })
-         || glCanvas.getContext('experimental-webgl') as WebGLRenderingContext
-         this.gl.getExtension('OES_element_index_uint');
+         || glCanvas.getContext('experimental-webgl') as WebGLRenderingContext;
+
+        this.glExt = this.gl.getExtension('ANGLE_instanced_arrays');
+        this.gl.getExtension('OES_element_index_uint');
         
         const program = this.gl.createProgram()
         compileShader(this.gl, program, VERTEX_SHADER,SHADER_TYPE.VERTEX_SHADER )
@@ -117,6 +117,7 @@ export class IRender {
             a_color: this.gl.getAttribLocation(program, 'a_color'),
             a_rotation: this.gl.getAttribLocation(program, 'a_rotation' ),
             a_scale: this.gl.getAttribLocation(program, 'a_scale' ),
+            a_direction: this.gl.getAttribLocation(program, 'a_direction' ),
         }
         this.initBuffer()
         this.initTexture()
@@ -165,13 +166,13 @@ export class IRender {
         }
         
         this.checkReloadTexure()
-
         this.gl.clearColor(this.options.backgroundColor.r, this.options.backgroundColor.g, this.options.backgroundColor.b, this.options.backgroundColor.a);
         this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
-        this.gl.drawElements( 
+        this.glExt.drawElementsInstancedANGLE(
           this.gl.TRIANGLES,
-          this.elementList.length * 6,
-          this.gl.UNSIGNED_INT, 0,
+          this.attrData.indicate.length,
+          this.gl.UNSIGNED_INT, 0, 
+          this.elementList.length
         )
        
 
@@ -201,19 +202,6 @@ export class IRender {
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.textureManager.canvas)
     }
 
-    private initPositionValue = () => {
-      const positionV = [
-        0, 0, 0, 0,
-        0, 0, 0, 1,
-        0, 0, 1, 0,
-        0, 0, 1, 1,
-      ]
-      const positionValCount = POINT_NUMBER * 4
-      this.attrData.a_position.forEach( (v, ind) => {
-        const pIndex = ind%positionValCount
-        this.attrData.a_position[ind] =   positionV[pIndex]
-      })
-    }
     private initBuffer(){
 
         Float32Array.prototype.forEach = Float32Array.prototype.forEach || Array.prototype.forEach as any as typeof Float32Array.prototype.forEach;
@@ -221,15 +209,20 @@ export class IRender {
         Uint32Array.prototype.forEach = Uint32Array.prototype.forEach ||  Array.prototype.forEach as any as typeof Uint32Array.prototype.forEach;
 
         this.attrData  = {
-            a_position: new Float32Array(this.options.maxNumber * POINT_NUMBER * 4 ),
-            a_spriteSize: new Float32Array(this.options.maxNumber * POINT_NUMBER *2 ),
-            a_texCoord: new Float32Array(this.options.maxNumber * POINT_NUMBER *2 ),
-            a_color: new Uint8Array(this.options.maxNumber * POINT_NUMBER * 4 ),
-            a_scale: new Float32Array(this.options.maxNumber * POINT_NUMBER *2 ),
-            a_rotation: new Float32Array(this.options.maxNumber * POINT_NUMBER * 1),
-            indicate: new Uint32Array( this.options.maxNumber * 6 ),
+            a_position: new Float32Array(this.options.maxNumber * 2 ),
+            a_spriteSize: new Float32Array(this.options.maxNumber *2 ),
+            a_texCoord: new Float32Array(this.options.maxNumber *2 ),
+            a_color: new Uint8Array(this.options.maxNumber * 4 ),
+            a_scale: new Float32Array(this.options.maxNumber *2 ),
+            a_rotation: new Float32Array(this.options.maxNumber * 1),
+            a_direction: new Float32Array( [ 
+              0, 0,  
+              0, 1, 
+              1, 0, 
+              1, 1  
+            ]),
+            indicate: new Uint32Array(  [ 0, 1, 2, 2, 1, 3 ]),
         }
-        this.initPositionValue()
          /**
          *  P0 ++++++ P2
          *  +         +
@@ -239,36 +232,39 @@ export class IRender {
          *  P0 -> P1 -> P2
          *  P2 -> P1 -> P3
         */
-        this.attrData.indicate.forEach((v, ind) => {
-          const val = ind % 6
-          const base = Math.floor(ind/6) * 4
-          const b = [ 0, 1, 2, 2, 1, 3 ]
-          this.attrData.indicate[ind] = base + b[val]
-        })
+       const directionBuffer = this.gl.createBuffer()
+       this.gl.bindBuffer(this.gl.ARRAY_BUFFER, directionBuffer)
+       this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_direction, this.gl.STATIC_DRAW )
+       this.gl.enableVertexAttribArray(this.attribuitesLocations.a_direction)
+       this.gl.vertexAttribPointer(this.attribuitesLocations.a_direction, 2, this.gl.FLOAT, false, 0,0)
 
         const positionBuffer = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer)
         this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_position, this.gl.STREAM_DRAW )
         this.gl.enableVertexAttribArray(this.attribuitesLocations.a_position)
-        this.gl.vertexAttribPointer(this.attribuitesLocations.a_position, 4, this.gl.FLOAT, false, 0,0)
+        this.gl.vertexAttribPointer(this.attribuitesLocations.a_position, 2, this.gl.FLOAT, false, 0,0)
+        this.glExt.vertexAttribDivisorANGLE(this.attribuitesLocations.a_position, 1)
 
         const sizeBuffer = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, sizeBuffer)
         this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_spriteSize, this.gl.STREAM_DRAW )
         this.gl.enableVertexAttribArray(this.attribuitesLocations.a_spriteSize)
         this.gl.vertexAttribPointer(this.attribuitesLocations.a_spriteSize, 2, this.gl.FLOAT, false, 0,0)
+        this.glExt.vertexAttribDivisorANGLE(this.attribuitesLocations.a_spriteSize, 1)
 
         const texCoord = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, texCoord)
         this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_texCoord, this.gl.STREAM_DRAW )
         this.gl.enableVertexAttribArray(this.attribuitesLocations.a_texCoord)
         this.gl.vertexAttribPointer(this.attribuitesLocations.a_texCoord, 2, this.gl.FLOAT, false, 0,0)
+        this.glExt.vertexAttribDivisorANGLE(this.attribuitesLocations.a_texCoord, 1)
 
         const color = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, color)
         this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_color, this.gl.STREAM_DRAW )
         this.gl.enableVertexAttribArray(this.attribuitesLocations.a_color)
         this.gl.vertexAttribPointer(this.attribuitesLocations.a_color, 4, this.gl.UNSIGNED_BYTE, true, 0,0)
+        this.glExt.vertexAttribDivisorANGLE(this.attribuitesLocations.a_color, 1)
 
 
         const scale = this.gl.createBuffer()
@@ -276,12 +272,15 @@ export class IRender {
         this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_scale, this.gl.STREAM_DRAW )
         this.gl.enableVertexAttribArray(this.attribuitesLocations.a_scale)
         this.gl.vertexAttribPointer(this.attribuitesLocations.a_scale, 2, this.gl.FLOAT, false, 0,0)
+        this.glExt.vertexAttribDivisorANGLE(this.attribuitesLocations.a_scale, 1)
 
         const rotation = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, rotation)
         this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_rotation, this.gl.STREAM_DRAW )
         this.gl.enableVertexAttribArray(this.attribuitesLocations.a_rotation)
         this.gl.vertexAttribPointer(this.attribuitesLocations.a_rotation, 1, this.gl.FLOAT, false, 0,0)
+        this.gl.vertexAttribPointer(this.attribuitesLocations.a_rotation, 1, this.gl.FLOAT, false, 0,0)
+        this.glExt.vertexAttribDivisorANGLE(this.attribuitesLocations.a_rotation, 1)
 
         const indicate = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indicate )
@@ -295,6 +294,7 @@ export class IRender {
           a_color: color,
           a_scale: scale,
           a_rotation: rotation,
+          a_direction: directionBuffer,
         }
     }
 
@@ -357,18 +357,10 @@ export class IRender {
     }
     private updatePosition: UpdateHandle['updatePosition'] = (elementIndex, position ) => {
 
-        const startIndex = elementIndex * POINT_NUMBER * 4
+        const startIndex = elementIndex  * 2
         this.attrData.a_position[startIndex ] = position.x
         this.attrData.a_position[startIndex + OFFEST1] = position.y
 
-        this.attrData.a_position[startIndex + OFFEST4] = position.x
-        this.attrData.a_position[startIndex + OFFEST5] = position.y
-
-        this.attrData.a_position[startIndex + OFFEST8] = position.x
-        this.attrData.a_position[startIndex + OFFEST9] = position.y
-
-        this.attrData.a_position[startIndex + OFFEST12] = position.x
-        this.attrData.a_position[startIndex + OFFEST13] = position.y
 
         this.positionBufferChanged = true
         this.update()
@@ -398,22 +390,12 @@ export class IRender {
 
     private updateImage: UpdateHandle['updateImg'] = (elementIndex, imgId) => {
 
-        const startIndex = elementIndex * POINT_NUMBER *2
+        const startIndex = elementIndex * 2
 
         const { x, y } = this.textureManager.getImageInfo(imgId)
 
         this.attrData.a_texCoord[startIndex] = x
         this.attrData.a_texCoord[startIndex + 1] = y
-
-        this.attrData.a_texCoord[startIndex+ 2] = x
-        this.attrData.a_texCoord[startIndex + 3] = y
-
-        this.attrData.a_texCoord[startIndex+4] = x
-        this.attrData.a_texCoord[startIndex + 5] = y
-
-        this.attrData.a_texCoord[startIndex+6] = x
-        this.attrData.a_texCoord[startIndex + 7] = y
-       
 
         this.imageIdBufferChanged = true
         this.update()
@@ -421,7 +403,7 @@ export class IRender {
   
     private updateColor: UpdateHandle['updateColor']=(elementIndex, color) => {
 
-        const startIndex = elementIndex * POINT_NUMBER * 4
+        const startIndex = elementIndex * 4
        
         const a = color.a * 255
         this.attrData.a_color[startIndex] = color.r
@@ -429,58 +411,26 @@ export class IRender {
         this.attrData.a_color[startIndex + OFFEST2] = color.b
         this.attrData.a_color[startIndex + OFFEST3] = a
 
-        this.attrData.a_color[startIndex + OFFEST4] = color.r
-        this.attrData.a_color[startIndex + OFFEST5] = color.g
-        this.attrData.a_color[startIndex + OFFEST6] = color.b
-        this.attrData.a_color[startIndex + OFFEST7] = a
-
-        this.attrData.a_color[startIndex + OFFEST8] = color.r
-        this.attrData.a_color[startIndex + OFFEST9] = color.g
-        this.attrData.a_color[startIndex + OFFEST10] = color.b
-        this.attrData.a_color[startIndex + OFFEST11] = a
-
-        this.attrData.a_color[startIndex + OFFEST12] = color.r
-        this.attrData.a_color[startIndex + OFFEST13] = color.g
-        this.attrData.a_color[startIndex + OFFEST14] = color.b
-        this.attrData.a_color[startIndex + OFFEST15] = a
-
         this.colorBufferChanged = true
         this.update()
     }
 
     private updateScale: UpdateHandle['updateScale'] = (elementIndex, scale) => {
 
-      const startIndex = elementIndex * POINT_NUMBER * 2
+      const startIndex = elementIndex * 2
       const {x, y} = scale
 
       this.attrData.a_scale[startIndex] = x
       this.attrData.a_scale[startIndex + 1] = y
-
-      this.attrData.a_scale[startIndex + 2] = x
-      this.attrData.a_scale[startIndex + 3] = y
-
-      this.attrData.a_scale[startIndex + 4] = x
-      this.attrData.a_scale[startIndex + 5] = y
-
-      this.attrData.a_scale[startIndex + 6] = x
-      this.attrData.a_scale[startIndex + 7] = y
 
       this.scaleChange = true
       this.update()
     }
 
     private updateRotation: UpdateHandle['updateRotation'] = (elementIndex, rotation) => {
-      const startIndex = elementIndex * POINT_NUMBER * 1
+      const startIndex = elementIndex * 1
 
       this.attrData.a_rotation[startIndex] = rotation
-
-      this.attrData.a_rotation[startIndex + 1] = rotation
-
-      this.attrData.a_rotation[startIndex + 2] = rotation
-
-      this.attrData.a_rotation[startIndex + 3] = rotation
-
-      this.attrData.a_rotation[startIndex + 4] = rotation
 
       this.rotationChange = true
       this.update()
@@ -489,19 +439,10 @@ export class IRender {
 
     private updateSize: UpdateHandle['updateSize'] = (elementIndex, { x: w, y:h }) => {
 
-      const startIndex = elementIndex * POINT_NUMBER *2
+      const startIndex = elementIndex  *2
       
       this.attrData.a_spriteSize[startIndex] = w
       this.attrData.a_spriteSize[startIndex + 1] = h
-
-      this.attrData.a_spriteSize[startIndex+ 2] = w
-      this.attrData.a_spriteSize[startIndex + 3] = h
-
-      this.attrData.a_spriteSize[startIndex+4] = w
-      this.attrData.a_spriteSize[startIndex + 5] = h
-
-      this.attrData.a_spriteSize[startIndex+6] = w
-      this.attrData.a_spriteSize[startIndex + 7] = h
 
       this.sizeChanged = true
       this.update()

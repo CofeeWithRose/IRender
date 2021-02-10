@@ -1,5 +1,6 @@
 export const VERTEX_SHADER = `
-
+    precision mediump float;
+    
     #define PI 3.14159265358979323846264338327950288
 
     // gl窗口大小.
@@ -9,7 +10,9 @@ export const VERTEX_SHADER = `
     uniform vec2 u_textureSize;
 
     // 实际品目坐标.
-    attribute vec4 a_position;
+    attribute vec2 a_position;
+
+    attribute vec2 a_direction;
 
     attribute vec2 a_texCoord;
 
@@ -59,9 +62,9 @@ export const VERTEX_SHADER = `
 
         vec2 spriteSize = a_spriteSize * a_scale;
 
-        vec2 center = vec2(a_position.x, a_position.y);
+        vec2 center = a_position;
 
-        vec2 direction = vec2(a_position.z, a_position.w);
+        vec2 direction = a_direction;
 
         vec2 texCoord = a_texCoord + direction * a_spriteSize;
 
@@ -86,7 +89,7 @@ export const VERTEX_SHADER = `
 `
 
 export const FRAGMENT_SHADER =`
-    precision highp float;
+    precision mediump float;
 
     uniform sampler2D u_image;
 

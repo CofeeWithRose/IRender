@@ -6,6 +6,7 @@
   position: fixed;
   left: 0;
   top: 0;
-  min-width: 57px;
-  min-height: 26px;
+  width: 70px;
+  height: 26px;
+  overflow: hidden;
 }
