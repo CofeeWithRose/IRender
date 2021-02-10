@@ -155,6 +155,7 @@ export function Surfing() {
     pointImg.setScale(0.35, 0.35)
 
     canvas.addEventListener('mousemove', e => {
+      e.preventDefault()
       point[0] = e.clientX *devicePixelRatio
       point[1] = e.clientY * devicePixelRatio
       pointImg.setPosition(point[0], point[1])
@@ -195,16 +196,15 @@ export function Surfing() {
   }, [])
 
 
-  return <div>
+  return <div className="surfing" >
   
       <div id="fps" />
       <div className="pannel" >粒子数量：{num}</div>
   
     <canvas
       ref={canvasRef}
-      style={{ width: '100%', height: '100%'}} 
-      width={document.documentElement.clientWidth * window.devicePixelRatio }
-      height={document.documentElement.clientHeight * window.devicePixelRatio }
+      width={window.innerWidth * window.devicePixelRatio }
+      height={window.innerHeight * window.devicePixelRatio }
     />
   </div>
 } 

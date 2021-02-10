@@ -1,9 +1,26 @@
+html {
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
 body{
   margin: 0;
   padding: 0;
   user-select: none;
   /* overflow: hidden; */
-  
+  width: 100%;
+  height: 100%;
+}
+
+#root, .surfing, .surfing canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.surfing{
+  overflow: hidden;
 }
 
 .pannel {
