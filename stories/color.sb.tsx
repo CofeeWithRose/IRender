@@ -1,37 +1,13 @@
 import { IRender, converColorStr, Vec2 } from 'i-render';
 import React, { useEffect, useRef } from 'react'
-import { loadCircle } from './utils';
+import { loadCircle, loadReact, loadText } from './utils';
 
 export default {
     title: 'converColorStr',
     component: ConverColorStr,
 };
 
-function loadText( iRender: IRender, str: string, size: Vec2): number {
-    const canvas = document.createElement('canvas')
-    canvas.width = size.x
-    canvas.height = size.y
-    const ctx = canvas.getContext('2d')
-    ctx.textAlign='center'
-    ctx.textBaseline ='top'
-    ctx.fillStyle= 'white'
-    ctx.font="20px 微软雅黑";
-    ctx.strokeStyle = 'white'
-    ctx.lineWidth = 1
-    ctx.fillText( str,size.x *0.5, (size.y -20) *0.5)
-    ctx.strokeRect( 0,0, size.x, size.y)
-    return iRender.loadImg(canvas)
-}
 
-function loadReact(iRender: IRender, size: Vec2): number {
-    const canvas = document.createElement('canvas')
-    canvas.width = size.x
-    canvas.height = size.y
-    const ctx = canvas.getContext('2d')
-    ctx.fillStyle = 'white'
-    ctx.fillRect(0,0, size.x, size.y)
-    return iRender.loadImg(canvas)
-}
 
 export function ConverColorStr() {
 

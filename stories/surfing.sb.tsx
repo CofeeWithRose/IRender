@@ -5,7 +5,7 @@ import { IRender, Iimage, RGBA, Vec2 } from 'i-render'
 import './surfing.css'
 import './fps.css'
 import { startFPS, stopFPS } from './fps';
-import { loadCircle } from './utils';
+import { loadCircle, loadReact } from './utils';
 
 
 
@@ -31,11 +31,14 @@ class SurfingElementObj {
 
   public r: number
   
-  constructor(public img:Iimage){
+  public img:Iimage
+
+  constructor(img:Iimage){
     this.a.x = this.INIT_A.x
     this.a.y = this.INIT_A.y
     this.color = { ...img.color }
     this.r = 0.5 * img.size.x
+    this.img = img
   }
 
 
@@ -134,7 +137,18 @@ export function Surfing() {
     const canvas = canvasRef.current
     if(!canvas) return
   
-    irenderRef.current = new IRender(canvas, { maxNumber: num + 1, backgroundColor: {r: 1, g: 0.5, b: 0.5, a: 1} })
+    const irender = new IRender(canvas, { maxNumber: num + 2 })
+
+    irenderRef.current = irender
+
+    // background
+    const backGround =  irender.createElement({
+      imgId: loadReact(irender, {x:1, y:1}),
+      position: { x: canvas.width *0.5, y: canvas.height *0.5 },
+      color: { r: 255, g: 127, b: 127, a: 1 },
+    })
+    backGround.setScale(canvas.width, canvas.height)
+
     const circleTextureId = loadCircle(irenderRef.current, 100)
    
     const point =[canvas.width *0.5,canvas.height*0.5,35] as [number, number, number]

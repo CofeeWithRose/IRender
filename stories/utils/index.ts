@@ -1,4 +1,4 @@
-import { IRender } from "i-render"
+import { IRender, Vec2 } from "i-render"
 
 export function loadCircle(irender: IRender, r: number){
     const tempTexture = document.createElement('canvas')
@@ -10,3 +10,29 @@ export function loadCircle(irender: IRender, r: number){
     tempCtx.fill()
     return irender.loadImg(tempTexture)
   }
+
+export function loadText( iRender: IRender, str: string, size: Vec2): number {
+    const canvas = document.createElement('canvas')
+    canvas.width = size.x
+    canvas.height = size.y
+    const ctx = canvas.getContext('2d')
+    ctx.textAlign='center'
+    ctx.textBaseline ='top'
+    ctx.fillStyle= 'white'
+    ctx.font="20px 微软雅黑";
+    ctx.strokeStyle = 'white'
+    ctx.lineWidth = 1
+    ctx.fillText( str,size.x *0.5, (size.y -20) *0.5)
+    ctx.strokeRect( 0,0, size.x, size.y)
+    return iRender.loadImg(canvas)
+}
+
+export function loadReact(iRender: IRender, size: Vec2): number {
+    const canvas = document.createElement('canvas')
+    canvas.width = size.x
+    canvas.height = size.y
+    const ctx = canvas.getContext('2d')
+    ctx.fillStyle = 'white'
+    ctx.fillRect(0,0, size.x, size.y)
+    return iRender.loadImg(canvas)
+}
