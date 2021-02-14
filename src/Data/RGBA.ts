@@ -1,4 +1,4 @@
-import { type } from "os"
+import { black, white } from "../util/color/const"
 
 export interface RGBA {
     r: number
@@ -7,6 +7,8 @@ export interface RGBA {
     a: number
 }
 
-export const WHITE: RGBA = Object.freeze({ r: 255, g: 255, b: 255, a:1}) 
+export const WHITE: RGBA = { ...white}
+Object.freeze(WHITE)
 
-export const BLACK: RGBA = Object.freeze({ r: 0, g:0, b:0, a: 1 })
+export const BLACK: RGBA = { ...black }
+Object.freeze(BLACK)

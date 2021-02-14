@@ -103,6 +103,7 @@ export class Iimage implements Ielement  {
       this.update.updateColor(this.elementIndex, this.color)
     }
 
+
     /**
      * 渲染顺序，设置后，在下次渲染前，将根据该值对所有渲染顺序重排.
      * @param zIndex 

@@ -19,7 +19,6 @@ const canvasWidth = 2800
 const canvasHeight = 1300
 
 
-
 const xCount = 85 * 10
 const yCount = 20 * 5
 

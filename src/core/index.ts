@@ -14,7 +14,7 @@ export * from './infer/index'
 const DEFAULT_OPTION = { 
   maxNumber: 50000, 
   textureSize: 2048, 
-  backgroundColor: { r: 0, g: 0, b: 0, a: 0}
+  // backgroundColor: { r: 0, g: 0, b: 0, a: 0}
 }
 export class IRender {
 
@@ -166,8 +166,6 @@ export class IRender {
         }
         
         this.checkReloadTexure()
-        this.gl.clearColor(this.options.backgroundColor.r, this.options.backgroundColor.g, this.options.backgroundColor.b, this.options.backgroundColor.a);
-        this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
         this.glExt.drawElementsInstancedANGLE(
           this.gl.TRIANGLES,
           this.attrData.indicate.length,
