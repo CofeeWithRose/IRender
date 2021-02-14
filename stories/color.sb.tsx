@@ -1,38 +1,150 @@
-import { IRender, converColorStr, red, black, green } from 'i-render';
+import { IRender, converColorStr, Vec2 } from 'i-render';
 import React, { useEffect, useRef } from 'react'
 import { loadCircle } from './utils';
 
 export default {
-    title: 'Color Transfer',
-    component: Color,
+    title: 'converColorStr',
+    component: ConverColorStr,
 };
 
-export function Color() {
+function loadText( iRender: IRender, str: string, size: Vec2): number {
+    const canvas = document.createElement('canvas')
+    canvas.width = size.x
+    canvas.height = size.y
+    const ctx = canvas.getContext('2d')
+    ctx.textAlign='center'
+    ctx.textBaseline ='top'
+    ctx.fillStyle= 'white'
+    ctx.font="20px 微软雅黑";
+    ctx.strokeStyle = 'white'
+    ctx.lineWidth = 1
+    ctx.fillText( str,size.x *0.5, (size.y -20) *0.5)
+    ctx.strokeRect( 0,0, size.x, size.y)
+    return iRender.loadImg(canvas)
+}
 
-    const iRederRef = useRef<IRender>()
+function loadReact(iRender: IRender, size: Vec2): number {
+    const canvas = document.createElement('canvas')
+    canvas.width = size.x
+    canvas.height = size.y
+    const ctx = canvas.getContext('2d')
+    ctx.fillStyle = 'white'
+    ctx.fillRect(0,0, size.x, size.y)
+    return iRender.loadImg(canvas)
+}
+
+export function ConverColorStr() {
+
 
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
     useEffect(() => {
         const canvas = canvasRef.current
         if(!canvas) return
-        const irender = new IRender(canvas, { maxNumber: 5, textureSize: 1020 })
+        const irender = new IRender(canvas, { maxNumber: 100, textureSize: 1020 })
+
+        const rect = loadReact(irender, {x:1, y:1})
+        const backageGround = irender.createElement({
+            imgId: rect,
+            position: { x: canvas.width *0.5 , y: canvas.height *0.5},
+            color: converColorStr('gray'),
+        })
+        backageGround.setSize(1,1)
+        backageGround.setScale(canvas.width, canvas.height)
+
+
+
         const circle = loadCircle(irender, 30)
 
-        const redCircle = irender.createElement({
+        const padding = 120;
+
+        irender.createElement({
             imgId: circle,
-            position: { x:30, y: 30},
+            position: { x: padding , y: 30},
+            color:converColorStr('purple')
         })
-        const {r: r1, g: g1, b: b1, a: a1 }= converColorStr('wheat')|| red
-        redCircle.setColor(r1, g1, b1, a1)
+        irender.createElement({
+            imgId: loadText(irender, 'purple', {x: padding*2 , y: 30}),
+            position: { x: padding, y: 30*2 + 30},
+            color: converColorStr('purple')
+        })
 
 
-        const rgbCircle = irender.createElement({
+        irender.createElement({
             imgId: circle,
-            position: { x:30 *4, y: 30},
+            position: { x: padding *3, y: 30},
+            color: converColorStr('rgba(255, 255, 0, 0.8 )')
         })
-        const {r, g, b, a}= converColorStr('rgba(255, 255, 0, 0.8 )')|| green
-        rgbCircle.setColor(r, g, b, a)
+        
+        irender.createElement({
+            imgId: loadText(irender, 'rgba(255, 255, 0, 0.8 )', {x: padding*2, y: 30}),
+            position: { x: padding *3, y: 30*2 + 30},
+            color: converColorStr('rgba(255, 255, 0, 0.8 )')
+        })
+
+
+        irender.createElement({
+            imgId: circle,
+            position: { x: padding *5, y: 30},
+            color: converColorStr('rgb(255, 0, 0 )')
+        })
+        irender.createElement({
+            imgId: loadText(irender, 'rgb(255, 0, 0 )', {x: padding*2, y: 30}),
+            position: { x: padding *5, y: 30*2 + 30},
+            color: converColorStr('rgb(255, 0, 0 )')
+        })
+
+
+
+
+        irender.createElement({
+            imgId: circle,
+            position: { x: padding *7, y: 30},
+            color: converColorStr('#f00')
+        })
+        irender.createElement({
+            imgId: loadText(irender, '#f00', {x: padding*2, y: 30}),
+            position: { x: padding *7, y: 30*2 + 30},
+            color: converColorStr('#f00')
+        })
+
+
+        irender.createElement({
+            imgId: circle,
+            position: { x: padding *9, y: 30},
+            color: converColorStr('#f00a')
+        })
+        irender.createElement({
+            imgId: loadText(irender, '#f00a', {x: padding*2, y: 30}),
+            position: { x: padding *9, y: 30*2 + 30},
+            color: converColorStr('#f00a')
+        })
+
+    
+
+        irender.createElement({
+            imgId: circle,
+            position: { x: padding * 11, y: 30},
+            color: converColorStr('#ff0000')
+        })
+        irender.createElement({
+            imgId: loadText(irender, '#ff0000', {x: padding*2, y: 30}),
+            position: { x: padding * 11, y: 30*2 + 30},
+            color: converColorStr('#ff0000')
+        })
+
+
+
+        irender.createElement({
+            imgId: circle,
+            position: { x: padding * 13, y: 30},
+            color: converColorStr('#ff0000aa')
+        })
+        irender.createElement({
+            imgId: loadText(irender, '#ff0000aa', {x: padding*2, y: 30}),
+            position: { x: padding * 13, y: 30*2 + 30},
+            color: converColorStr('#ff0000aa')
+        })
 
 
     }, [])

@@ -8,9 +8,6 @@ const path = require('path')
     config.resolve.extensions.push('.ts', '.tsx')
     config.resolve.alias['i-render'] = path.resolve(__dirname, '../lib/src/index.js')
 
-    config.module.rules[0].test= /\.ts(x)?$/
-    const babelConfig = config.module.rules[0].use[0].options
-    babelConfig.presets.push(require.resolve('@babel/preset-typescript'))
     return config
   }
 };

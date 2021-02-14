@@ -3,9 +3,9 @@ import * as KEYWORDS_COLOR from './const'
 
 export type ColorStr = keyof typeof KEYWORDS_COLOR  & string
 
-export function converColorStr(keywordColor: keyof typeof KEYWORDS_COLOR): RGBA| null
+export function converColorStr(keywordColor: keyof typeof KEYWORDS_COLOR): RGBA| undefined
 
-export function converColorStr(colorStr: string): RGBA| null
+export function converColorStr(colorStr: string): RGBA| undefined
 
 /**
  * https://www.w3.org/TR/css-color-3/#colorunits
@@ -22,9 +22,19 @@ export function converColorStr(colorStr: string): RGBA| null
  * 
  * rgba(255,0,0,1)  rgba(100％，0％，0％，1)  rgba(100％，0％，0％，100%)
  *
- *  @returns 解析成功返回 { r:0-255, g: 0-255, b: 0-255, a: 0-1 }, 失败返回null.
+ *  @returns 解析成功返回 { r:0-255, g: 0-255, b: 0-255, a: 0-1 }, 失败返回undefined.
  */
-export function converColorStr(colorStr: string):RGBA|null {
+export function converColorStr(colorStr: string):RGBA|undefined {
+    try{
+        return converColor(colorStr)
+    }catch(e){
+        console.warn('fail to convert color' + colorStr)
+    }
+}
+
+
+
+function converColor(colorStr: string):RGBA|undefined {
     
     const str = (colorStr||'').replace(/\s/g, '').toLowerCase()
     
@@ -78,7 +88,6 @@ export function converColorStr(colorStr: string):RGBA|null {
                 a: clipColor(parseInt(`${a1}${a2}`, 16))/255, 
             } 
         }
-        return null
     }
 
     /**
@@ -105,7 +114,6 @@ export function converColorStr(colorStr: string):RGBA|null {
             }) 
             return { r, g, b, a: a/255 }
         }
-        return null
     }
     
 
@@ -130,7 +138,6 @@ export function converColorStr(colorStr: string):RGBA|null {
             }) 
             return { r, g, b, a: 1  }
         }
-        return null
     }
     
     // // hls color.
@@ -138,7 +145,6 @@ export function converColorStr(colorStr: string):RGBA|null {
 
     // }
 
-    return null
 }
 
 
