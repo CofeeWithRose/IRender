@@ -79,6 +79,10 @@ export class IRender {
 
     private rafing = false
 
+    private updateId = 0
+
+    private updatedId = 0
+
     private texture: WebGLTexture
 
     private options: typeof DEFAULT_OPTION 
@@ -138,7 +142,10 @@ export class IRender {
     }
     
     updateImidiatly = () => {
-      this.rafing = false
+        if(this.updatedId === this.updateId) return
+        this.updatedId = this.updateId
+        this.rafing = false
+
         this.handleZindexChange()
         
         if(this.positionBufferChanged) {
@@ -381,9 +388,10 @@ export class IRender {
     }
     
     private update = () => {
+        this.updateId++
         if(this.rafing === true) return 
-        this.rafing = true
         requestAnimationFrame(this.updateImidiatly)
+        this.rafing = true
     }
 
     private updateImage: UpdateHandle['updateImg'] = (elementIndex, imgId) => {

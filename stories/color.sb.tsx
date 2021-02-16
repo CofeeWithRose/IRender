@@ -121,6 +121,8 @@ export function ConverColorStr() {
             position: { x: padding * 13, y: 30*2 + 30},
             color: converColorStr('#ff0000aa')
         })
+        irender.updateImidiatly()
+        console.log('up...')
 
 
     }, [])
