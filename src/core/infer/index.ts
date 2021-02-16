@@ -1,5 +1,4 @@
-import { Vec2 } from "Data/Vec2";
-import { Iimage, IimageInfo } from "Ielement/Iimage";
+import { Iimage, IimageInfo } from "../../Ielement/Iimage";
 
 export enum I_ELEMENT_TYPES {
   

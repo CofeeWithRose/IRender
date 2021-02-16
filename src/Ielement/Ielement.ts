@@ -1,4 +1,3 @@
-import { I_ELEMENT_TYPES } from "core/infer"
 import { RGBA } from "../Data/RGBA"
 import { Vec2 } from "../Data/Vec2"
 

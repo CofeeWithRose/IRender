@@ -3,7 +3,6 @@
     "jsx": "preserve",
     "moduleResolution": "Node",
     "rootDir": ".",
-    "baseUrl": "./src",
     "lib": ["ESNext", "DOM"],
     "module": "ES6",
     "target": "ES5",
@@ -12,7 +11,7 @@
     "allowSyntheticDefaultImports": true,
     "removeComments": false,
     "paths": { 
-      "i-render": ["index.ts"]
+      "i-render": [ "./src/index.ts" ],
     }
   },
   "exclude": ["lib", "node-modules"],

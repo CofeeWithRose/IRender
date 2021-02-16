@@ -1,4 +1,4 @@
-import { RGBA } from "Data/RGBA";
+import { RGBA } from "../../Data/RGBA";
 import * as KEYWORDS_COLOR from './const'
 
 export type ColorStr = keyof typeof KEYWORDS_COLOR  & string
