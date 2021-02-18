@@ -173,8 +173,8 @@ export class Iimage implements Ielement  {
      * @param h 
      */
     private setScaledSize(w: number, h: number) {
-      this.size.x = w * this.scale.x
-      this.size.y = h * this.scale.y
+      this.size.x = Math.abs(w * this.scale.x)
+      this.size.y =Math.abs( h * this.scale.y)
     }
 
     /**

@@ -1,4 +1,4 @@
-import { IRender, converColorStr, Vec2 } from 'i-render';
+import { IRender, converColorStr } from 'i-render';
 import React, { useEffect, useRef } from 'react'
 import { loadCircle, loadReact, loadText } from './utils';
 
