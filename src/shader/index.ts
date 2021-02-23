@@ -6,6 +6,10 @@ export const VERTEX_SHADER = `
     // gl窗口大小.
     uniform vec2 u_windowSize;
 
+    uniform vec2 u_cameraPosition;
+
+    uniform vec2 u_cameraSize;
+
     // 纹理大小.
     uniform vec2 u_textureSize;
 
@@ -62,6 +66,7 @@ export const VERTEX_SHADER = `
 
         vec2 spriteSize = a_spriteSize * a_scale;
 
+
         vec2 center = a_position;
 
         vec2 direction = a_direction;
@@ -70,7 +75,7 @@ export const VERTEX_SHADER = `
 
         v_texCoord =  (texCoord + a_offset )/u_textureSize;
 
-        vec2 position = center + direction * spriteSize -  0.5 * spriteSize;
+        vec2 position = center + (direction * spriteSize -  0.5 * spriteSize);
 
         float rotation = radians(a_rotation);
 
@@ -83,7 +88,9 @@ export const VERTEX_SHADER = `
          *  P1 -> P2 -> P3
          *  P3 -> P2 -> P4
         */
-        gl_Position = vec4((rotateVec2( rotation, center, position)/u_windowSize *2.0 -1.0) * vec2(1, -1), 1,1);
+        vec2 positionScale = u_windowSize/u_cameraSize;
+        vec2 canvasPosition = (rotateVec2( rotation, center, position) - u_cameraPosition) * positionScale;
+        gl_Position = vec4( (canvasPosition/u_windowSize *2.0 -1.0) * vec2(1, -1), 1, 1 );
 
     }
 `

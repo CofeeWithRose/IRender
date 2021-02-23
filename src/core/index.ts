@@ -28,6 +28,8 @@ export class IRender {
     private uniformLocations: { 
         u_windowSize: WebGLUniformLocation,
         u_textureSize: WebGLUniformLocation,
+        u_cameraSize: WebGLUniformLocation,
+        u_cameraPosition: WebGLUniformLocation,
     };
 
     private attribuitesLocations: {
@@ -112,7 +114,9 @@ export class IRender {
         
         this.uniformLocations = {
             u_windowSize: this.gl.getUniformLocation(program, 'u_windowSize'),
-            u_textureSize: this.gl.getUniformLocation(program, 'u_textureSize')
+            u_textureSize: this.gl.getUniformLocation(program, 'u_textureSize'),
+            u_cameraSize: this.gl.getUniformLocation(program, 'u_cameraSize'),
+            u_cameraPosition: this.gl.getUniformLocation(program, 'u_cameraPosition')
         }
         this.attribuitesLocations = {
             a_position: this.gl.getAttribLocation(program, 'a_position'),
@@ -125,10 +129,8 @@ export class IRender {
         }
         this.initBuffer()
         this.initTexture()
+        this.reSize()
         this.setViewPort()
-
-        
-       
     }
 
 
@@ -173,12 +175,7 @@ export class IRender {
         }
         
         this.checkReloadTexure()
-        this.glExt.drawElementsInstancedANGLE(
-          this.gl.TRIANGLES,
-          this.attrData.indicate.length,
-          this.gl.UNSIGNED_INT, 0, 
-          this.elementList.length
-        )
+        this.render()
        
 
         this.imageIdBufferChanged = false
@@ -186,6 +183,15 @@ export class IRender {
         this.textureChange = false
         this.colorBufferChanged = false
         this.sizeChanged = false
+    }
+
+    private render(){
+      this.glExt.drawElementsInstancedANGLE(
+        this.gl.TRIANGLES,
+        this.attrData.indicate.length,
+        this.gl.UNSIGNED_INT, 0, 
+        this.elementList.length
+      )
     }
 
     private checkReloadTexure = () => {
@@ -302,10 +308,25 @@ export class IRender {
           a_direction: directionBuffer,
         }
     }
+    camera = { x: 0, y: 0, w: 100, h: 100 }
 
-    setViewPort(){
-        this.gl.viewport( 0, 0, this.gl.canvas.width , this.gl.canvas.height )
-        this.gl.uniform2f(this.uniformLocations.u_windowSize, this.gl.canvas.width, this.gl.canvas.height )
+    reSize(){
+      this.gl.viewport( 0, 0, this.gl.canvas.width , this.gl.canvas.height )
+      this.gl.uniform2f(this.uniformLocations.u_windowSize, this.gl.canvas.width, this.gl.canvas.height )
+      this.render()
+    }
+
+    /**
+     * 与canvas保持相同坐标系.
+     * @param x 
+     * @param y 
+     * @param w 
+     * @param h 
+     */
+    setViewPort(x=0, y=0, w=this.gl.canvas.width, h=this.gl.canvas.height){
+      this.gl.uniform2f(this.uniformLocations.u_cameraSize, w, h )
+      this.gl.uniform2f(this.uniformLocations.u_cameraPosition, x, y )
+      this.render()
     }
   
     createElement( params: IElementParams['I_IMAGE'] ): IElements['I_IMAGE'] {
