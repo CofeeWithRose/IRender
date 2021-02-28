@@ -5,8 +5,7 @@ const path = require('path')
   addons: ['@storybook/addon-actions', '@storybook/addon-links'],
   webpackFinal: config => {
 
-    config.resolve.extensions.push('.ts', '.tsx')
-    config.resolve.alias['i-render'] = path.resolve(__dirname, '../lib/src/index.js')
+    config.resolve.alias['i-render'] = path.resolve(__dirname, '../src/index.ts')
 
     return config
   }
