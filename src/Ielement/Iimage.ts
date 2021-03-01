@@ -64,9 +64,13 @@ export class Iimage implements Ielement  {
      */
     readonly elementSize: Vec2 = { ...ZERO }
 
+    readonly update:UpdateHandle
+
     constructor( 
-      public update:UpdateHandle,
-     ){ }
+      update:UpdateHandle
+     ){ 
+      this.update = update
+     }
   
      /**
       * 图像中心的世界坐标.
