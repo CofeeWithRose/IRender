@@ -1,5 +1,6 @@
-import { IRender, converColorStr, Iimage } from 'i-render';
+import { IRender, IRenderOptions, converColorStr, Iimage } from 'i-render';
 import React, { useEffect, useRef, useState } from 'react'
+import { startFPS, stopFPS } from './fps';
 import { loadCircle, loadReact, loadText } from './utils';
 
 export default {
@@ -7,46 +8,70 @@ export default {
     component: Muticanvas,
 };
 
+const SIZE = 1000
+
+const r = 12
+
+const pandding = 2
+
+const xCount = 80
+
+const can = document.createElement('canvas')
+
 export function Muticanvas(){
-  const arr = Array.from(new Array(20)).map( (v, ind)=> ({id: ind, color: ind%2? 'red': 'yellow'})  )
-  const [renderer, setRenderer] = useState<{renderer: IRender, elemrnts: Iimage[]}>({ renderer: null, elemrnts: [] })
+  const arr = Array.from(new Array(100)).map( (v, ind)=> ({id: ind, canvas: can, color: ind%2? 'red': 'yellow'})  )
  
   useEffect(() => {
     const glCanavs = document.createElement('canvas')
-    glCanavs.width = 1000
-    glCanavs.height = 1000
-    
-    const irender = new IRender(glCanavs)
-    const circleId = loadCircle(irender, 40)
+    glCanavs.width = SIZE
+    glCanavs.height = SIZE
+  
+    const irender = new IRender(glCanavs, { autoUpdate: false, maxNumber: 10000})
+    const circleId = loadCircle(irender, r)
     const aelArr: Iimage[] = []
-    for(let i=0; i < 10000; i++ ){
-      const x = i%200
-      const y = Math.floor(i/200)
+    for(let i=0; i < 3000; i++ ){
+      const x = i%xCount
+      const y = Math.floor(i/xCount)
       const c =  irender.createElement({
         imgId: circleId,
-        position:{x: x * 100 , y:y * 100},
-        color: converColorStr('blue')
+        position:{x: x * (r*2 +pandding) , y:y * (r*2+pandding)},
       })
       aelArr.push(c)
     }
     
-    irender.updateImidiatly()
-    setRenderer({
-      renderer: irender,
-      elemrnts: aelArr
-    })
+    const req = () => {
+      arr.forEach( ({canvas}, ind) => {
+        const {r, g, b, a} = converColorStr(ind%2? 'red': 'yellow')
+        aelArr.forEach(el => el.setColor(r,g,b,a))
+        irender.updateImidiatly();
+        const ctx = canvas.getContext('2d');
+        (ctx as CanvasRenderingContext2D).drawImage(irender.glCanvas, 0, 0)
+      })
+      requestAnimationFrame(req)
+    }
+    req()
+
+    startFPS()
+
+    return () => {
+      stopFPS()
+    }
+  
    
   }, [])
-  return <>
-
+  return <div>
+  <div id="fps"/>
       {
-        arr.map( ({id,color}) => <Demo 
-            color={color}
-            key={id} renderer={renderer.renderer} 
-            elemrnts={renderer.elemrnts}
+        arr.map( a => <canvas 
+          ref={c=>{
+            a.canvas = c
+          }} 
+          width={SIZE} 
+          height={SIZE} 
         />)
       }
-  </>
+      
+  </div>
 }
 
 export function Demo({renderer, elemrnts, color }:{color: string ,renderer: IRender, elemrnts: Iimage[]})  {
@@ -65,7 +90,7 @@ export function Demo({renderer, elemrnts, color }:{color: string ,renderer: IRen
 
   return <canvas
     ref={canvasRef}
-    width="1000"
-    height="1000"
+    width={SIZE}
+    height={SIZE}
   />
 }

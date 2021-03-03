@@ -1,4 +1,4 @@
-export { IRender } from './core'
+export { IRender, IRenderOptions } from './core'
 
 export { Iimage } from './Ielement/Iimage'
 

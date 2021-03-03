@@ -14,13 +14,16 @@ export * from './infer/index'
 const DEFAULT_OPTION = { 
   maxNumber: 50000, 
   textureSize: 2048, 
+  autoUpdate: true
   // backgroundColor: { r: 0, g: 0, b: 0, a: 0}
 }
+export type IRenderOptions = typeof DEFAULT_OPTION
+
 export class IRender {
 
     private  textureManager: TextureCanvasManager;
   
-    private elementList: Ielement[] = []
+    private elementList: Iimage[] = []
 
 
     private gl:WebGLRenderingContext;
@@ -89,12 +92,15 @@ export class IRender {
 
     private options: typeof DEFAULT_OPTION 
 
-    private elementPool = new Set<Ielement>()
+    private elementPool = new Set<Iimage>()
 
     private glExt: ANGLE_instanced_arrays
 
-    constructor( public glCanvas: HTMLCanvasElement,   options?: Partial<typeof DEFAULT_OPTION>   ){
+    public glCanvas: HTMLCanvasElement
+
+    constructor( glCanvas: HTMLCanvasElement,   options?: Partial<typeof DEFAULT_OPTION>   ){
         this.options = { ...DEFAULT_OPTION,  ...options}
+        this.glCanvas = glCanvas
         this.textureManager =  new  TextureCanvasManager( this.options.textureSize )
         this.gl = glCanvas.getContext('webgl', { alpha: true })
          || glCanvas.getContext('experimental-webgl') as WebGLRenderingContext;
@@ -142,47 +148,49 @@ export class IRender {
       this.gl.bindBuffer( target, glBuffer )
       this.gl.bufferSubData( target, 0, data )
     }
+
+    private writeGLBuffer(){
+
+      if(this.positionBufferChanged) {
+        this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_position, this.attrData.a_position)
+        this.positionBufferChanged = false
+      }
+
+      if(this.imageIdBufferChanged ) {
+          this.bufferData(this.gl.ARRAY_BUFFER, this.attrBuffer.a_texCoord, this.attrData.a_texCoord)
+          this.imageIdBufferChanged = false
+      }
+
+      if ( this.sizeChanged ) {
+        this.bufferData(this.gl.ARRAY_BUFFER, this.attrBuffer.a_spriteSize, this.attrData.a_spriteSize)
+        this.sizeChanged = false
+      }
+
+      if(this.colorBufferChanged){
+        this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_color, this.attrData.a_color)
+        this.colorBufferChanged = false
+      }
+
+      if (this.scaleChange) {
+        this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_scale, this.attrData.a_scale )
+        this.scaleChange = false
+      }
+
+      if (this.rotationChange) {
+        this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_rotation, this.attrData.a_rotation )
+        this.rotationChange = false
+      }
+    }
     
     updateImidiatly = () => {
         if(this.updatedId === this.updateId) return
         this.updatedId = this.updateId
         this.rafing = false
-
+        this.gl.clearColor(0,0,0,0)
         this.handleZindexChange()
-        
-        if(this.positionBufferChanged) {
-            this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_position, this.attrData.a_position)
-        }
-
-        if(this.imageIdBufferChanged ) {
-            this.bufferData(this.gl.ARRAY_BUFFER, this.attrBuffer.a_texCoord, this.attrData.a_texCoord)
-        }
-
-        if ( this.sizeChanged ) {
-          this.bufferData(this.gl.ARRAY_BUFFER, this.attrBuffer.a_spriteSize, this.attrData.a_spriteSize)
-        }
-
-        if(this.colorBufferChanged){
-          this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_color, this.attrData.a_color)
-        }
-
-        if (this.scaleChange) {
-          this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_scale, this.attrData.a_scale )
-        }
-
-        if (this.rotationChange) {
-          this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_rotation, this.attrData.a_rotation )
-        }
-        
+        this.writeGLBuffer()
         this.checkReloadTexure()
         this.render()
-       
-
-        this.imageIdBufferChanged = false
-        this.positionBufferChanged = false
-        this.textureChange = false
-        this.colorBufferChanged = false
-        this.sizeChanged = false
     }
 
     private render(){
@@ -198,6 +206,7 @@ export class IRender {
         if(!this.textureChange) return
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture)
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.textureManager.canvas)
+        this.textureChange = false
         console.log('textureChange。。')
     }
 
@@ -308,7 +317,6 @@ export class IRender {
           a_direction: directionBuffer,
         }
     }
-    camera = { x: 0, y: 0, w: 100, h: 100 }
 
     reSize(){
       this.gl.viewport( 0, 0, this.gl.canvas.width , this.gl.canvas.height )
@@ -328,6 +336,21 @@ export class IRender {
       this.gl.uniform2f(this.uniformLocations.u_cameraPosition, x, y )
       this.render()
     }
+
+    private initElement(el: Iimage, params: IElementParams['I_IMAGE']){
+      el.elementIndex = this.elementList.length
+      this.elementList.push(el)
+      this.updateZindex()
+      el.setPosition(params.position.x, params.position.y)
+      el.setImgId(params.imgId)
+      const { r, g, b, a } = params.color|| WHITE
+      el.setColor( r, g, b, a )
+      el.setRotation(0)
+      el.setScale(1,1)
+      const { w, h } = this.textureManager.getImageInfo(el.imgId)
+      el.setTextureSize(w, h)
+      el.setSize(w, h)
+    }
   
     createElement( params: IElementParams['I_IMAGE'] ): IElements['I_IMAGE'] {
         const handle: UpdateHandle = { 
@@ -341,42 +364,13 @@ export class IRender {
             updateOffset: this.updateOffset,
         }
         if(this.elementPool.size <=0) {
-
             const el =  new Iimage(handle)
-            el.elementIndex = this.elementList.length
-            this.elementList.push(el)
-            this.updateZindex()
-            el.setPosition(params.position.x, params.position.y)
-            el.setImgId(params.imgId)
-            const { r, g, b, a } = params.color|| WHITE
-            el.setColor( r, g, b, a )
-            el.setRotation(0)
-            el.setScale(1,1)
-            const { w, h } = this.textureManager.getImageInfo(el.imgId)
-            el.setTextureSize(w, h)
-            el.setSize(w, h)
+            this.initElement(el, params)
             return el
-
         }else{
-
             const el = Array.from(this.elementPool)[0]
             this.elementPool.delete(el)
-            el.color.r =255
-            el.color.g = 255
-            el.color.b = 255
-            el.color.a = 1
-            for (let attr in params){
-                (el as any)[attr] = params
-            }
-            this.elementList.push(el)
-            this.updateZindex()
-            this.updatePosition(el.elementIndex, el.position)
-            this.updateImage(el.elementIndex, el.imgId)
-            this.updateColor(el.elementIndex, el.color)
-            el.setScale(1,1)
-            const { w, h } = this.textureManager.getImageInfo(el.imgId)
-            el.setTextureSize(w, h)
-            el.setSize(w, h)
+            this.initElement(el, params)
             return el as IElements['I_IMAGE']
         }
       
@@ -409,8 +403,11 @@ export class IRender {
     }
     
     private update = () => {
+       
         this.updateId++
+        if(!this.options.autoUpdate) return
         if(this.rafing === true) return 
+        
         requestAnimationFrame(this.updateImidiatly)
         this.rafing = true
     }
