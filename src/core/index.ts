@@ -1,5 +1,5 @@
 import { Iimage } from '../Ielement/Iimage'
-import { FRAGMENT_SHADER, VERTEX_SHADER } from '../shader';
+import { FRAGMENT_SHADER, VERTEX_SHADER, NOT_PREMUTIPED_FRAGMENT_SHADER } from '../shader';
 import { compileShader, SHADER_TYPE } from '../util';
 import { TextureCanvasManager } from './TextureCanvasManager'
 import {  Ielement, UpdateHandle } from '../Ielement/IElement'
@@ -14,8 +14,11 @@ export * from './infer/index'
 const DEFAULT_OPTION = { 
   maxNumber: 50000, 
   textureSize: 2048, 
-  autoUpdate: true
-  // backgroundColor: { r: 0, g: 0, b: 0, a: 0}
+  autoUpdate: true,
+  /**
+   * 如果glcanvas被绘制到canvas2d上设置为true,否则半透明颜色会比应该的颜色深，如：黄色圆形将有深色边框.
+   */
+  offSreen: false,
 }
 export type IRenderOptions = typeof DEFAULT_OPTION
 
@@ -110,7 +113,8 @@ export class IRender {
         
         const program = this.gl.createProgram()
         compileShader(this.gl, program, VERTEX_SHADER,SHADER_TYPE.VERTEX_SHADER )
-        compileShader(this.gl, program, FRAGMENT_SHADER, SHADER_TYPE.FRAGMENT_SHADER)
+        const fragmentShader = this.options.offSreen? NOT_PREMUTIPED_FRAGMENT_SHADER: FRAGMENT_SHADER
+        compileShader(this.gl, program, fragmentShader, SHADER_TYPE.FRAGMENT_SHADER)
         this.gl.linkProgram(program)
 
         console.log('getProgramInfoLog:', this.gl.getProgramInfoLog(program));
@@ -218,7 +222,7 @@ export class IRender {
         this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
         this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
         this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
-        this.gl.pixelStorei(this.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
+        if(!this.options.offSreen) this.gl.pixelStorei(this.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.textureManager.canvas)
     }
 

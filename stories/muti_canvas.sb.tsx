@@ -26,7 +26,7 @@ export function Muticanvas(){
     glCanavs.width = SIZE
     glCanavs.height = SIZE
   
-    const irender = new IRender(glCanavs, { autoUpdate: false, maxNumber: 10000})
+    const irender = new IRender(glCanavs, { autoUpdate: false, maxNumber: 10000, offSreen: true})
     const circleId = loadCircle(irender, r)
     const aelArr: Iimage[] = []
     for(let i=0; i < 3000; i++ ){
