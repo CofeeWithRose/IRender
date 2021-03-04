@@ -22,6 +22,9 @@ body{
 .surfing{
   overflow: hidden;
 }
+.sb-show-main.sb-main-padded {
+  padding: 0;
+}
 
 .pannel {
   position: fixed;
