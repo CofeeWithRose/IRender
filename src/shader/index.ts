@@ -1,5 +1,5 @@
 export const VERTEX_SHADER = `
-    precision mediump float;
+    precision highp float;
     
     #define PI 3.14159265358979323846264338327950288
 

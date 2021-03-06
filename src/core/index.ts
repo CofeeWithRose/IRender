@@ -190,7 +190,7 @@ export class IRender {
         if(this.updatedId === this.updateId) return
         this.updatedId = this.updateId
         this.rafing = false
-        this.gl.clearColor(0,0,0,0)
+        // this.gl.clearColor(0,0,0,0)
         this.handleZindexChange()
         this.writeGLBuffer()
         this.checkReloadTexure()
