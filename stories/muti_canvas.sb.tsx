@@ -1,6 +1,5 @@
 import { IRender, IRenderOptions, converColorStr, Iimage } from 'i-render';
 import React, { useEffect, useRef, useState } from 'react'
-import { startFPS, stopFPS } from './fps';
 import { loadCircle, loadReact, loadText } from './utils';
 
 export default {
@@ -43,28 +42,24 @@ export function Muticanvas(){
       aelArr.push(c)
     }
     
-    const req = () => {
-      arr.forEach( ({canvas}, ind) => {
-        const {r, g, b, a} = converColorStr(ind%2? 'red': 'yellow')
-        aelArr.forEach(el => el.setColor(r,g,b,a))
-        irender.updateImidiatly();
-        const ctx = canvas.getContext('2d');
-        (ctx as CanvasRenderingContext2D).drawImage(irender.glCanvas, 0, 0)
-      })
-      requestAnimationFrame(req)
-    }
-    req()
+    arr.forEach( ({canvas}, ind) => {
+      const {r, g, b, a} = converColorStr(ind%2? 'red': 'yellow')
+      aelArr.forEach(el => el.setColor(r,g,b,a))
+      irender.updateImidiatly();
+      const ctx = canvas.getContext('2d');
+      ctx&&ctx.drawImage(irender.glCanvas, 0, 0)
+    })
 
-    startFPS()
+    // startFPS()
 
     return () => {
-      stopFPS()
+      // stopFPS()
     }
   
    
   }, [])
   return <div>
-  <div id="fps"/>
+  {/* <div id="fps"/> */}
       {
         arr.map( a => <canvas 
           ref={c=>{
