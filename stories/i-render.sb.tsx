@@ -42,7 +42,7 @@ export function PerformenceTest() {
         circle.width = (circleR+ borderR) *2
         circle.height = (circleR+ borderR)  *2
         const ctx = circle.getContext('2d')
-        ctx.fillStyle= "rgba(50,255,255,0.2)"
+        ctx.fillStyle= "rgba(50,255,255,0.5)"
         ctx.lineWidth= borderR
         ctx.arc(circleR, circleR, circleR,0,  Math.PI *2)
         ctx.fill()
@@ -51,7 +51,7 @@ export function PerformenceTest() {
         const circleImgId = glRender.loadImg(circle)
 
         ctx.clearRect(0,0, circleR *2, circleR *2)
-        ctx.fillStyle= "rgba(255,125,125,0.2)"
+        ctx.fillStyle= "rgba(255,125,125,0.5)"
         ctx.arc(circleR, circleR , circleR, 0,  Math.PI *2 )
         ctx.fill()
 
@@ -105,12 +105,20 @@ export function PerformenceTest() {
 
     // style={{ backgroundColor: 'black' }} 
     return <div >
-      <canvas ref={cRef} width={canvasWidth} height={canvasHeight} 
-        style={{ 
-          width : canvasWidth / devicePixelRatio, 
-          height: canvasHeight/devicePixelRatio,
-          backgroundColor: 'rgb(122,122,122,1)'
-        }} />
+      <div style={{position: 'relative', width: canvasWidth / devicePixelRatio, height: canvasHeight/devicePixelRatio}}>
+        <h1 style={{color: 'greenyellow'}} >1111111111111111</h1>
+        <h1 style={{color: 'greenyellow'}} >1111111111111111</h1>
+        <h1 style={{color: 'greenyellow'}} >1111111111111111</h1>
+        <h1 style={{color: 'greenyellow'}} >1111111111111111</h1>
+        <canvas ref={cRef} width={canvasWidth} height={canvasHeight} 
+          style={{ 
+            width : canvasWidth / devicePixelRatio, 
+            height: canvasHeight/devicePixelRatio,
+            backgroundColor: 'rgb(122,122,122,0.5)',
+            position: 'absolute',
+            top: '0',
+          }} />
+      </div>
       <canvas ref={textureRef} width={200} height={200} style={{backgroundColor:'rgb(122,122,122,1)'}} ></canvas>
 
       <div 
