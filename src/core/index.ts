@@ -110,6 +110,8 @@ export class IRender {
 
         this.glExt = this.gl.getExtension('ANGLE_instanced_arrays');
         this.gl.getExtension('OES_element_index_uint');
+        this.gl.clearColor(0,0,0,0)
+
         
         const program = this.gl.createProgram()
         compileShader(this.gl, program, VERTEX_SHADER,SHADER_TYPE.VERTEX_SHADER )
@@ -190,7 +192,7 @@ export class IRender {
         if(this.updatedId === this.updateId) return
         this.updatedId = this.updateId
         this.rafing = false
-        // this.gl.clearColor(0,0,0,0)
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT)
         this.handleZindexChange()
         this.writeGLBuffer()
         this.checkReloadTexure()
