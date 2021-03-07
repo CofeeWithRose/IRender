@@ -17,7 +17,7 @@ export function loadText( iRender: IRender, str: string, size: Vec2): number {
     canvas.height = size.y
     const ctx = canvas.getContext('2d')
     ctx.textAlign='center'
-    ctx.textBaseline ='top'
+    ctx.textBaseline ='hanging'
     ctx.fillStyle= 'white'
     ctx.font="20px 微软雅黑";
     ctx.strokeStyle = 'white'
