@@ -23,7 +23,7 @@ export function loadText( iRender: IRender, str: string, size: Vec2): number {
     ctx.strokeStyle = 'white'
     ctx.lineWidth = 1
     ctx.fillText( str,size.x *0.5, (size.y -20) *0.5)
-    ctx.strokeRect( 0,0, size.x, size.y)
+    // ctx.strokeRect( 0,0, size.x, size.y)
     return iRender.loadImg(canvas)
 }
 

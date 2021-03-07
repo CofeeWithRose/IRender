@@ -42,7 +42,7 @@ export function ViewPort(){
   
 
     let vx =0, vy=0, w=500, h=500
-    window.addEventListener('keydown', e => {
+    const handleKey = e => {
       // console.log(e.key)
         if(e.key === 'w') {
           vy-=10
@@ -66,8 +66,9 @@ export function ViewPort(){
         }
 
         renderer.setViewPort(vx,vy,w, h)
-    })
-   
+    }
+    window.addEventListener('keydown', handleKey )
+    return () => window.removeEventListener('keydown', handleKey)
 
   }, [])
 
