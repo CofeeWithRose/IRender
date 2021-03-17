@@ -40,7 +40,7 @@ function converColor(colorStr: string):RGBA|undefined {
     
     // key workds color.
     const keywordsColor = KEYWORDS_COLOR[str]
-    if(keywordsColor) return { ...keywordsColor }
+    if(keywordsColor) return { r: keywordsColor.r, g:keywordsColor.g ,b:keywordsColor.b , a: keywordsColor.a }
     
 
     //  #rrggbb | #rgba | #rrggbbaa.
