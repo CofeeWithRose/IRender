@@ -143,7 +143,7 @@ export class IRender {
         }
         this.initBuffer()
         this.initTexture()
-        this.reSize()
+        this.resize()
         this.setViewPort()
         this.handle = { 
           updatePosition: this.updatePosition,
@@ -336,7 +336,7 @@ export class IRender {
         }
     }
 
-    reSize(){
+    resize(){
       this.gl.viewport( 0, 0, this.gl.canvas.width , this.gl.canvas.height )
       this.gl.uniform2f(this.uniformLocations.u_windowSize, this.gl.canvas.width, this.gl.canvas.height )
       this.render()
