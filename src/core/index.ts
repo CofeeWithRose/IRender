@@ -141,7 +141,7 @@ export class IRender {
         }
         this.initBuffer()
         this.initTexture()
-        this.reSize()
+        this.resize()
         this.setViewPort()
     }
 
@@ -324,12 +324,11 @@ export class IRender {
         }
     }
 
-    reSize(){
+    resize(){
       this.gl.viewport( 0, 0, this.gl.canvas.width , this.gl.canvas.height )
       this.gl.uniform2f(this.uniformLocations.u_windowSize, this.gl.canvas.width, this.gl.canvas.height )
-      this.render()
     }
-
+   
     /**
      * 与canvas保持相同坐标系.
      * @param x 
