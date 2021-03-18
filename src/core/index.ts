@@ -101,6 +101,8 @@ export class IRender {
 
     public glCanvas: HTMLCanvasElement
 
+    protected handle: UpdateHandle;
+
     constructor( glCanvas: HTMLCanvasElement,   options?: Partial<typeof DEFAULT_OPTION>   ){
         this.options = { ...DEFAULT_OPTION,  ...options}
         this.glCanvas = glCanvas
@@ -143,6 +145,16 @@ export class IRender {
         this.initTexture()
         this.resize()
         this.setViewPort()
+        this.handle = { 
+          updatePosition: this.updatePosition,
+          updateImg: this.updateImage,
+          updateColor: this.updateColor,
+          updateZindex: this.updateZindex,
+          updateScale: this.updateScale,
+          updateRotation: this.updateRotation,
+          updateSize: this.updateSize,
+          updateOffset: this.updateOffset,
+      }
     }
 
 
@@ -356,20 +368,10 @@ export class IRender {
       el.setTextureSize(w, h)
       el.setSize(w, h)
     }
-  
+
     createElement( params: IElementParams['I_IMAGE'] ): IElements['I_IMAGE'] {
-        const handle: UpdateHandle = { 
-            updatePosition: this.updatePosition,
-            updateImg: this.updateImage,
-            updateColor: this.updateColor,
-            updateZindex: this.updateZindex,
-            updateScale: this.updateScale,
-            updateRotation: this.updateRotation,
-            updateSize: this.updateSize,
-            updateOffset: this.updateOffset,
-        }
         if(this.elementPool.size <=0) {
-            const el =  new Iimage(handle)
+            const el =  new Iimage(this.handle)
             this.initElement(el, params)
             return el
         }else{

@@ -11,7 +11,7 @@ export class Iimage implements Ielement  {
     /**
      * 元素中心坐标.
      */
-    readonly position: Vec2 = { ...ZERO }
+    readonly position: Vec2 = new Vec2(0,0)
 
     /**
      * 被渲染的贴图ID.
@@ -21,8 +21,7 @@ export class Iimage implements Ielement  {
     /**
      * 渲染的颜色.
      */
-    readonly color: RGBA = {...WHITE}
-
+    readonly color: RGBA = new RGBA(255,255,255,1)
     /**
      * 元素的渲染顺序下标, 由渲染引擎维护.
      * 设置zIndex，下次render渲染前,所有的元素的elementIndex可能会更改.
@@ -34,7 +33,7 @@ export class Iimage implements Ielement  {
     /**
      * 缩放.
      */
-    readonly scale: Vec2 = {...ONE }
+    readonly scale: Vec2 =  new Vec2(1,1)
 
     /**
      * 以图形的中心为旋转中心的旋转角度
@@ -45,24 +44,24 @@ export class Iimage implements Ielement  {
     /**
      * 贴图的偏移位置.
      */
-    readonly offset: Vec2 = { ...ZERO }
+    readonly offset: Vec2 = new Vec2(0,0)
 
     /**
      * scale后的size.
      */
-    readonly size: Vec2 = { ...ONE };
+    readonly size: Vec2 =new Vec2(1,1);
 
     // readonly IELEMENT_TYPE = I_ELEMENT_TYPES.I_IMAGE
 
     /**
      * 贴图的size.
      */
-    readonly texTureSize: Vec2 = { ...ZERO }
+    readonly texTureSize: Vec2 =new Vec2(0,0)
 
     /**
      * scale前的size.
      */
-    readonly elementSize: Vec2 = { ...ZERO }
+    readonly elementSize: Vec2 = new Vec2(0,0)
 
     readonly update:UpdateHandle
 

@@ -37,12 +37,12 @@ export function ConverColorStr() {
         irender.createElement({
             imgId: circle,
             position: { x: padding , y: 30},
-            color:converColorStr('purple')
+            color:converColorStr('yellow')
         })
         irender.createElement({
-            imgId: loadText(irender, 'purple', {x: padding*2 , y: 30}),
+            imgId: loadText(irender, 'yellow', {x: padding*2 , y: 30}),
             position: { x: padding, y: 30*2 + 30},
-            color: converColorStr('purple')
+            color: converColorStr('yellow')
         })
 
 
