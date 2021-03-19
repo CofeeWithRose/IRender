@@ -98,7 +98,7 @@ export class Iimage implements Ielement  {
      * @param b 0~255
      * @param a 0~1
      */
-    setColor(r: number, g: number, b: number, a:number){
+     setColor(r: number, g: number, b: number, a:number){
       this.color.r = r
       this.color.g = g
       this.color.b = b
@@ -161,16 +161,6 @@ export class Iimage implements Ielement  {
     }
 
     /**
-     * scale前的size.
-     * @param w 
-     * @param h 
-     */
-    private setElelmentSize(w: number, h: number) {
-      this.elementSize.x = w
-      this.elementSize.y = h
-    }
-
-    /**
      * 设置scale后的size, 入参为scale前的size.
      * @param w 
      * @param h 
@@ -186,7 +176,10 @@ export class Iimage implements Ielement  {
      * @param h 
      */
     setSize(w: number, h: number) {
-      this.setElelmentSize(w, h)
+      
+      this.elementSize.x = w
+      this.elementSize.y = h
+      
       this.setScaledSize(w, h)
       this.update.updateSize(this.elementIndex, this.elementSize)
     }

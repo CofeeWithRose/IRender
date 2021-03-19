@@ -6,6 +6,7 @@ const path = require('path')
   webpackFinal: config => {
 
     config.resolve.alias['i-render'] = path.resolve(__dirname, '../lib/src/index.js')
+    // config.resolve.alias['i-render'] = path.resolve(__dirname, '../src/index.ts')
 
     return config
   }

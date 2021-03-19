@@ -1,9 +1,11 @@
 import { RGBA } from "../../Data/RGBA";
 import * as KEYWORDS_COLOR from './const'
 
-export type ColorStr = keyof typeof KEYWORDS_COLOR  & string
+Object.values(KEYWORDS_COLOR).forEach(v => Object.freeze(v))
 
-export function converColorStr(keywordColor: keyof typeof KEYWORDS_COLOR): RGBA| undefined
+export type ColorStr = keyof typeof KEYWORDS_COLOR
+
+export function converColorStr(keywordColor: ColorStr): RGBA| undefined
 
 export function converColorStr(colorStr: string): RGBA| undefined
 
@@ -24,7 +26,7 @@ export function converColorStr(colorStr: string): RGBA| undefined
  *
  *  @returns 解析成功返回 { r:0-255, g: 0-255, b: 0-255, a: 0-1 }, 失败返回undefined.
  */
-export function converColorStr(colorStr: string):RGBA|undefined {
+export function converColorStr(colorStr: ColorStr|string):RGBA|undefined {
     try{
         return converColor(colorStr)
     }catch(e){
@@ -40,7 +42,7 @@ function converColor(colorStr: string):RGBA|undefined {
     
     // key workds color.
     const keywordsColor = KEYWORDS_COLOR[str]
-    if(keywordsColor) return { r: keywordsColor.r, g:keywordsColor.g ,b:keywordsColor.b , a: keywordsColor.a }
+    if(keywordsColor) return keywordsColor
     
 
     //  #rrggbb | #rgba | #rrggbbaa.
