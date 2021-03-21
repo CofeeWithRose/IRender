@@ -20,10 +20,16 @@ export class TextureCanvasManager {
 
   
     constructor( size= 2048){
+      size = this.normolizeSize(size)
       this.canvas = document.createElement('canvas')
       this.canvas.width = size
       this.canvas.height = size
       this.ctx = this.canvas.getContext('2d')
+    }
+
+    protected normolizeSize(size: number): number {
+      const f = Math.ceil(Math.log2(size))
+      return Math.pow(2, Math.min(f, 13))
     }
   
     setImage(img: HTMLCanvasElement|HTMLImageElement): number{

@@ -12,8 +12,14 @@ export * from './infer/index'
 
 
 const DEFAULT_OPTION = { 
+
   maxNumber: 50000, 
+
+  /**
+   * 纹理的size，会调整为2的整次幂.
+   */
   textureSize: 2048, 
+  
   autoUpdate: true,
   /**
    * 如果glcanvas被绘制到canvas2d上设置为true,否则半透明颜色会比应该的颜色深，如：黄色圆形将有深色边框.
@@ -204,7 +210,7 @@ export class IRender {
         if(this.updatedId === this.updateId) return
         this.updatedId = this.updateId
         this.rafing = false
-        this.gl.clear(this.gl.COLOR_BUFFER_BIT)
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT| this.gl.DEPTH_BUFFER_BIT)
         this.handleZindexChange()
         this.writeGLBuffer()
         this.checkReloadTexure()
