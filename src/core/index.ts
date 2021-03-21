@@ -130,8 +130,12 @@ export class IRender {
         console.log('getProgramInfoLog:', this.gl.getProgramInfoLog(program));
         this.gl.useProgram(program)
         this.gl.enable(this.gl.BLEND)
-        this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
-        
+        if(this.options.offSreen) {
+          this.gl.blendFuncSeparate(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA, this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
+        }else{
+          this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
+        }
+
         this.uniformLocations = {
             u_windowSize: this.gl.getUniformLocation(program, 'u_windowSize'),
             u_textureSize: this.gl.getUniformLocation(program, 'u_textureSize'),
@@ -442,8 +446,8 @@ export class IRender {
 
         const startIndex = elementIndex * 4
        
-        const a = color.a * 255
         this.attrData.a_color[startIndex] = color.r
+        const a = Math.ceil(color.a * 255)
         this.attrData.a_color[startIndex + OFFEST1] = color.g
         this.attrData.a_color[startIndex + OFFEST2] = color.b
         this.attrData.a_color[startIndex + OFFEST3] = a
@@ -512,6 +516,12 @@ export class IRender {
 
     private updateZindex: UpdateHandle['updateZindex'] = () => {
       this.zIndexChange = true
+    }
+
+    getImageData(sx: number, sy: number, sw: number, sh: number): ImageData {
+      var pixels = new Uint8ClampedArray(sw * sh * 4);
+      this.gl.readPixels(sx, sy, sw, sh, this.gl.RGBA, this.gl.UNSIGNED_BYTE, pixels);
+      return new ImageData(pixels, sw, sh)
     }
 
   }
