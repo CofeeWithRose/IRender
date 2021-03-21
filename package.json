@@ -12,7 +12,6 @@
     "build": "tsc&&node ./build/index.js",
     "dev": "start-storybook -p 6006",
     "build-storybook": "npm run build && build-storybook -o ./docs",
-    "prepublishOnly": "npm run build && npm run build-storybook ",
     "prepare": "husky install"
   },
   "author": "cofeewithrose",
