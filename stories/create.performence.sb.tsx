@@ -11,14 +11,13 @@ export function CreatePerformence() {
     const [duration, setDuration] = useState(NaN)
    
     const initElement = (render: IRender, imgId: number) => {
-        const color = converColorStr('red')
-        for(let i =0; i< 10000; i++) {
+        for(let i =0; i< 20000; i++) {
             const x = i%200 * 20
             const y = Math.floor(i/200) * 20
             render.createElement({  
                 imgId,
                 position: { x, y },
-                color,
+                color: converColorStr('rgba(255,0, 0, 1)'),
             })
         }
     }

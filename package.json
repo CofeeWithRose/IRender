@@ -1,6 +1,6 @@
 {
   "name": "i-render",
-  "version": "0.0.27",
+  "version": "0.0.29",
   "description": "light and fast image render based on webgl.",
   "main": "lib/src/index.js",
   "files": [
@@ -12,7 +12,8 @@
     "build": "tsc&&node ./build/index.js",
     "dev": "start-storybook -p 6006",
     "build-storybook": "npm run build && build-storybook -o ./docs",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "prepublishOnly": "npm run build"
   },
   "author": "cofeewithrose",
   "license": "MIT",

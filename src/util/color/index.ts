@@ -1,7 +1,12 @@
 import { RGBA } from "../../Data/RGBA";
 import * as KEYWORDS_COLOR from './const'
+import { Cache } from './cache'
 
 Object.values(KEYWORDS_COLOR).forEach(v => Object.freeze(v))
+
+
+const colorCache = new Cache<string, RGBA>()
+
 
 export type ColorStr = keyof typeof KEYWORDS_COLOR
 
@@ -28,7 +33,12 @@ export function converColorStr(colorStr: string): RGBA| undefined
  */
 export function converColorStr(colorStr: ColorStr|string):RGBA|undefined {
     try{
-        return converColor(colorStr)
+        let c = colorCache.get(colorStr)
+        if(!c) {
+            c = converColor(colorStr)
+            colorCache.set(colorStr, c)
+        }
+        return c
     }catch(e){
         console.warn('fail to convert color' + colorStr)
     }
