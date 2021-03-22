@@ -6,12 +6,14 @@ export default {
     component: CreatePerformence,
 };
 
+const COUNT = 20000
+
 export function CreatePerformence() {
     const canvasRef = useRef()
     const [duration, setDuration] = useState(NaN)
    
     const initElement = (render: IRender, imgId: number) => {
-        for(let i =0; i< 20000; i++) {
+        for(let i =0; i< COUNT; i++) {
             const x = i%200 * 20
             const y = Math.floor(i/200) * 20
             render.createElement({  
@@ -36,7 +38,7 @@ export function CreatePerformence() {
     }, [])
 
     return <div> 
-        <p>create usage: { duration} ms</p> 
+        <p>  create {COUNT} elemet usage: { duration} ms</p> 
         <canvas ref={canvasRef} width={800} height={800} />
     </div>
 }
