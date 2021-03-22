@@ -1,6 +1,6 @@
 import { black, white } from "../util/color/const"
 
-export class RGBA {
+export interface RGBA {
 
     /**
      * 0~255
@@ -22,12 +22,6 @@ export class RGBA {
      */
     a: number
     
-    constructor(r: number, g: number, b: number, a: number){
-        this.r = r
-        this.r = g
-        this.b = b
-        this.a = a
-    }
 }
 
 export const WHITE: RGBA = { ...white}
