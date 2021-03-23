@@ -370,13 +370,13 @@ export class IRender {
       this.updateZindex()
       el.setPosition(params.position.x, params.position.y)
       el.setImgId(params.imgId)
-      const { r, g, b, a } = params.color|| WHITE
-      el.setColor( r, g, b, a )
+      const color = params.color|| WHITE
+      el.setColor( color.r, color.g, color.b, color.a )
       el.setRotation(0)
       el.setScale(1,1)
-      const { w, h } = this.textureManager.getImageInfo(el.imgId)
-      el.setTextureSize(w, h)
-      el.setSize(w, h)
+      const info = this.textureManager.getImageInfo(el.imgId)
+      el.setTextureSize(info.w, info.h)
+      el.setSize(info.w, info.h)
     }
 
     createElement( params: IElementParams['I_IMAGE'] ): IElements['I_IMAGE'] {
@@ -433,10 +433,10 @@ export class IRender {
 
         const startIndex = elementIndex * 2
 
-        const { x, y } = this.textureManager.getImageInfo(imgId)
+        const info = this.textureManager.getImageInfo(imgId)
 
-        this.attrData.a_texCoord[startIndex] = x
-        this.attrData.a_texCoord[startIndex + 1] = y
+        this.attrData.a_texCoord[startIndex] = info.x
+        this.attrData.a_texCoord[startIndex + OFFEST1] = info.y
 
         this.imageIdBufferChanged = true
         this.update()
@@ -459,10 +459,8 @@ export class IRender {
     private updateScale: UpdateHandle['updateScale'] = (elementIndex, scale) => {
 
       const startIndex = elementIndex * 2
-      const {x, y} = scale
-
-      this.attrData.a_scale[startIndex] = x
-      this.attrData.a_scale[startIndex + 1] = y
+      this.attrData.a_scale[startIndex] = scale.x
+      this.attrData.a_scale[startIndex + 1] = scale.y
 
       this.scaleChange = true
       this.update()
@@ -478,12 +476,12 @@ export class IRender {
 
     }
 
-    private updateSize: UpdateHandle['updateSize'] = (elementIndex, { x: w, y:h }) => {
+    private updateSize: UpdateHandle['updateSize'] = (elementIndex, size) => {
 
       const startIndex = elementIndex  *2
       
-      this.attrData.a_spriteSize[startIndex] = w
-      this.attrData.a_spriteSize[startIndex + 1] = h
+      this.attrData.a_spriteSize[startIndex] = size.x
+      this.attrData.a_spriteSize[startIndex + 1] = size.y
 
       this.sizeChanged = true
       this.update()

@@ -1,3 +1,10 @@
+
+export function mathLog2Polyfill() {
+  if (!Math.log2) Math.log2 = function(x) {
+    return Math.log(x) * Math.LOG2E;
+  };
+}
+
 export class TextureCanvasManager {
 
     canvas: HTMLCanvasElement
@@ -27,6 +34,7 @@ export class TextureCanvasManager {
     }
 
     protected normolizeSize(size: number): number {
+      mathLog2Polyfill()
       const f = Math.ceil(Math.log2(size))
       return Math.pow(2, Math.min(f, 13))
     }
