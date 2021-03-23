@@ -10,8 +10,7 @@ export class TextureCanvasManager {
 
     private pading = 1
 
-    private positionInfo: 
-    {[imgId: number]: { x: number, y: number, w: number, h:number }} = {}
+    private positionInfo: { x: number, y: number, w: number, h:number }[] = []
 
     private ctx: CanvasRenderingContext2D
   
