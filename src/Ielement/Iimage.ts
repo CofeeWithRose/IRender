@@ -21,7 +21,7 @@ export class Iimage implements Ielement  {
     /**
      * 渲染的颜色.
      */
-    readonly color: RGBA = { r:255, g:255, b: 255, a: 1 }
+    protected _color: RGBA = [ 255, 255, 255, 1 ]
     /**
      * 元素的渲染顺序下标, 由渲染引擎维护.
      * 设置zIndex，下次render渲染前,所有的元素的elementIndex可能会更改.
@@ -70,7 +70,11 @@ export class Iimage implements Ielement  {
      ){ 
       this.update = update
      }
-  
+     
+     get color(){
+       return this._color
+     }
+
      /**
       * 图像中心的世界坐标.
       * @param x 
@@ -99,10 +103,7 @@ export class Iimage implements Ielement  {
      * @param a 0~1
      */
      setColor(r: number, g: number, b: number, a:number){
-      this.color.r = r
-      this.color.g = g
-      this.color.b = b
-      this.color.a = a
+      this._color = arguments as any as RGBA
       this.update.updateColor(this.elementIndex, this.color)
     }
 

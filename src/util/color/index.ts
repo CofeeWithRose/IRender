@@ -61,44 +61,44 @@ function converColor(colorStr: string):RGBA|undefined {
         if(subStr.length ===3){
             // rgb
             const [r, g, b ] = subStr.split('')
-            return { 
-                r:  clipColor(parseInt(`${r}${r}`, 16)), 
-                g:  clipColor(parseInt(`${g}${g}`, 16)),
-                b:  clipColor(parseInt(`${b}${b}`, 16)),
-                a:1 
-            } 
+            return [ 
+                clipColor(parseInt(`${r}${r}`, 16)), 
+                clipColor(parseInt(`${g}${g}`, 16)),
+                clipColor(parseInt(`${b}${b}`, 16)),
+                1 
+            ]
         }
         if(subStr.length ===4) {
             // rgba
             const [r, g, b, a ] = subStr.split('')
-            return { 
-                r:  clipColor(parseInt(`${r}${r}`, 16)), 
-                g:  clipColor(parseInt(`${g}${g}`, 16)),
-                b:  clipColor(parseInt(`${b}${b}`, 16)),
-                a:  clipColor(parseInt(`${a}${a}`, 16))/255,
-            } 
+            return [
+                clipColor(parseInt(`${r}${r}`, 16)), 
+                clipColor(parseInt(`${g}${g}`, 16)),
+                clipColor(parseInt(`${b}${b}`, 16)),
+                clipColor(parseInt(`${a}${a}`, 16))/255,
+            ]
         }
 
         if(subStr.length === 6) {
             // rrggbb
             const [r1, r2,  g1, g2 , b1, b2 ] = subStr.split('')
-            return { 
-                r:  clipColor(parseInt(`${r1}${r2}`, 16)), 
-                g:  clipColor(parseInt(`${g1}${g2}`, 16)), 
-                b:  clipColor(parseInt(`${b1}${b2}`, 16)), 
-                a: 1
-            } 
+            return [ 
+                clipColor(parseInt(`${r1}${r2}`, 16)), 
+                clipColor(parseInt(`${g1}${g2}`, 16)), 
+                clipColor(parseInt(`${b1}${b2}`, 16)), 
+                1
+            ]
         }
 
         if(subStr.length === 8) {
             // rrggbbaa
             const [r1, r2,  g1, g2 , b1, b2, a1, a2 ] = subStr.split('')
-            return { 
-                r:  clipColor(parseInt(`${r1}${r2}`, 16)), 
-                g:  clipColor(parseInt(`${g1}${g2}`, 16)), 
-                b:  clipColor(parseInt(`${b1}${b2}`, 16)), 
-                a: clipColor(parseInt(`${a1}${a2}`, 16))/255, 
-            } 
+            return [ 
+              clipColor(parseInt(`${r1}${r2}`, 16)), 
+              clipColor(parseInt(`${g1}${g2}`, 16)), 
+              clipColor(parseInt(`${b1}${b2}`, 16)), 
+              clipColor(parseInt(`${a1}${a2}`, 16))/255, 
+            ]
         }
     }
 
@@ -124,7 +124,7 @@ function converColor(colorStr: string):RGBA|undefined {
                     clipColor(parseFloat(subStr))
                 }
             }) 
-            return { r, g, b, a: a/255 }
+            return [r, g, b, a/255]
         }
     }
     
@@ -148,7 +148,7 @@ function converColor(colorStr: string):RGBA|undefined {
                     return clipColor(parseFloat(subStr))
                 }
             }) 
-            return { r, g, b, a: 1  }
+            return [r, g, b, 1 ]
         }
     }
     

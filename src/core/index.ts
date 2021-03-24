@@ -371,7 +371,7 @@ export class IRender {
       el.setPosition(params.position.x, params.position.y)
       el.setImgId(params.imgId)
       const color = params.color|| WHITE
-      el.setColor( color.r, color.g, color.b, color.a )
+      el.setColor( color[0], color[1], color[2], color[3] )
       el.setRotation(0)
       el.setScale(1,1)
       const info = this.textureManager.getImageInfo(el.imgId)
@@ -446,11 +446,10 @@ export class IRender {
 
         const startIndex = elementIndex * 4
        
-        this.attrData.a_color[startIndex] = color.r
-        const a = Math.ceil(color.a * 255)
-        this.attrData.a_color[startIndex + OFFEST1] = color.g
-        this.attrData.a_color[startIndex + OFFEST2] = color.b
-        this.attrData.a_color[startIndex + OFFEST3] = a
+        this.attrData.a_color[startIndex] = color[0]
+        this.attrData.a_color[startIndex + OFFEST1] = color[1]
+        this.attrData.a_color[startIndex + OFFEST2] = color[2]
+        this.attrData.a_color[startIndex + OFFEST3] =  Math.ceil(color[3] * 255)
 
         this.colorBufferChanged = true
         this.update()
