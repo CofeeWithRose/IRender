@@ -34,6 +34,7 @@ export class IRender {
   
     private elementList: Iimage[] = []
 
+    protected deadElementList:  Iimage[] = []
 
     private gl:WebGLRenderingContext;
 
@@ -378,7 +379,7 @@ export class IRender {
     }
 
     createElement( params: IElementParams['I_IMAGE'] ): IElements['I_IMAGE'] {
-      const el =  new Iimage(this.handle)
+      const el = this.deadElementList.shift() || new Iimage(this.handle)
       this.initElement(el, params)
       return el
     }
@@ -396,7 +397,8 @@ export class IRender {
     destoryElement(ele: Ielement){
         const ind = this.elementList.findIndex(el => el === ele)
         if(ind > -1){
-           this.elementList.splice(ind, 1)
+           const dels =  this.elementList.splice(ind, 1)
+           this.deadElementList.push(dels[0])
            this.zIndexChange = true
            this.update()
         }
