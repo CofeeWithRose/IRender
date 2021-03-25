@@ -34,6 +34,7 @@ export class IRender {
   
     private elementList: Iimage[] = []
 
+    protected deadElementList:  Iimage[] = []
 
     private gl:WebGLRenderingContext;
 
@@ -100,8 +101,6 @@ export class IRender {
     private texture: WebGLTexture
 
     private options: typeof DEFAULT_OPTION 
-
-    private elementPool = new Set<Iimage>()
 
     private glExt: ANGLE_instanced_arrays
 
@@ -380,17 +379,9 @@ export class IRender {
     }
 
     createElement( params: IElementParams['I_IMAGE'] ): IElements['I_IMAGE'] {
-        if(this.elementPool.size <=0) {
-            const el =  new Iimage(this.handle)
-            this.initElement(el, params)
-            return el
-        }else{
-            const el = Array.from(this.elementPool)[0]
-            this.elementPool.delete(el)
-            this.initElement(el, params)
-            return el as IElements['I_IMAGE']
-        }
-      
+      const el = this.deadElementList.shift() || new Iimage(this.handle)
+      this.initElement(el, params)
+      return el
     }
     private updatePosition: UpdateHandle['updatePosition'] = (elementIndex, position ) => {
 
@@ -406,10 +397,10 @@ export class IRender {
     destoryElement(ele: Ielement){
         const ind = this.elementList.findIndex(el => el === ele)
         if(ind > -1){
-           const [deleted] =  this.elementList.splice(ind, 1)
-           this.elementPool.add(deleted)
-           deleted.position.x = Number.MIN_VALUE 
-           deleted.position.y = Number.MIN_VALUE
+           const dels =  this.elementList.splice(ind, 1)
+           this.deadElementList.push(dels[0])
+           this.zIndexChange = true
+           this.update()
         }
     }
 
