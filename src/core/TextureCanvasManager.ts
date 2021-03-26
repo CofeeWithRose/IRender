@@ -1,5 +1,6 @@
+import { Vec2 } from "../Data/Vec2";
 
-
+export interface TxtureInfo { position: Vec2, size: Vec2 }
 export class TextureCanvasManager {
 
     canvas: HTMLCanvasElement
@@ -12,7 +13,7 @@ export class TextureCanvasManager {
 
     private pading = 1
 
-    private positionInfo: { x: number, y: number, w: number, h:number }[] = []
+    private positionInfo: TxtureInfo[] = []
 
     private ctx: CanvasRenderingContext2D
   
@@ -34,10 +35,8 @@ export class TextureCanvasManager {
       this.checkSpace(img.width, img.height)
       this.ctx.drawImage(img, this.curX , this.curY, img.width, img.height)
       this.positionInfo[id] = { 
-        x: this.curX,
-        y: this.curY,
-        w: img.width,
-        h: img.height,
+        position: { x: this.curX, y: this.curY},
+        size: { x: img.width, y:  img.height },
       }
       this.movePosition(img.width, img.height)
       return id
@@ -65,7 +64,7 @@ export class TextureCanvasManager {
       }
     }
 
-    getImageInfo(imgId: number): {x: number, y: number, w: number, h: number} {
+    getImageInfo(imgId: number): TxtureInfo {
       return this.positionInfo[imgId]
     }
   

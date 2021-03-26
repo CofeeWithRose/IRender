@@ -1,17 +1,34 @@
 import { RGBA, WHITE } from '../Data/RGBA'
 import { ONE, Vec2, ZERO } from '../Data/Vec2'
-import {Ielement, UpdateHandle} from './Ielement'
 
+export interface UpdateHandle {
+  updatePosition: (elementIndex:number, position: Vec2) => void
+  
+  updateImg: (elementIndex:number, imgId: number) => void
+
+  updateColor: (elementIndex:number, color: RGBA) => void
+
+  updateZindex: () => void
+
+  updateRotation: ( elementIndex: number, rotation: number ) => void
+
+  updateScale: ( elementIndex: number, scale: Vec2 ) => void
+
+  updateSize: (elementIndex: number, size: Vec2) => void
+
+  updateOffset: (elementIndex: number, offset: Vec2) => void
+  
+}
 
 export interface IimageInfo { imgId: number,  position: Vec2, color?: RGBA}
 
 
-export class Iimage implements Ielement  {
+export class Iimage {
 
     /**
      * 元素中心坐标.
      */
-    readonly position: Vec2 = {x: 0, y: 0 }
+    position: Vec2 = {x: 0, y: 0 }
 
     /**
      * 被渲染的贴图ID.
@@ -21,7 +38,7 @@ export class Iimage implements Ielement  {
     /**
      * 渲染的颜色.
      */
-    readonly color: RGBA = { r:255, g:255, b: 255, a: 1 }
+    color: RGBA = { r:255, g:255, b: 255, a: 1 }
     /**
      * 元素的渲染顺序下标, 由渲染引擎维护.
      * 设置zIndex，下次render渲染前,所有的元素的elementIndex可能会更改.
@@ -33,7 +50,7 @@ export class Iimage implements Ielement  {
     /**
      * 缩放.
      */
-    readonly scale: Vec2 =  { x: 1, y: 1 }
+    scale: Vec2 =  { x: 1, y: 1 }
 
     /**
      * 以图形的中心为旋转中心的旋转角度
@@ -44,24 +61,22 @@ export class Iimage implements Ielement  {
     /**
      * 贴图的偏移位置.
      */
-    readonly offset: Vec2 = {x: 0, y: 0 }
+    offset: Vec2 = {x: 0, y: 0 }
 
     /**
      * scale后的size.
      */
-    readonly size: Vec2 = { x: 1, y: 1 }
-
-    // readonly IELEMENT_TYPE = I_ELEMENT_TYPES.I_IMAGE
+    size: Vec2 = { x: 1, y: 1 }
 
     /**
      * 贴图的size.
      */
-    readonly texTureSize: Vec2 = {x: 0, y: 0 }
+    texTureSize: Vec2 = {x: 0, y: 0 }
 
     /**
      * scale前的size.
      */
-    readonly elementSize: Vec2 = {x: 0, y: 0 }
+    elementSize: Vec2 = {x: 0, y: 0 }
 
     readonly update:UpdateHandle
 
@@ -76,9 +91,8 @@ export class Iimage implements Ielement  {
       * @param x 
       * @param y 
       */
-    setPosition(x: number, y: number){
-        this.position.x = x
-        this.position.y = y
+    setPosition(position: Vec2){
+        this.position = position
         this.update.updatePosition(this.elementIndex, this.position)
     }
 
@@ -98,11 +112,8 @@ export class Iimage implements Ielement  {
      * @param b 0~255
      * @param a 0~1
      */
-     setColor(r: number, g: number, b: number, a:number){
-      this.color.r = r
-      this.color.g = g
-      this.color.b = b
-      this.color.a = a
+     setColor(color: RGBA){
+      this.color=color
       this.update.updateColor(this.elementIndex, this.color)
     }
 
@@ -132,10 +143,9 @@ export class Iimage implements Ielement  {
      * @param scaleX 
      * @param scaleY 
      */
-    setScale(scaleX: number, scaleY: number) {
-      this.scale.x = scaleX
-      this.scale.y = scaleY
-      this.setScaledSize(this.elementSize.x, this.elementSize.y)
+    setScale(scale: Vec2) {
+      this.scale = scale
+      this.setScaledSize(this.elementSize)
       this.update.updateScale(this.elementIndex, this.scale)
     }
 
@@ -144,9 +154,8 @@ export class Iimage implements Ielement  {
      * @param offsetX 
      * @param offsetY 
      */
-    setOffset( offsetX: number, offsetY: number) {
-      this.offset.x = offsetX
-      this.offset.y = offsetY
+    setOffset( offset: Vec2) {
+      this.offset = offset
       this.update.updateOffset(this.elementIndex, this.offset)
     }
 
@@ -155,9 +164,8 @@ export class Iimage implements Ielement  {
      * @param w 
      * @param h 
      */
-    setTextureSize(w: number, h: number) {
-      this.texTureSize.x = w
-      this.texTureSize.y = h
+    setTextureSize(tSize: Vec2) {
+      this.texTureSize = tSize
     }
 
     /**
@@ -165,9 +173,11 @@ export class Iimage implements Ielement  {
      * @param w 
      * @param h 
      */
-    private setScaledSize(w: number, h: number) {
-      this.size.x = Math.abs(w * this.scale.x)
-      this.size.y =Math.abs( h * this.scale.y)
+    private setScaledSize(size: Vec2) {
+      this.size = {
+        x: Math.abs(size.x * this.scale.x),
+        y: Math.abs(size.y * this.scale.y)
+      }
     }
 
     /**
@@ -175,12 +185,9 @@ export class Iimage implements Ielement  {
      * @param w 
      * @param h 
      */
-    setSize(w: number, h: number) {
-      
-      this.elementSize.x = w
-      this.elementSize.y = h
-      
-      this.setScaledSize(w, h)
+    setSize(size: Vec2) {
+      this.elementSize = size
+      this.setScaledSize(size)
       this.update.updateSize(this.elementIndex, this.elementSize)
     }
 

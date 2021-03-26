@@ -1,11 +1,11 @@
-import { Iimage } from '../Ielement/Iimage'
+import { Iimage, UpdateHandle } from '../Ielement/Iimage'
 import { FRAGMENT_SHADER, VERTEX_SHADER, NOT_PREMUTIPED_FRAGMENT_SHADER } from '../shader';
 import { compileShader, SHADER_TYPE } from '../util';
 import { TextureCanvasManager } from './TextureCanvasManager'
-import {  Ielement, UpdateHandle } from '../Ielement/IElement'
 import { IElementParams, IElements, IElementTypes, I_ELEMENT_TYPES } from './infer';
 import { WHITE } from '../Data/RGBA';
 import { OFFEST1, OFFEST2, OFFEST3 } from '../Data/Number';
+import { ONE } from '../Data/Vec2';
 
 
 export * from './infer/index'
@@ -381,15 +381,15 @@ export class IRender {
       el.elementIndex = this.elementList.length
       this.elementList.push(el)
       this.updateZindex()
-      el.setPosition(params.position.x, params.position.y)
+      el.setPosition(params.position)
       el.setImgId(params.imgId)
       const color = params.color|| WHITE
-      el.setColor( color.r, color.g, color.b, color.a )
+      el.setColor( color )
       el.setRotation(0)
-      el.setScale(1,1)
+      el.setScale(ONE)
       const info = this.textureManager.getImageInfo(el.imgId)
-      el.setTextureSize(info.w, info.h)
-      el.setSize(info.w, info.h)
+      el.setTextureSize(info.size)
+      el.setSize(info.size)
     }
 
     createElement( params: IElementParams['I_IMAGE'] ): IElements['I_IMAGE'] {
@@ -408,7 +408,7 @@ export class IRender {
         this.update()
     }
 
-    destoryElement(ele: Ielement){
+    destoryElement(ele: Iimage){
         const ind = this.elementList.findIndex(el => el === ele)
         if(ind > -1){
            const dels =  this.elementList.splice(ind, 1)
@@ -440,8 +440,8 @@ export class IRender {
 
         const info = this.textureManager.getImageInfo(imgId)
 
-        this.attrData.a_texCoord[startIndex] = info.x
-        this.attrData.a_texCoord[startIndex + OFFEST1] = info.y
+        this.attrData.a_texCoord[startIndex] = info.position.x
+        this.attrData.a_texCoord[startIndex + OFFEST1] = info.position.y
 
         this.imageIdBufferChanged = true
         this.update()

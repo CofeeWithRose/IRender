@@ -37,6 +37,7 @@ export function converColorStr(colorStr: ColorStr|string):RGBA|undefined {
         if(!c) {
             c = converColor(colorStr)
             colorCache.set(colorStr, c)
+            console.log('miss color cache')
         }
         return c
     }catch(e){

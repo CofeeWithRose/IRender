@@ -1,22 +1,25 @@
-export class Cache<K, V> {
+export class Cache<V> {
 
-    protected map = new Map<K,V>()
+    protected map = {}
 
-    protected countMap = new Map<K, number>()
+    protected countMap = new Map<string, number>()
 
     constructor( 
         protected size: number = 100
     ){}
 
-    set(key: K, val:V) {
+    set(key: string, val:V) {
         
-        if(this.map.size >= this.size) {
-            this.map.clear()
-        }
-        this.map.set(key, val)
+        // if(this.map.size >= this.size) {
+        //     this.map.clear()
+        // }
+        // this.map.set(key, val)
+
+        this.map[key] = val
     }
 
-    get(key: K) {
-        return this.map.get(key)
+    get(key: string) {
+        // return this.map.get(key)
+        return this.map[key]
     }
 }
