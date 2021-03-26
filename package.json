@@ -39,7 +39,10 @@
   "directories": {
     "lib": "lib"
   },
-  "keywords": [],
+  "keywords": [
+    "webgl",
+    "sprit"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CofeeWithRose/IRender.git"
