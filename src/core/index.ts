@@ -28,6 +28,12 @@ const DEFAULT_OPTION = {
 }
 export type IRenderOptions = typeof DEFAULT_OPTION
 
+function mathLog2Polyfill() {
+  if (!Math.log2) Math.log2 = function(x) {
+    return Math.log(x) * Math.LOG2E;
+  };
+}
+
 export class IRender {
 
     private  textureManager: TextureCanvasManager;
@@ -108,8 +114,16 @@ export class IRender {
 
     protected handle: UpdateHandle;
 
+    protected normolizeSize(size: number): number {
+      mathLog2Polyfill()
+      const f = Math.ceil(Math.log2(size))
+      return Math.pow(2, Math.min(f, 13))
+    }
+  
+
     constructor( glCanvas: HTMLCanvasElement,   options?: Partial<typeof DEFAULT_OPTION>   ){
-        this.options = { ...DEFAULT_OPTION,  ...options}
+        const textureSize = this.normolizeSize(options.textureSize||DEFAULT_OPTION.textureSize)
+        this.options = { ...DEFAULT_OPTION, ...options, textureSize }
         this.glCanvas = glCanvas
         this.textureManager =  new  TextureCanvasManager( this.options.textureSize )
         this.gl = glCanvas.getContext('webgl', { alpha: true })

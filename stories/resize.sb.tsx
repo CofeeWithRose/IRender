@@ -9,17 +9,21 @@ export default {
     component: Resize,
 };
 
+const r = 40
+
 export function Resize() {
 
   const canvasRef = useRef<HTMLCanvasElement>()
 
   useEffect(() => {
-    const render = new IRender(canvasRef.current)
-    const circleId = loadCircle(render, 10)
+    const render = new IRender(canvasRef.current, {
+      textureSize: 1000,
+    })
+    const circleId = loadCircle(render, r)
     render.createElement({
       imgId: circleId,
-      position: {x: 10, y: 10},
-      color: converColorStr('red')
+      position: {x: r+10, y: r+10},
+      color: converColorStr('black')
     })
 
     setTimeout(() => {
