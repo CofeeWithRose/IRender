@@ -40,8 +40,8 @@ export function CreatePerformence() {
         irenderRef.current.curCount++
 
       }
-      irender.updateImidiatly()
-      setDuration(performance.now() - n)
+      // irender.updateImidiatly()
+      // setDuration(performance.now() - n)
     }
 
     const remove = () => {
@@ -52,19 +52,19 @@ export function CreatePerformence() {
         irender.destoryElement(el)
         irenderRef.current.curCount--
       })
-      irender.updateImidiatly()
-      setDuration(performance.now() - n)
+      // irender.updateImidiatly()
+      // setDuration(performance.now() - n)
     }
 
     // console.log('irenderRef.current.curCount', irenderRef.current.curCount)
 
     useEffect(() => {
-        const render = new IRender(canvasRef.current, { autoUpdate: false })
+        const render = new IRender(canvasRef.current, { autoUpdate: true })
         irenderRef.current.irender = render
         const imgId = loadCircle(render, 10)
         irenderRef.current.imgId = imgId
         init(render, imgId)
-        render.updateImidiatly()
+        // render.updateImidiatly()
     }, [])
 
     return <div> 
