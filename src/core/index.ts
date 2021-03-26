@@ -167,8 +167,8 @@ export class IRender {
     }
 
 
-    getTexture = () => {
-        return this.textureManager.canvas
+    getTexture(){
+      return this.textureManager.canvas
     }
 
     private bufferData = (target: number, glBuffer: WebGLBuffer, data: BufferSource ) => {
@@ -483,22 +483,25 @@ export class IRender {
 
     }
 
+    private setElZindex  = (el: Iimage, index: number) => {
+      if(index !==el.elementIndex) {
+        el.elementIndex = index
+        this.updatePosition(index, el.position)
+        this.updateImage(index, el.imgId)
+        this.updateColor(index, el.color)
+        this.updateSize(index, el.elementSize)
+        this.updateRotation(index, el.rotation)
+        this.updateScale(index, el.scale)
+        this.updateOffset(index, el.offset)
+      }
+    }
+
+    private incrace = (el1: Iimage, el2: Iimage) =>  el1.zIndex - el2.zIndex
+
     private handleZindexChange() {
       if(this.zIndexChange) {
-
-        this.elementList.sort((el1, el2) =>  el1.zIndex - el2.zIndex)
-        this.elementList.forEach((el, index) => {
-          if(index !==el.elementIndex) {
-            el.elementIndex = index
-            this.updatePosition(index, el.position)
-            this.updateImage(index, el.imgId)
-            this.updateColor(index, el.color)
-            this.updateSize(index, el.elementSize)
-            this.updateRotation(index, el.rotation)
-            this.updateScale(index, el.scale)
-            this.updateOffset(index, el.offset)
-          }
-        })
+        this.elementList.sort(this.incrace)
+        this.elementList.forEach(this.setElZindex)
         this.zIndexChange = false
       }
     }
