@@ -28,7 +28,7 @@ export class Iimage {
     /**
      * 元素中心坐标.
      */
-    position: Vec2 = {x: 0, y: 0 }
+    position: Vec2;
 
     /**
      * 被渲染的贴图ID.
@@ -38,7 +38,7 @@ export class Iimage {
     /**
      * 渲染的颜色.
      */
-    color: RGBA = { r:255, g:255, b: 255, a: 1 }
+    color: RGBA;
     /**
      * 元素的渲染顺序下标, 由渲染引擎维护.
      * 设置zIndex，下次render渲染前,所有的元素的elementIndex可能会更改.
@@ -50,7 +50,7 @@ export class Iimage {
     /**
      * 缩放.
      */
-    scale: Vec2 =  { x: 1, y: 1 }
+    scale: Vec2 = ONE
 
     /**
      * 以图形的中心为旋转中心的旋转角度
@@ -61,22 +61,22 @@ export class Iimage {
     /**
      * 贴图的偏移位置.
      */
-    offset: Vec2 = {x: 0, y: 0 }
+    offset: Vec2;
 
     /**
      * scale后的size.
      */
-    size: Vec2 = { x: 1, y: 1 }
+    size: Vec2;
 
     /**
      * 贴图的size.
      */
-    texTureSize: Vec2 = {x: 0, y: 0 }
+    texTureSize: Vec2;
 
     /**
      * scale前的size.
      */
-    elementSize: Vec2 = {x: 0, y: 0 }
+    elementSize: Vec2 = ONE;
 
     readonly update:UpdateHandle
 

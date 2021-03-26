@@ -41,7 +41,7 @@ export function CreatePerformence() {
 
       }
       // irender.updateImidiatly()
-      // setDuration(performance.now() - n)
+      setDuration(performance.now() - n)
     }
 
     const remove = () => {
