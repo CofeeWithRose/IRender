@@ -2,6 +2,7 @@ import { IRender, converColorStr } from 'i-render';
 import React, { useEffect, useRef } from 'react'
 import { ConverColorStr } from './color.sb';
 import { loadCircle, loadReact, loadText } from './utils';
+import { diffImage } from './utils/diffImage';
 
 export default {
     title: 'Blend',
@@ -97,6 +98,10 @@ export function Blend(){
             c1: 'rgba(50,255,255,0.5)',
             c2: 'rgba(50,255,255,0.5)',
         })
+        // irender.updateImidiatly()
+        // if(!ctx) return
+
+        // diffImage(irender.getImageData(0,0, 1000, 100), ctx.getImageData(0,0, 1000, 100))
 
     }, [])
     return <div>

@@ -519,8 +519,23 @@ export class IRender {
     }
 
     getImageData(sx: number, sy: number, sw: number, sh: number): ImageData {
-      var pixels = new Uint8ClampedArray(sw * sh * 4);
+      const pixels = new Uint8ClampedArray(sw * sh * 4);
+     
       this.gl.readPixels(sx, sy, sw, sh, this.gl.RGBA, this.gl.UNSIGNED_BYTE, pixels);
+      for(let rInd = 0; rInd<pixels.length; rInd+=4){
+        const a = pixels[rInd+3]
+        if(a<255){
+          const alpha = a/255
+          const gInd = rInd + 1
+          const bInd = rInd + 2
+          const r = pixels[rInd]
+          const g = pixels[gInd]
+          const b= pixels[bInd]
+          pixels[rInd] = r/alpha
+          pixels[gInd] = g/alpha
+          pixels[bInd] = b/alpha
+        }
+      }
       return new ImageData(pixels, sw, sh)
     }
 
