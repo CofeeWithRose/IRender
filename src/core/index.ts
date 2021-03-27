@@ -119,7 +119,7 @@ export class IRender {
   
 
     constructor( glCanvas: HTMLCanvasElement,   options?: Partial<typeof DEFAULT_OPTION>   ){
-        const textureSize = this.normolizeSize(options.textureSize||DEFAULT_OPTION.textureSize)
+        const textureSize = this.normolizeSize(options?.textureSize||DEFAULT_OPTION.textureSize)
         this.options = { ...DEFAULT_OPTION, ...options, textureSize }
         this.glCanvas = glCanvas
         this.textureManager =  new  TextureCanvasManager( this.options.textureSize )
