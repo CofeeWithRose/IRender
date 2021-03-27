@@ -16,6 +16,7 @@ export  function compileShader(
       [SHADER_TYPE.FRAGMENT_SHADER]: gl.FRAGMENT_SHADER,
     }
     const shader = gl.createShader(map[type])
+    if(!shader) throw new Error('createShader fail'+map[type])
     gl.shaderSource(shader, source)
     gl.compileShader(shader)
     console.log('compile shader success:', gl.getShaderParameter(shader, gl.COMPILE_STATUS) )

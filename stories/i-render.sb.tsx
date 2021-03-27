@@ -28,20 +28,21 @@ const borderR = 0
 
 
 export function PerformenceTest() {
-    const cRef = useRef()
+    const cRef = useRef<HTMLCanvasElement>(null)
 
-    const textureRef = useRef<HTMLCanvasElement>()
+    const textureRef = useRef<HTMLCanvasElement>(null)
 
-    const glRenderRef  =  useRef<IRender>()
+    const glRenderRef  =  useRef<IRender|null>(null)
 
     useEffect(() =>{
-
+        if(!cRef.current) return
         const glRender = new IRender(cRef.current, { maxNumber: xCount * yCount })
         glRenderRef.current = glRender
         const circle = document.createElement('canvas')
         circle.width = (circleR+ borderR) *2
         circle.height = (circleR+ borderR)  *2
         const ctx = circle.getContext('2d')
+        if(!ctx) return
         ctx.fillStyle= "rgba(50,255,255,0.5)"
         ctx.lineWidth= borderR
         ctx.arc(circleR, circleR, circleR,0,  Math.PI *2)
@@ -99,7 +100,9 @@ export function PerformenceTest() {
     }, [])
 
     useEffect(() => {
+      if(!textureRef.current|| !glRenderRef.current) return
       const ctx = textureRef.current.getContext('2d')
+      if(!ctx) return
       ctx.drawImage( glRenderRef.current.getTexture(), 0,0, 200,200, 0,0, 200,200 )
     }, [])
 
@@ -128,18 +131,19 @@ export function PerformenceTest() {
 }
 
 export function Canvas2dPerformenceTest() {
-  const cRef = useRef()
+  const cRef = useRef<HTMLCanvasElement>(null)
 
-    const textureRef = useRef<HTMLCanvasElement>()
+    const textureRef = useRef<HTMLCanvasElement>(null)
 
-    const glRenderRef  =  useRef<IRender>()
+    const glRenderRef  =  useRef<IRender|null>(null)
 
     useEffect(() =>{
       console.log('total:', xCount* yCount)
+      if(!cRef.current) return
       const canvas:HTMLCanvasElement = cRef.current
       if (! canvas) return
       const ctx = canvas.getContext('2d')
-       
+      if (! ctx) return
       let frameCount = 0
       let reqH = { a : 0};
       ctx.fillStyle = 'rgba(255,125,0,0.3)'
@@ -195,14 +199,14 @@ export function Canvas2dPerformenceTest() {
 
 
 export function ColorTest() {
-  const cRef = useRef()
+  const cRef = useRef<HTMLCanvasElement>(null)
 
-  const textureRef = useRef<HTMLCanvasElement>()
+  const textureRef = useRef<HTMLCanvasElement>(null)
 
-  const glRenderRef  =  useRef<IRender>()
+  const glRenderRef  =  useRef<IRender|null>(null)
 
   useEffect(() =>{
-
+      if (! cRef.current) return
       const glRender = new IRender(cRef.current, { maxNumber: 4})
       const circleR = 50;
 
@@ -211,6 +215,7 @@ export function ColorTest() {
       circle.width = circleR *2
       circle.height = circleR  *2
       const ctx = circle.getContext('2d')
+      if (! ctx) return
       ctx.fillStyle= "rgba(255, 255, 255, 1)"
       ctx.strokeStyle="rgba(0,0,255, 1)"
       ctx.lineWidth= 10
@@ -254,7 +259,9 @@ export function ColorTest() {
   }, [])
 
   useEffect(() => {
+    if (! textureRef.current|| !glRenderRef.current) return
     const ctx = textureRef.current.getContext('2d')
+    if (! ctx) return
     ctx.drawImage( glRenderRef.current.getTexture(), 0,0, 200,200, 0,0, 200,200 )
   }, [])
 
@@ -282,20 +289,21 @@ export function ColorTest() {
 
 export function zIndexTest() {
 
-  const cRef = useRef()
+  const cRef = useRef<HTMLCanvasElement>(null)
 
-  const textureRef = useRef<HTMLCanvasElement>()
+  const textureRef = useRef<HTMLCanvasElement>(null)
 
-  const glRenderRef  =  useRef<IRender>()
+  const glRenderRef  =  useRef<IRender|null>(null)
 
   useEffect(() =>{
-
+      if(!cRef.current) return
       const glRender = new IRender(cRef.current, { maxNumber: 30 })
       glRenderRef.current = glRender
       const circle = document.createElement('canvas')
       circle.width = (circleR+ borderR) *2
       circle.height = (circleR+ borderR)  *2
       const ctx = circle.getContext('2d')
+      if(!ctx) return
       ctx.fillStyle= "rgba(255,255,255,1)"
       ctx.lineWidth= borderR
       ctx.fillRect(0,0,circleR*2,circleR*2)
@@ -337,7 +345,9 @@ export function zIndexTest() {
   }, [])
 
   useEffect(() => {
+    if(!textureRef.current||!glRenderRef.current) return
     const ctx = textureRef.current.getContext('2d')
+    if(!ctx) return
     ctx.drawImage( glRenderRef.current.getTexture(), 0,0, 200,200, 0,0, 200,200 )
   }, [])
   
@@ -364,13 +374,13 @@ export function zIndexTest() {
 
 export function TextureTest() {
 
-  const cRef = useRef()
+  const cRef = useRef<HTMLCanvasElement>(null)
 
-  const wrapRef = useRef<HTMLDivElement>()
+  const wrapRef = useRef<HTMLDivElement>(null)
 
-  const textureRef = useRef<HTMLCanvasElement>()
+  const textureRef = useRef<HTMLCanvasElement>(null)
 
-  const glRenderRef  =  useRef<IRender>()
+  const glRenderRef  =  useRef<IRender|null>(null)
 
   const addNumberTexture = (): { [ number: number]: number } => {
     const { current: glRender } =  glRenderRef
@@ -379,6 +389,7 @@ export function TextureTest() {
     canvas.width = 80
     canvas.height = 50
     const ctx = canvas.getContext('2d')
+    if(!ctx|| !glRender) return {}
     ctx.textAlign='left'
     ctx.textBaseline ='top'
     ctx.fillStyle= 'red'
@@ -394,6 +405,7 @@ export function TextureTest() {
   }
 
   useEffect(() => {
+    if(!cRef.current) return
     const glRender = new IRender(cRef.current, { maxNumber: xCount * yCount })
     glRenderRef.current = glRender
    

@@ -13,9 +13,10 @@ const r = 40
 
 export function Resize() {
 
-  const canvasRef = useRef<HTMLCanvasElement>()
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
+    if(!canvasRef.current) return
     const render = new IRender(canvasRef.current, {
       textureSize: 1000,
     })
@@ -27,6 +28,7 @@ export function Resize() {
     })
 
     setTimeout(() => {
+      if(!canvasRef.current) return
       canvasRef.current.width=100
       canvasRef.current.height =100
       render.resize()

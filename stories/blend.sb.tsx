@@ -32,16 +32,17 @@ function createDiffDemo({irender,circle1, circle2, position, c1, c2, ctx} ){
 }
 
 export function Blend(){
-    const canvasRef = useRef<HTMLCanvasElement>()
+    const canvasRef = useRef<HTMLCanvasElement>(null)
 
-    const canvas2dRef = useRef<HTMLCanvasElement>()
+    const canvas2dRef = useRef<HTMLCanvasElement>(null)
 
     useEffect(() => {
+        if(!canvasRef.current || !canvas2dRef.current) return
         const glCanvas = document.createElement('canvas')
         glCanvas.width = 1000
         glCanvas.height = 1000
 
-        const irender = new IRender(canvasRef.current, {})
+        const irender = new IRender(canvasRef.current)
         const circle1 = loadCircle(irender, 40)
         const circle2 = loadCircle(irender, 20) 
 

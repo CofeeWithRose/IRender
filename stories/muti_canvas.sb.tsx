@@ -18,7 +18,6 @@ const pandding = 1
 
 const xCount = 100
 
-const can = document.createElement('canvas')
 
 function dist(p1:Vec2, p2: Vec2) {
   const dx = p2.x - p1.x
@@ -27,7 +26,7 @@ function dist(p1:Vec2, p2: Vec2) {
 }
 
 export function Muticanvas(){
-  const arr = Array.from(new Array(100)).map( (v, ind)=> ({id: ind, canvas: can, color: ind%2? 'red': 'yellow'})  )
+  const arr: {id: number, canvas: null| HTMLCanvasElement, color: string}[] = Array.from(new Array(100)).map( (v, ind)=> ({id: ind, canvas: null, color: ind%2? 'red': 'yellow'})  )
  
   useEffect(() => {
     const glCanavs = document.createElement('canvas')
@@ -51,10 +50,12 @@ export function Muticanvas(){
     }
     
     arr.forEach( ({canvas}, ind) => {
+      if(!canvas) return
       const {r, g, b, a} = converColorStr(ind%2? 'darkorange': 'cadetblue')
       aelArr.forEach(el => el.setColor(r,g,b,a))
       irender.updateImidiatly();
       const ctx = canvas.getContext('2d');
+      if(!ctx) return
       ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height)
       ctx&&ctx.drawImage(irender.glCanvas, 0, 0)
     })
@@ -67,11 +68,13 @@ export function Muticanvas(){
 
         const {r,g,b,a} = converColorStr(ind%2? 'darkorange': 'cadetblue')
         const canvas = arr[ind].canvas
+        if(!canvas) return
         const ctx = canvas.getContext('2d')
         aelArr.forEach(el => {
           el.setColor(r,g,b,a)
         })
         irender.updateImidiatly()
+        if(!ctx) return
         ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height)
         ctx.drawImage(irender.glCanvas, 0, 0)
       });
@@ -86,7 +89,7 @@ export function Muticanvas(){
       const ind = arr.findIndex(({canvas}) => canvas === e.target )
       if(ind> -1) {
         const originColor = converColorStr(ind%2? 'darkorange': 'cadetblue')
-        const {r,g,b,a} =  converColorStr(ind%2? 'rgba(255,255,0,1)': 'rgba(0,255,200,1)')
+        const {r,g,b,a} =  converColorStr(ind%2? 'rgba(255,255,0,1)': 'rgba(0,255,200,1)')|| converColorStr('white')
         const p = {
           x:e.offsetX,
           y: e.offsetY,
@@ -103,6 +106,7 @@ export function Muticanvas(){
         })
         irender.updateImidiatly()
         const ctx = (e.target as HTMLCanvasElement).getContext('2d')
+        if(!ctx) return
         ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height)
         ctx && ctx.drawImage(irender.glCanvas, 0, 0)
       }

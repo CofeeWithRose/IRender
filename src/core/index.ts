@@ -42,10 +42,10 @@ export class IRender {
     private gl:WebGLRenderingContext;
 
     private uniformLocations: { 
-        u_windowSize: WebGLUniformLocation,
-        u_textureSize: WebGLUniformLocation,
-        u_cameraSize: WebGLUniformLocation,
-        u_cameraPosition: WebGLUniformLocation,
+        u_windowSize: WebGLUniformLocation|null,
+        u_textureSize: WebGLUniformLocation|null,
+        u_cameraSize: WebGLUniformLocation|null,
+        u_cameraPosition: WebGLUniformLocation|null,
     };
 
     private attribuitesLocations: {
@@ -70,13 +70,13 @@ export class IRender {
     }
 
     private attrBuffer: {
-        a_position: WebGLBuffer,
-        a_spriteSize: WebGLBuffer,
-        a_texCoord: WebGLBuffer,
-        a_color: WebGLBuffer,
-        a_scale: WebGLBuffer,
-        a_rotation: WebGLBuffer,
-        a_direction: WebGLBuffer,
+        a_position: WebGLBuffer|null,
+        a_spriteSize: WebGLBuffer|null,
+        a_texCoord: WebGLBuffer|null,
+        a_color: WebGLBuffer|null,
+        a_scale: WebGLBuffer|null,
+        a_rotation: WebGLBuffer|null,
+        a_direction: WebGLBuffer|null,
     }
   
     private positionBufferChanged = false
@@ -101,11 +101,11 @@ export class IRender {
 
     private updatedId = 0
 
-    private texture: WebGLTexture
+    private texture: WebGLTexture|null
 
     private options: typeof DEFAULT_OPTION 
 
-    private glExt: ANGLE_instanced_arrays
+    private glExt: ANGLE_instanced_arrays|null
 
     public glCanvas: HTMLCanvasElement
 
@@ -132,6 +132,7 @@ export class IRender {
 
         
         const program = this.gl.createProgram()
+        if(!program) return
         compileShader(this.gl, program, VERTEX_SHADER,SHADER_TYPE.VERTEX_SHADER )
         compileShader(this.gl, program, FRAGMENT_SHADER, SHADER_TYPE.FRAGMENT_SHADER)
         this.gl.linkProgram(program)
@@ -185,32 +186,32 @@ export class IRender {
 
     private writeGLBuffer(){
 
-      if(this.positionBufferChanged) {
+      if(this.positionBufferChanged && this.attrBuffer.a_position) {
         this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_position, this.attrData.a_position)
         this.positionBufferChanged = false
       }
 
-      if(this.imageIdBufferChanged ) {
+      if(this.imageIdBufferChanged&&this.attrBuffer.a_texCoord) {
           this.bufferData(this.gl.ARRAY_BUFFER, this.attrBuffer.a_texCoord, this.attrData.a_texCoord)
           this.imageIdBufferChanged = false
       }
 
-      if ( this.sizeChanged ) {
+      if ( this.sizeChanged &&this.attrBuffer.a_spriteSize) {
         this.bufferData(this.gl.ARRAY_BUFFER, this.attrBuffer.a_spriteSize, this.attrData.a_spriteSize)
         this.sizeChanged = false
       }
 
-      if(this.colorBufferChanged){
+      if(this.colorBufferChanged && this.attrBuffer.a_color){
         this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_color, this.attrData.a_color)
         this.colorBufferChanged = false
       }
 
-      if (this.scaleChange) {
+      if (this.scaleChange && this.attrBuffer.a_scale) {
         this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_scale, this.attrData.a_scale )
         this.scaleChange = false
       }
 
-      if (this.rotationChange) {
+      if (this.rotationChange && this.attrBuffer.a_rotation) {
         this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_rotation, this.attrData.a_rotation )
         this.rotationChange = false
       }
@@ -228,6 +229,7 @@ export class IRender {
     }
 
     private render(){
+      if(!this.glExt) return
       this.glExt.drawElementsInstancedANGLE(
         this.gl.TRIANGLES,
         this.attrData.indicate.length,
@@ -290,7 +292,7 @@ export class IRender {
        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_direction, this.gl.STATIC_DRAW )
        this.gl.enableVertexAttribArray(this.attribuitesLocations.a_direction)
        this.gl.vertexAttribPointer(this.attribuitesLocations.a_direction, 2, this.gl.FLOAT, false, 0,0)
-
+        if(!this.glExt) return
         const positionBuffer = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer)
         this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_position, this.gl.STREAM_DRAW )

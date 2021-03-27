@@ -10,6 +10,7 @@
     "declaration": true,
     "allowSyntheticDefaultImports": true,
     "removeComments": false,
+    "strictNullChecks": true,
     "paths": { 
       "i-render": [ "./src/index.ts" ],
     }

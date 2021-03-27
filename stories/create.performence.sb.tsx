@@ -9,10 +9,10 @@ export default {
 const COUNT = 4000
 
 export function CreatePerformence() {
-    const canvasRef = useRef()
+    const canvasRef = useRef<HTMLCanvasElement>(null)
     const [duration, setDuration] = useState(0)
     const irenderRef = useRef<{
-      irender: IRender, imgId: number, curCount: 0,
+      irender: IRender|null, imgId: number, curCount: 0,
       elements: Iimage[]
     }>({
       irender: null,
@@ -27,6 +27,7 @@ export function CreatePerformence() {
 
     const add =() => {
       const {imgId, irender, elements} = irenderRef.current
+      if(!irender) return
       const n = performance.now()
       for(let i =0; i< COUNT; i++) {
         const x = irenderRef.current.curCount%200 * 20
@@ -47,6 +48,7 @@ export function CreatePerformence() {
     const remove = () => {
       const n = performance.now()
       const {irender, elements} = irenderRef.current
+      if(!irender) return
       const dels =  elements.splice(0, COUNT)
       dels.forEach(el => {
         irender.destoryElement(el)
@@ -59,6 +61,7 @@ export function CreatePerformence() {
     // console.log('irenderRef.current.curCount', irenderRef.current.curCount)
 
     useEffect(() => {
+        if(!canvasRef.current) return
         const render = new IRender(canvasRef.current, { autoUpdate: true })
         irenderRef.current.irender = render
         const imgId = loadCircle(render, 10)
