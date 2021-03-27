@@ -37,7 +37,6 @@ export function Muticanvas(){
     const irender = new IRender(glCanavs, { 
       autoUpdate: false, 
       maxNumber: 10000, 
-      offSreen: true, // 绘制到canvas2d，需要设置此值.
     })
     const circleId = loadCircle(irender, r)
     const aelArr: Iimage[] = []

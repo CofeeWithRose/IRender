@@ -42,7 +42,7 @@ export function OffScreen(){
         const glCanvas = document.createElement('canvas')
         glCanvas.width =CANVAS_SIZE
         glCanvas.height = CANVAS_SIZE
-        const irender = new IRender(glCanvas, { offSreen: true })
+        const irender = new IRender(glCanvas, { })
         const circleId = loadCircle(irender, R)
         irender.createElement({
             imgId: circleId,
