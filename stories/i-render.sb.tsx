@@ -114,7 +114,7 @@ export function PerformenceTest() {
           style={{ 
             width : canvasWidth / devicePixelRatio, 
             height: canvasHeight/devicePixelRatio,
-            backgroundColor: 'rgb(122,122,122,0.5)',
+            backgroundColor: 'rgb(122,122,122,1)',
             position: 'absolute',
             top: '0',
           }} />
