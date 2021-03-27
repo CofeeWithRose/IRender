@@ -4,7 +4,7 @@ import { loadCircle } from './utils';
 import { diffImage } from './utils/diffImage';
 
 export default {
-    title: 'OffScreen',
+    title: 'Off Screen',
     component: OffScreen,
   };
 

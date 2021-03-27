@@ -146,25 +146,3 @@ export function Muticanvas(){
       
   </div>
 }
-
-export function Demo({renderer, elemrnts, color }:{color: string ,renderer: IRender, elemrnts: Iimage[]})  {
-  const canvasRef = useRef<HTMLCanvasElement>()
-
-  useEffect(() => {
-  if(!renderer) return
-   const ctx =  canvasRef.current.getContext('2d')
-   const {r,g,b,a} = converColorStr(color)
-   elemrnts.forEach( e => {
-    e.setColor(r,g,b,a)
-   })
-   renderer.updateImidiatly()
-   ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height)
-   ctx.drawImage(renderer.glCanvas, 0, 0)
-  }, [renderer, color])
-
-  return <canvas
-    ref={canvasRef}
-    width={SIZE}
-    height={SIZE}
-  />
-}

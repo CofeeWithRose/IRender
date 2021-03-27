@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import { loadCircle, loadReact, loadText } from './utils';
 
 export default {
-    title: 'converColorStr',
+    title: 'Conver Color Str',
     component: ConverColorStr,
 };
 

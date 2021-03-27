@@ -11,11 +11,11 @@ import run5Url from './assets/player2/run5.png'
 import run6Url from './assets/player2/run6.png'
 import run7Url from './assets/player2/run7.png'
 import { startFPS, stopFPS } from './fps';
-import './game.css'
+import './run.css'
 
 
 export default {
-  title: 'Run RENDER',
+  title: 'Run',
   component: Run,
 };
 

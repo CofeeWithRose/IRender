@@ -4,7 +4,7 @@ import { ConverColorStr } from './color.sb';
 import { loadCircle, loadReact, loadText } from './utils';
 
 export default {
-    title: 'blend',
+    title: 'Blend',
     component: Blend,
 };
 

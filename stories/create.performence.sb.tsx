@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { converColorStr, Iimage, IRender } from 'i-render'
 import { loadCircle } from './utils';
 export default {
-    title: 'create performance',
+    title: 'Create Performence',
     component: CreatePerformence,
 };
 
