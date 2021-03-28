@@ -9,7 +9,7 @@
   "sideEffects": false,
   "scripts": {
     "start": "npm run dev",
-    "build": "tsc&&node ./build/index.js",
+    "build": "tsc -c ./tsconfig.publish.json &&node ./build/index.js",
     "dev": "start-storybook -p 6006",
     "build-storybook": "npm run build && build-storybook -o ./docs",
     "prepare": "husky install",
