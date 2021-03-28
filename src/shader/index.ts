@@ -95,23 +95,8 @@ export const VERTEX_SHADER = `
     }
 `
 
+
 export const FRAGMENT_SHADER =`
-    precision mediump float;
-
-    uniform sampler2D u_image;
-
-    varying vec2 v_texCoord;
-
-    varying vec4 v_color;
-
-    void main(){
-        vec4 textColor = texture2D(u_image, v_texCoord);
-        gl_FragColor = textColor * vec4( v_color.r, v_color.g, v_color.b, 1 ) * v_color.a; 
-    }
-`
-
-
-export const NOT_PREMUTIPED_FRAGMENT_SHADER =`
     precision mediump float;
 
     uniform sampler2D u_image;

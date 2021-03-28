@@ -5,6 +5,7 @@ export function loadCircle(irender: IRender, r: number, color?: string){
     tempTexture.width = r *2
     tempTexture.height = r *2
     const tempCtx = tempTexture.getContext('2d')
+    if(!tempCtx) throw new Error(' ')
     tempCtx.fillStyle = color||'rgba(255,255, 255, 1)'
     tempCtx.arc( r,r, r, 0, Math.PI *2);
     tempCtx.fill()
@@ -16,6 +17,7 @@ export function loadText( iRender: IRender, str: string, size: Vec2): number {
     canvas.width = size.x
     canvas.height = size.y
     const ctx = canvas.getContext('2d')
+    if(!ctx) throw new Error(' ')
     ctx.textAlign='center'
     ctx.textBaseline ='hanging'
     ctx.fillStyle= 'white'
@@ -32,6 +34,7 @@ export function loadReact(iRender: IRender, size: Vec2): number {
     canvas.width = size.x
     canvas.height = size.y
     const ctx = canvas.getContext('2d')
+    if(!ctx) throw new Error()
     ctx.fillStyle = 'white'
     ctx.fillRect(0,0, size.x, size.y)
     return iRender.loadImg(canvas)

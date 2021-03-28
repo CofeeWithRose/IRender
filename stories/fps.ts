@@ -4,6 +4,7 @@ let id = 0
 export function startFPS() {
   let frameCount = 0
   const fpsDiv = document.querySelector('#fps')
+  if(!fpsDiv) return
   let lastTime = performance.now()
   const caculateFps = () => {
       frameCount++

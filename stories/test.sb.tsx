@@ -11,9 +11,10 @@ export default {
 
 export function Test() {
 
-    const canvsRef = useRef<HTMLCanvasElement>()
+    const canvsRef = useRef<HTMLCanvasElement>(null)
 
     useEffect(() => {
+        if(!canvsRef.current) return
         const irender = new IRender(canvsRef.current, { maxNumber: 50000})
         const img = new Image()
         const list: Iimage[] = []

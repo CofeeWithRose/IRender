@@ -128,7 +128,7 @@ function createSurfingElementObj (irender:IRender,smockId: number,  num: number)
 
 
 export function Surfing() {
-  const canvasRef = useRef<HTMLCanvasElement>()
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
   const irenderRef = useRef<IRender>()
   const num = 25000

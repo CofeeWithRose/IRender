@@ -1,5 +1,5 @@
 import { Iimage, UpdateHandle } from '../Ielement/Iimage'
-import { FRAGMENT_SHADER, VERTEX_SHADER, NOT_PREMUTIPED_FRAGMENT_SHADER } from '../shader';
+import { FRAGMENT_SHADER, VERTEX_SHADER } from '../shader';
 import { compileShader, SHADER_TYPE } from '../util';
 import { TextureCanvasManager } from './TextureCanvasManager'
 import { IElementParams, IElements, IElementTypes, I_ELEMENT_TYPES } from './infer';
@@ -21,10 +21,7 @@ const DEFAULT_OPTION = {
   textureSize: 2048, 
   
   autoUpdate: true,
-  /**
-   * 如果glcanvas被绘制到canvas2d上设置为true,否则半透明颜色会比应该的颜色深，如：黄色圆形将有深色边框.
-   */
-  offSreen: false,
+ 
 }
 export type IRenderOptions = typeof DEFAULT_OPTION
 
@@ -45,10 +42,10 @@ export class IRender {
     private gl:WebGLRenderingContext;
 
     private uniformLocations: { 
-        u_windowSize: WebGLUniformLocation,
-        u_textureSize: WebGLUniformLocation,
-        u_cameraSize: WebGLUniformLocation,
-        u_cameraPosition: WebGLUniformLocation,
+        u_windowSize: WebGLUniformLocation|null,
+        u_textureSize: WebGLUniformLocation|null,
+        u_cameraSize: WebGLUniformLocation|null,
+        u_cameraPosition: WebGLUniformLocation|null,
     };
 
     private attribuitesLocations: {
@@ -73,13 +70,13 @@ export class IRender {
     }
 
     private attrBuffer: {
-        a_position: WebGLBuffer,
-        a_spriteSize: WebGLBuffer,
-        a_texCoord: WebGLBuffer,
-        a_color: WebGLBuffer,
-        a_scale: WebGLBuffer,
-        a_rotation: WebGLBuffer,
-        a_direction: WebGLBuffer,
+        a_position: WebGLBuffer|null,
+        a_spriteSize: WebGLBuffer|null,
+        a_texCoord: WebGLBuffer|null,
+        a_color: WebGLBuffer|null,
+        a_scale: WebGLBuffer|null,
+        a_rotation: WebGLBuffer|null,
+        a_direction: WebGLBuffer|null,
     }
   
     private positionBufferChanged = false
@@ -104,11 +101,11 @@ export class IRender {
 
     private updatedId = 0
 
-    private texture: WebGLTexture
+    private texture: WebGLTexture|null
 
     private options: typeof DEFAULT_OPTION 
 
-    private glExt: ANGLE_instanced_arrays
+    private glExt: ANGLE_instanced_arrays|null
 
     public glCanvas: HTMLCanvasElement
 
@@ -122,7 +119,7 @@ export class IRender {
   
 
     constructor( glCanvas: HTMLCanvasElement,   options?: Partial<typeof DEFAULT_OPTION>   ){
-        const textureSize = this.normolizeSize(options.textureSize||DEFAULT_OPTION.textureSize)
+        const textureSize = this.normolizeSize(options?.textureSize||DEFAULT_OPTION.textureSize)
         this.options = { ...DEFAULT_OPTION, ...options, textureSize }
         this.glCanvas = glCanvas
         this.textureManager =  new  TextureCanvasManager( this.options.textureSize )
@@ -135,19 +132,16 @@ export class IRender {
 
         
         const program = this.gl.createProgram()
+        if(!program) return
         compileShader(this.gl, program, VERTEX_SHADER,SHADER_TYPE.VERTEX_SHADER )
-        const fragmentShader = this.options.offSreen? NOT_PREMUTIPED_FRAGMENT_SHADER: FRAGMENT_SHADER
-        compileShader(this.gl, program, fragmentShader, SHADER_TYPE.FRAGMENT_SHADER)
+        compileShader(this.gl, program, FRAGMENT_SHADER, SHADER_TYPE.FRAGMENT_SHADER)
         this.gl.linkProgram(program)
 
         console.log('getProgramInfoLog:', this.gl.getProgramInfoLog(program));
         this.gl.useProgram(program)
         this.gl.enable(this.gl.BLEND)
-        if(this.options.offSreen) {
-          this.gl.blendFuncSeparate(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA, this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
-        }else{
-          this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
-        }
+        this.gl.blendFuncSeparate(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA, this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
+
 
         this.uniformLocations = {
             u_windowSize: this.gl.getUniformLocation(program, 'u_windowSize'),
@@ -192,32 +186,32 @@ export class IRender {
 
     private writeGLBuffer(){
 
-      if(this.positionBufferChanged) {
+      if(this.positionBufferChanged && this.attrBuffer.a_position) {
         this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_position, this.attrData.a_position)
         this.positionBufferChanged = false
       }
 
-      if(this.imageIdBufferChanged ) {
+      if(this.imageIdBufferChanged&&this.attrBuffer.a_texCoord) {
           this.bufferData(this.gl.ARRAY_BUFFER, this.attrBuffer.a_texCoord, this.attrData.a_texCoord)
           this.imageIdBufferChanged = false
       }
 
-      if ( this.sizeChanged ) {
+      if ( this.sizeChanged &&this.attrBuffer.a_spriteSize) {
         this.bufferData(this.gl.ARRAY_BUFFER, this.attrBuffer.a_spriteSize, this.attrData.a_spriteSize)
         this.sizeChanged = false
       }
 
-      if(this.colorBufferChanged){
+      if(this.colorBufferChanged && this.attrBuffer.a_color){
         this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_color, this.attrData.a_color)
         this.colorBufferChanged = false
       }
 
-      if (this.scaleChange) {
+      if (this.scaleChange && this.attrBuffer.a_scale) {
         this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_scale, this.attrData.a_scale )
         this.scaleChange = false
       }
 
-      if (this.rotationChange) {
+      if (this.rotationChange && this.attrBuffer.a_rotation) {
         this.bufferData( this.gl.ARRAY_BUFFER, this.attrBuffer.a_rotation, this.attrData.a_rotation )
         this.rotationChange = false
       }
@@ -235,6 +229,7 @@ export class IRender {
     }
 
     private render(){
+      if(!this.glExt) return
       this.glExt.drawElementsInstancedANGLE(
         this.gl.TRIANGLES,
         this.attrData.indicate.length,
@@ -259,7 +254,6 @@ export class IRender {
         this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
         this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
         this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
-        if(!this.options.offSreen) this.gl.pixelStorei(this.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.textureManager.canvas)
     }
 
@@ -298,7 +292,7 @@ export class IRender {
        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_direction, this.gl.STATIC_DRAW )
        this.gl.enableVertexAttribArray(this.attribuitesLocations.a_direction)
        this.gl.vertexAttribPointer(this.attribuitesLocations.a_direction, 2, this.gl.FLOAT, false, 0,0)
-
+        if(!this.glExt) return
         const positionBuffer = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer)
         this.gl.bufferData(this.gl.ARRAY_BUFFER, this.attrData.a_position, this.gl.STREAM_DRAW )
@@ -525,8 +519,23 @@ export class IRender {
     }
 
     getImageData(sx: number, sy: number, sw: number, sh: number): ImageData {
-      var pixels = new Uint8ClampedArray(sw * sh * 4);
+      const pixels = new Uint8ClampedArray(sw * sh * 4);
+     
       this.gl.readPixels(sx, sy, sw, sh, this.gl.RGBA, this.gl.UNSIGNED_BYTE, pixels);
+      for(let rInd = 0; rInd<pixels.length; rInd+=4){
+        const a = pixels[rInd+3]
+        if(a<255){
+          const alpha = a/255
+          const gInd = rInd + 1
+          const bInd = rInd + 2
+          const r = pixels[rInd]
+          const g = pixels[gInd]
+          const b= pixels[bInd]
+          pixels[rInd] = r/alpha
+          pixels[gInd] = g/alpha
+          pixels[bInd] = b/alpha
+        }
+      }
       return new ImageData(pixels, sw, sh)
     }
 

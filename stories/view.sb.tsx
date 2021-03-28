@@ -8,10 +8,11 @@ export default {
 
 export function ViewPort(){
 
-  const canvasRef = useRef<HTMLCanvasElement>()
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const renderRef = useRef<IRender>()
 
   useEffect(() => {
+    if(!canvasRef.current) return
     document.body.style.padding = '0'
     const maxNumber  = 100000
     const renderer = new IRender(canvasRef.current, {maxNumber: maxNumber *3})

@@ -1,6 +1,7 @@
 export function diffImage(data1: ImageData, data2: ImageData) {
     const {data: data2d, width} = data1
     const datagl = data2.data
+    let count = 0
     for(let i=0; i< data2d.length-4; i+=4) {
         let isequle = true
         for(let j = i; j <i+4; j++ ){
@@ -29,7 +30,9 @@ export function diffImage(data1: ImageData, data2: ImageData) {
                 b: datagl[i+2],
                 a: datagl[i+3],
             }
-            console.log('2d:',color2d, 'gl: ',colorgl, 'position', position)
+            count++
+            console.log('data1:',color2d, 'data2: ',colorgl, 'position', position)
         }
     }
+    console.log('count diff', count)
 }

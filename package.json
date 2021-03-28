@@ -1,6 +1,6 @@
 {
   "name": "i-render",
-  "version": "0.0.35",
+  "version": "0.0.38",
   "description": "light and fast image render based on webgl.",
   "main": "lib/src/index.js",
   "files": [
@@ -9,7 +9,7 @@
   "sideEffects": false,
   "scripts": {
     "start": "npm run dev",
-    "build": "tsc&&node ./build/index.js",
+    "build": "tsc --project ./tsconfig.publish.json &&node ./build/index.js",
     "dev": "start-storybook -p 6006",
     "build-storybook": "npm run build && build-storybook -o ./docs",
     "prepare": "husky install",

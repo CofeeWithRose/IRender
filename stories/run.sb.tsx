@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { IRender } from 'i-render'
+import { Iimage, IRender } from 'i-render'
 
 import standUrl from './assets/player2/stand1.png'
 import run1Url from './assets/player2/run1.png'
@@ -11,11 +11,11 @@ import run5Url from './assets/player2/run5.png'
 import run6Url from './assets/player2/run6.png'
 import run7Url from './assets/player2/run7.png'
 import { startFPS, stopFPS } from './fps';
-import './game.css'
+import './run.css'
 
 
 export default {
-  title: 'Run RENDER',
+  title: 'Run',
   component: Run,
 };
 
@@ -37,7 +37,7 @@ async function init(iRender: IRender, runId: number, curRunId: { runId: number }
   let runAnimIds = await Promise.all( runUrlList.map(url => loadImage(iRender, url) ) )
   runAnimIds = runAnimIds.concat(runAnimIds.reverse()).reverse()
   let cur = 0
-  const playerList = []
+  const playerList: Iimage[] = []
   for(let i = 0; i< total; i++){
    
     const x = 120 * scale * Math.floor(i%xCount) + 60 * scale
@@ -68,9 +68,9 @@ async function init(iRender: IRender, runId: number, curRunId: { runId: number }
 
 
 export function Run() {
-  const renderRef = useRef<IRender>()
-  const canvasRef = useRef<HTMLCanvasElement>()
-  const wrapRef = useRef<HTMLDivElement>()
+  const renderRef = useRef<IRender|null>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
   const [ total, setTotal] = useState(20000)
   const [ xCount, setXCount] = useState(110)
   const [ scale, setScale] = useState(1)

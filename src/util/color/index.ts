@@ -5,12 +5,12 @@ import { Cache } from './cache'
 Object.values(KEYWORDS_COLOR).forEach(v => Object.freeze(v))
 
 
-const colorCache = new Cache<string, RGBA>()
+const colorCache = new Cache<string, {value?: RGBA}>()
 
 
 export type ColorStr = keyof typeof KEYWORDS_COLOR
 
-export function converColorStr(keywordColor: ColorStr): RGBA| undefined
+export function converColorStr(keywordColor: ColorStr): RGBA
 
 export function converColorStr(colorStr: string): RGBA| undefined
 
@@ -35,11 +35,11 @@ export function converColorStr(colorStr: ColorStr|string):RGBA|undefined {
     try{
         let c = colorCache.get(colorStr)
         if(!c) {
-            c = converColor(colorStr)
+            c = { value: converColor(colorStr) }
             colorCache.set(colorStr, c)
             console.log('miss color cache')
         }
-        return c
+        return c?.value
     }catch(e){
         console.warn('fail to convert color' + colorStr)
     }

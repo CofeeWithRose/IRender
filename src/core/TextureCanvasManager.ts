@@ -25,7 +25,8 @@ export class TextureCanvasManager {
       this.canvas = document.createElement('canvas')
       this.canvas.width = size
       this.canvas.height = size
-      this.ctx = this.canvas.getContext('2d')
+      const ctx = this.canvas.getContext('2d')
+      if(ctx) this.ctx = ctx 
     }
 
   
