@@ -1,9 +1,13 @@
-export { IRender, IRenderOptions } from './core'
+export { IRender } from './core'
+
+export type { IRenderOptions } from './core'
 
 export { Iimage } from './Ielement/Iimage'
 
-export { RGBA } from './Data/RGBA'
+export type { RGBA } from './Data/RGBA'
 
-export { Vec2 } from './Data/Vec2'
+export type { Vec2 } from './Data/Vec2'
 
-export { converColorStr, ColorStr } from './util/color'
+export { converColorStr } from './util/color'
+
+export type { ColorStr } from './util/color'
