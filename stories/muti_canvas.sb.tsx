@@ -111,15 +111,15 @@ export function Muticanvas(){
         ctx && ctx.drawImage(irender.glCanvas, 0, 0)
       }
     }
-
+    document.body.querySelector('#root')?.appendChild(irender.glCanvas)
     window.addEventListener('pointermove',handleHighLight)
 
 
 
-    startFPS()
+    // startFPS()
 
     return () => {
-      stopFPS()
+      // stopFPS()
       window.removeEventListener('pointermove', handleHighLight)
     }
   
