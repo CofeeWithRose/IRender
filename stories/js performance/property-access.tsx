@@ -109,16 +109,109 @@ export function PropertyAccess() {
     
     return <div>
         <h1>js object property access performance test</h1>
-        <h3 > result </h3>
-        <h5> {time} ms</h5>
+       
         <p>
+            <pre dangerouslySetInnerHTML={{
+                __html:`
+                const SMALL_PROPERTIES = Array.from({length: 19}).map( (_, ind) => String.fromCharCode('a'.charCodeAt(0) + ind) )
+                const LARGE_PROPERTIES = Array.from({length: 20}).map( (_, ind) => String.fromCharCode('a'.charCodeAt(0) + ind) )
+                `
+            }}/>
+
+            <pre dangerouslySetInnerHTML={{
+                __html:`
+                function createSmallOrderProperty() {
+                    const properties = [...SMALL_PROPERTIES]
+                    const obj = {}
+                    properties.forEach((v) => { obj[v] = Math.ceil(Math.random() * 100)})
+                    return obj
+                }`
+            }}/>        
+            
             <button onClick={() =>console.log(createSmallOrderProperty())} >log smallOrderProperty</button>
+
+            <pre dangerouslySetInnerHTML={{
+                __html:`
+                function createSmallRandomProperty() {
+                    const properties = [...SMALL_PROPERTIES]
+                    const obj = {}
+                     while(properties.length) { 
+                        const keyIndex = Math.floor( Math.random() * properties.length )
+                        const v = properties[keyIndex]
+                        properties.splice(keyIndex, 1)
+                        obj[v] = properties.length
+                    }
+                    return obj
+                }`
+            }}/> 
+
             <button onClick={() =>console.log(createSmallRandomProperty())} >log smallRandomProperty</button>
             <br/>
+
+            <pre dangerouslySetInnerHTML={{
+                __html:`
+                function createLargeOrderProperty() {
+                    const properties = [...LARGE_PROPERTIES]
+                    const obj = {}
+                    properties.forEach((v) => { obj[v] = Math.ceil(Math.random() * 100)})
+                    return obj
+                }`
+            }}/> 
             <button onClick={() =>console.log(createLargeOrderProperty())} >log largeOrderProperty</button>
+
+            <pre dangerouslySetInnerHTML={{
+                __html:`
+                function createLargeRandomProperty() {
+                    const properties = [...LARGE_PROPERTIES]
+                    const obj = {}
+                     while(properties.length) { 
+                        const keyIndex = Math.floor( Math.random() * properties.length )
+                        const v = properties[keyIndex]
+                        properties.splice(keyIndex, 1)
+                        obj[v] = properties.length
+                    }
+                    return obj
+                }`
+            }}/> 
             <button onClick={() =>console.log(createLargeRandomProperty())} >log largeRandomProperty</button>
         </p>
-       
+        <pre
+            dangerouslySetInnerHTML={{__html: `
+            let t = 0
+            function accessProperty(obj: any) {
+                t = obj.a
+                t = obj.b
+                t = obj.c
+                t = obj.d
+            }
+
+            function foreachSmallOrderPropertyObj (){
+                // console.time('foreachSmallOrderPropertyObj')
+                orderSmallObjList.forEach(accessProperty)
+                // console.timeEnd('foreachSmallOrderPropertyObj')
+            }
+
+            function foreachSmallRandomProperty (){
+                // console.time('foreachSmallRandomProperty')
+                randomSmallObjList.forEach(accessProperty)
+                // console.timeEnd('foreachSmallRandomProperty')
+            }
+
+
+            function foreachLargeOrderPropertyObj (){
+                // console.time('foreachLargeOrderPropertyObj')
+                orderLargeObjList.forEach(accessProperty)
+                // console.timeEnd('foreachLargeOrderPropertyObj')
+            }
+
+            function foreachLargeRandomProperty (){
+                // console.time('foreachLargeRandomProperty')
+                randomLargeObjList.forEach(accessProperty)
+                // console.timeEnd('foreachLargeRandomProperty')
+            }
+            `}}
+        />
+        <h3 > result: {time} ms </h3>
         <p>
             <button onClick={() => test(foreachSmallOrderPropertyObj)} >foreach small OrderProperty</button>
             <button onClick={() => test(foreachSmallRandomProperty)} >foreach small RandomProperty</button>
