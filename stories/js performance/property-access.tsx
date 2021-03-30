@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 
 
 const SMALL_PROPERTIES = Array.from({length: 19}).map( (_, ind) => String.fromCharCode('a'.charCodeAt(0) + ind) )
@@ -66,28 +66,28 @@ function accessProperty(obj: any) {
 }
 
 function foreachSmallOrderPropertyObj (){
-    console.time('foreachSmallOrderPropertyObj')
+    // console.time('foreachSmallOrderPropertyObj')
     orderSmallObjList.forEach(accessProperty)
-    console.timeEnd('foreachSmallOrderPropertyObj')
+    // console.timeEnd('foreachSmallOrderPropertyObj')
 }
 
 function foreachSmallRandomProperty (){
-    console.time('foreachSmallRandomProperty')
+    // console.time('foreachSmallRandomProperty')
     randomSmallObjList.forEach(accessProperty)
-    console.timeEnd('foreachSmallRandomProperty')
+    // console.timeEnd('foreachSmallRandomProperty')
 }
 
 
 function foreachLargeOrderPropertyObj (){
-    console.time('foreachLargeOrderPropertyObj')
+    // console.time('foreachLargeOrderPropertyObj')
     orderLargeObjList.forEach(accessProperty)
-    console.timeEnd('foreachLargeOrderPropertyObj')
+    // console.timeEnd('foreachLargeOrderPropertyObj')
 }
 
 function foreachLargeRandomProperty (){
-    console.time('foreachLargeRandomProperty')
+    // console.time('foreachLargeRandomProperty')
     randomLargeObjList.forEach(accessProperty)
-    console.timeEnd('foreachLargeRandomProperty')
+    // console.timeEnd('foreachLargeRandomProperty')
 }
 
 
@@ -98,8 +98,19 @@ function foreachLargeRandomProperty (){
  * @returns 
  */
 export function PropertyAccess() {
+
+    const [ time, setTime ] = useState(0)
+
+    const test = useCallback((fun: Function) => {
+        const n = performance.now()
+        fun()
+        setTime( Math.round(performance.now() -n))
+    }, [])
+    
     return <div>
         <h1>js object property access performance test</h1>
+        <h3 > result </h3>
+        <h5> {time} ms</h5>
         <p>
             <button onClick={() =>console.log(createSmallOrderProperty())} >log smallOrderProperty</button>
             <button onClick={() =>console.log(createSmallRandomProperty())} >log smallRandomProperty</button>
@@ -109,14 +120,14 @@ export function PropertyAccess() {
         </p>
        
         <p>
-            <button onClick={foreachSmallOrderPropertyObj} >foreach small OrderProperty</button>
-            <button onClick={foreachSmallRandomProperty} >foreach small RandomProperty</button>
+            <button onClick={() => test(foreachSmallOrderPropertyObj)} >foreach small OrderProperty</button>
+            <button onClick={() => test(foreachSmallRandomProperty)} >foreach small RandomProperty</button>
         </p>
 
 
         <p>
-            <button onClick={foreachLargeOrderPropertyObj} >foreach large OrderProperty</button>
-            <button onClick={foreachLargeRandomProperty} >foreach large RandomProperty</button>
+            <button onClick={() => test(foreachLargeOrderPropertyObj)} >foreach large OrderProperty</button>
+            <button onClick={() => test(foreachLargeRandomProperty)} >foreach large RandomProperty</button>
         </p>
        
 
