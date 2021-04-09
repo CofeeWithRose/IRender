@@ -137,7 +137,7 @@ export function Surfing() {
     const canvas = canvasRef.current
     if(!canvas) return
   
-    const irender = new IRender(canvas, { maxNumber: num + 2 })
+    const irender = new IRender(canvas, { maxNumber: num + 2, autoUpdate: false })
 
     irenderRef.current = irender
 
@@ -162,8 +162,8 @@ export function Surfing() {
     const surfingElementObjList = createSurfingElementObj( irenderRef.current, circleTextureId, num)
     canvas.addEventListener('mousemove', e => {
       e.preventDefault()
-      point[0] = e.clientX *devicePixelRatio
-      point[1] = e.clientY * devicePixelRatio
+      point[0] = e.clientX
+      point[1] = e.clientY
       pointImg.setPosition(point[0], point[1])
     })
 
@@ -171,8 +171,8 @@ export function Surfing() {
       e.preventDefault()
       const p = e.touches[0]
       
-      point[0] = p .clientX *devicePixelRatio
-      point[1] = (p .clientY -100) * devicePixelRatio
+      point[0] = p .clientX
+      point[1] = (p .clientY -100)
      
 
       pointImg.setPosition(point[0], point[1])
@@ -189,6 +189,7 @@ export function Surfing() {
     reqHandle.deltaTime = now - lastTime
     lastTime = now;
     surfingAnim(surfingElementObjList, canvas.width, canvas.height, point, reqHandle.deltaTime )
+    irender.updateImidiatly()
     reqHandle.id = requestAnimationFrame(start)
   }
 
@@ -209,8 +210,8 @@ export function Surfing() {
   
     <canvas
       ref={canvasRef}
-      width={window.innerWidth * window.devicePixelRatio }
-      height={window.innerHeight * window.devicePixelRatio }
+      width={window.innerWidth }
+      height={window.innerHeight }
     />
   </div>
 } 
