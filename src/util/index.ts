@@ -24,3 +24,6 @@ export  function compileShader(
     gl.attachShader(program, shader)
     return shader
   }
+
+  export type { ListNode } from  './linked-list/index'
+  export { LinkedList } from './linked-list'
