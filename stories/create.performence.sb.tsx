@@ -6,7 +6,7 @@ export default {
     component: CreatePerformence,
 };
 
-const COUNT = 4000
+const COUNT = 10000
 
 export function CreatePerformence() {
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -42,7 +42,7 @@ export function CreatePerformence() {
 
       }
       // irender.updateImidiatly()
-      // setDuration(performance.now() - n)
+      setDuration(performance.now() - n)
     }
 
     const remove = () => {
@@ -55,7 +55,7 @@ export function CreatePerformence() {
         irenderRef.current.curCount--
       })
       // irender.updateImidiatly()
-      // setDuration(performance.now() - n)
+      setDuration(performance.now() - n)
     }
 
     // console.log('irenderRef.current.curCount', irenderRef.current.curCount)
