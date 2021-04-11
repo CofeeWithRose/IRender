@@ -1,5 +1,6 @@
 import { RGBA, WHITE } from '../Data/RGBA'
 import { ONE, Vec2, ZERO } from '../Data/Vec2'
+import { ListNode } from '../util'
 import {Ielement, UpdateHandle} from './Ielement'
 
 
@@ -27,6 +28,8 @@ export class Iimage implements Ielement  {
      * 设置zIndex，下次render渲染前,所有的元素的elementIndex可能会更改.
      */
     elementIndex: number
+
+    node: ListNode<Iimage>
 
     zIndex =  0
 

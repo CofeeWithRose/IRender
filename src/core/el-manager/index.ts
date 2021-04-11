@@ -10,30 +10,31 @@ export class ElManager {
 
     private changedMinIndex = NaN
 
-    private elNodeMap = new Map<Iimage, ListNode<Iimage>>()
+    // private elNodeMap = new Map<Iimage, ListNode<Iimage>>()
 
     get length() {
         return this._length
     }
+    protected rewriteElement: (el: Iimage) => void
 
-    constructor(
-        protected rewriteElement: (el: Iimage) => void
-    ){}
+    constructor(rewriteElement: (el: Iimage) => void){
+        this.rewriteElement = rewriteElement
+    }
 
     add(el: Iimage): void {
         const zIndex = el.zIndex
         const node = { value: el }
+        el.node = node
         this.addNode(node, zIndex)
-        this.elNodeMap.set(el, node)
+        // this.elNodeMap.set(el, node)
         this.changedMinIndex = isNaN(this.changedMinIndex)? zIndex : Math.min(this.changedMinIndex, zIndex)
         this._length++
     }
 
     remove(el: Iimage): void {
-        const node = this.elNodeMap.get(el)
+        const node = el.node
         if ( node) {
             this.removeNode(node, el.zIndex)
-            this.elNodeMap.delete(el)
         }
         const zIndex = el.zIndex
         this.changedMinIndex = isNaN(this.changedMinIndex)? zIndex : Math.min(this.changedMinIndex, zIndex)
@@ -43,20 +44,20 @@ export class ElManager {
     private addNode(node: ListNode<Iimage>, zIndex: number) {
         let list = this.imageListArray[zIndex]
         if(!list){
-            list = this.imageListArray[zIndex] = new LinkedList()
+            this.imageListArray[zIndex] = list = new LinkedList()
         }
         list.add(node)
     }
 
     private removeNode(node: ListNode<Iimage>, zIndex: number) {
         const list = this.imageListArray[zIndex]
-        if (node) {
+        if (list) {
             list.delete(node)
         }
     }
 
     updateZindex(el: Iimage, oldZIndex: number): void {
-        const node = this.elNodeMap.get(el)
+        const node = el.node
         if (node) {
             this.removeNode(node, oldZIndex)
             this.addNode(node, el.zIndex)
@@ -67,6 +68,7 @@ export class ElManager {
     }
 
     updateElementIndex () {
+        
         if(!isNaN(this.changedMinIndex)) {
             let curElIndex = 0
             this.imageListArray.forEach( (linedList, index) => {

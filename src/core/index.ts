@@ -36,7 +36,7 @@ export class IRender {
 
     private  textureManager: TextureCanvasManager;
   
-    private elManager = new ElManager()
+    private elManager: ElManager
 
     // protected deadElementList:  Iimage[] = []
 
@@ -124,6 +124,8 @@ export class IRender {
         this.options = { ...DEFAULT_OPTION, ...options, textureSize }
         this.glCanvas = glCanvas
         this.textureManager =  new  TextureCanvasManager( this.options.textureSize )
+        this.elManager =  new ElManager(this.rewriteElement)
+
         this.gl = glCanvas.getContext('webgl', { alpha: true })
          || glCanvas.getContext('experimental-webgl') as WebGLRenderingContext;
 
@@ -375,7 +377,7 @@ export class IRender {
     private initElement(el: Iimage, params: IElementParams['I_IMAGE']){
       el.elementIndex = this.elManager.length
       // this.elManager.push(el)
-      this.elManager.add(el.zIndex, el)
+      this.elManager.add(el)
       this.updateZindex()
       el.setPosition(params.position.x, params.position.y)
       el.setImgId(params.imgId)
@@ -508,7 +510,7 @@ export class IRender {
       }
     }
 
-    private rewriteElement(el: Iimage) {
+    private rewriteElement = (el: Iimage) => {
       const index = el.elementIndex
       this.updatePosition(index, el.position)
       this.updateImage(index, el.imgId)
