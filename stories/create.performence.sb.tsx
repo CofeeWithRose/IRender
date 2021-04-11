@@ -41,7 +41,7 @@ export function CreatePerformence() {
         irenderRef.current.curCount++
 
       }
-      // irender.updateImidiatly()
+      irender.updateImidiatly()
       // setDuration(performance.now() - n)
     }
 
@@ -54,7 +54,7 @@ export function CreatePerformence() {
         irender.destoryElement(el)
         irenderRef.current.curCount--
       })
-      // irender.updateImidiatly()
+      irender.updateImidiatly()
       // setDuration(performance.now() - n)
     }
 
@@ -62,7 +62,7 @@ export function CreatePerformence() {
 
     useEffect(() => {
         if(!canvasRef.current) return
-        const render = new IRender(canvasRef.current, { autoUpdate: true })
+        const render = new IRender(canvasRef.current, { autoUpdate: false })
         irenderRef.current.irender = render
         const imgId = loadCircle(render, 10)
         irenderRef.current.imgId = imgId
