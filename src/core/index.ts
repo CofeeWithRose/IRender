@@ -6,6 +6,7 @@ import {  Ielement, UpdateHandle } from '../Ielement/IElement'
 import { IElementParams, IElements, IElementTypes, I_ELEMENT_TYPES } from './infer';
 import { WHITE } from '../Data/RGBA';
 import { OFFEST1, OFFEST2, OFFEST3 } from '../Data/Number';
+import { ElManager } from './el-manager';
 
 
 export * from './infer/index'
@@ -35,9 +36,9 @@ export class IRender {
 
     private  textureManager: TextureCanvasManager;
   
-    private elementList: Iimage[] = []
+    private elManager = new ElManager()
 
-    protected deadElementList:  Iimage[] = []
+    // protected deadElementList:  Iimage[] = []
 
     private gl:WebGLRenderingContext;
 
@@ -234,7 +235,7 @@ export class IRender {
         this.gl.TRIANGLES,
         this.attrData.indicate.length,
         this.gl.UNSIGNED_INT, 0, 
-        this.elementList.length
+        this.elManager.length
       )
     }
 
@@ -372,8 +373,9 @@ export class IRender {
     }
 
     private initElement(el: Iimage, params: IElementParams['I_IMAGE']){
-      el.elementIndex = this.elementList.length
-      this.elementList.push(el)
+      el.elementIndex = this.elManager.length
+      // this.elManager.push(el)
+      this.elManager.add(el.zIndex, el)
       this.updateZindex()
       el.setPosition(params.position.x, params.position.y)
       el.setImgId(params.imgId)
@@ -387,7 +389,8 @@ export class IRender {
     }
 
     createElement( params: IElementParams['I_IMAGE'] ): IElements['I_IMAGE'] {
-      const el = this.deadElementList.shift() || new Iimage(this.handle)
+      // const el = this.deadElementList.shift() || new Iimage(this.handle)
+      const el = new Iimage(this.handle)
       this.initElement(el, params)
       return el
     }
@@ -402,14 +405,15 @@ export class IRender {
         this.update()
     }
 
-    destoryElement(ele: Ielement){
-        const ind = this.elementList.findIndex(el => el === ele)
-        if(ind > -1){
-           const dels =  this.elementList.splice(ind, 1)
-           this.deadElementList.push(dels[0])
+    destoryElement(ele: Iimage){
+        // const ind = this.elManager.findIndex(el => el === ele)
+        // if(ind > -1){
+          //  const dels =  this.elManager.splice(ind, 1)
+          //  this.deadElementList.push(dels[0])
+          this.elManager.remove(ele)
            this.zIndexChange = true
            this.update()
-        }
+        // }
     }
 
     loadImg( imgs: HTMLCanvasElement|HTMLImageElement ): number {
@@ -504,12 +508,25 @@ export class IRender {
       }
     }
 
+    private rewriteElement(el: Iimage) {
+      const index = el.elementIndex
+      this.updatePosition(index, el.position)
+      this.updateImage(index, el.imgId)
+      this.updateColor(index, el.color)
+      this.updateSize(index, el.elementSize)
+      this.updateRotation(index, el.rotation)
+      this.updateScale(index, el.scale)
+      this.updateOffset(index, el.offset)
+    }
+
     private incrace = (el1: Iimage, el2: Iimage) =>  el1.zIndex - el2.zIndex
 
     private handleZindexChange() {
       if(this.zIndexChange) {
-        this.elementList.sort(this.incrace)
-        this.elementList.forEach(this.setElZindex)
+        // this.elManager.sort(this.incrace)
+        // this.elManager.forEach(this.setElZindex)
+        // TODO
+        this.elManager.updateElementIndex()
         this.zIndexChange = false
       }
     }

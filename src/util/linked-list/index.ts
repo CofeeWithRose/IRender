@@ -56,10 +56,11 @@ export class LinkedList<T> implements ArrayLike<T>{
         return 
     }
     
-    forEach(callbackfn: (node: ListNode<T>) => void): void{
+    forEach(callbackfn: (node: ListNode<T>, index: number) => void): void{
         let curNode = this.startNode.next
+        let index = 0
         while(curNode) {
-            callbackfn(curNode)
+            callbackfn(curNode, index++)
             curNode = curNode.next
         }
     }
