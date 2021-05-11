@@ -26,7 +26,7 @@ function dist(p1:Vec2, p2: Vec2) {
 }
 
 export function Muticanvas(){
-  const arr: {id: number, canvas: null| HTMLCanvasElement, color: string}[] = Array.from(new Array(100)).map( (v, ind)=> ({id: ind, canvas: null, color: ind%2? 'red': 'yellow'})  )
+  const arr: {id: number, canvas: null| HTMLCanvasElement, color: string}[] = Array.from(new Array(10)).map( (v, ind)=> ({id: ind, canvas: null, color: ind%2? 'red': 'yellow'})  )
  
   useEffect(() => {
     const glCanavs = document.createElement('canvas')

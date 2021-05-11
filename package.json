@@ -14,7 +14,7 @@
     "build-storybook": "npm run build && build-storybook -o ./docs",
     "prepare": "husky install",
     "prepublishOnly": "npm run build",
-    "test": "npx chromatic --project-token=e92079f93300"
+    "chromatic": "npx chromatic --project-token e92079f93300"
   },
   "author": "cofeewithrose",
   "license": "MIT",
