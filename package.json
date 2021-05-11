@@ -13,7 +13,8 @@
     "dev": "start-storybook -p 6006",
     "build-storybook": "npm run build && build-storybook -o ./docs",
     "prepare": "husky install",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "npx chromatic --project-token=e92079f93300"
   },
   "author": "cofeewithrose",
   "license": "MIT",
@@ -27,6 +28,7 @@
     "@types/node": "^14.14.35",
     "@types/react": "^16.14.5",
     "babel-loader": "^8.1.0",
+    "chromatic": "^5.8.0",
     "husky": "^5.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

@@ -15,3 +15,5 @@ export function JsTest(){
 }
 
 export {PropertyAccess} from './property-access'
+
+export {FunctionScope} from './function-scope'
