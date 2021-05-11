@@ -61,7 +61,7 @@ async function init(iRender: IRender, runId: number, curRunId: { runId: number }
       })
       lastTime = now
     }
-    if(runId === curRunId.runId)  requestAnimationFrame( () =>  run(runId) )
+    // if(runId === curRunId.runId)  requestAnimationFrame( () =>  run(runId) )
   }
   run(runId)
 }
