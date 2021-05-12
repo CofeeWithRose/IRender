@@ -13,7 +13,6 @@ import run7Url from './assets/player2/run7.png'
 import { startFPS, stopFPS } from './fps';
 import './run.css'
 
-
 export default {
   title: 'Run',
   component: Run,
