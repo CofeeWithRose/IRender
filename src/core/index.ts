@@ -138,7 +138,6 @@ export class IRender {
         this.gl.linkProgram(program)
 
         console.log('getProgramInfoLog:', this.gl.getProgramInfoLog(program));
-        this.gl.useProgram(program)
         this.gl.enable(this.gl.BLEND)
         this.gl.blendFuncSeparate(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA, this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
 
@@ -172,6 +171,7 @@ export class IRender {
           updateSize: this.updateSize,
           updateOffset: this.updateOffset,
       }
+        this.gl.useProgram(program)
     }
 
 
