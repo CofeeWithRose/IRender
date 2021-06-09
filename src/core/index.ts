@@ -171,6 +171,7 @@ export class IRender {
           updateRotation: this.updateRotation,
           updateSize: this.updateSize,
           updateOffset: this.updateOffset,
+          textureManager: this.textureManager,
       }
     }
 
@@ -221,7 +222,7 @@ export class IRender {
         if(this.updatedId === this.updateId) return
         this.updatedId = this.updateId
         this.rafing = false
-        // this.gl.clear(this.gl.COLOR_BUFFER_BIT| this.gl.DEPTH_BUFFER_BIT)
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT| this.gl.DEPTH_BUFFER_BIT)
         this.handleZindexChange()
         this.writeGLBuffer()
         this.checkReloadTexure()

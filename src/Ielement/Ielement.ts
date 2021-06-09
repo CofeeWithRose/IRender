@@ -1,3 +1,4 @@
+import { TextureCanvasManager } from "../core/TextureCanvasManager"
 import { RGBA } from "../Data/RGBA"
 import { Vec2 } from "../Data/Vec2"
 
@@ -17,6 +18,8 @@ export interface UpdateHandle {
     updateSize: (elementIndex: number, size: Vec2) => void
 
     updateOffset: (elementIndex: number, offset: Vec2) => void
+
+    textureManager: TextureCanvasManager
     
 }
 
@@ -71,7 +74,7 @@ export interface Ielement {
 
     setColor(r: number, g: number, b: number, a:number): void
 
-    setImgId(imgId: number): void
+    setImgId(imgId: number, shouldUpdateSize: boolean): void
 
     setRotation( rotation: number ): void
 
