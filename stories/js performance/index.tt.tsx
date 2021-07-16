@@ -1,4 +1,5 @@
 import React from 'react'
+import { Sort1, Sort2 } from './sort';
 
 /**
  * js performance test.
@@ -17,3 +18,5 @@ export function JsTest(){
 export {PropertyAccess} from './property-access'
 
 export {FunctionScope} from './function-scope'
+// Sort1()
+// Sort2()

@@ -86,9 +86,13 @@ export class Iimage implements Ielement  {
      * 图像的id.
      * @param imgId 
      */
-    setImgId(imgId: number){
+    setImgId(imgId: number, shouldUpdateSize=true){
       this.imgId = imgId
       this.update.updateImg(this.elementIndex, this.imgId)
+      if (shouldUpdateSize) {
+        const info = this.update.textureManager.getImageInfo(imgId)
+        this.setSize(info.w, info.h)
+      }
     }
 
     /**
