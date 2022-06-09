@@ -16,7 +16,7 @@ export class Iimage implements Ielement  {
     /**
      * 被渲染的贴图ID.
      */
-    imgId: number
+    imgId!: number
 
     /**
      * 渲染的颜色.
@@ -26,7 +26,7 @@ export class Iimage implements Ielement  {
      * 元素的渲染顺序下标, 由渲染引擎维护.
      * 设置zIndex，下次render渲染前,所有的元素的elementIndex可能会更改.
      */
-    elementIndex: number
+    elementIndex!: number
 
     zIndex =  0
 

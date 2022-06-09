@@ -14,7 +14,7 @@ export class TextureCanvasManager {
 
     private positionInfo: { x: number, y: number, w: number, h:number }[] = []
 
-    private ctx: CanvasRenderingContext2D
+    private ctx!: CanvasRenderingContext2D
   
     private id = 0;
 

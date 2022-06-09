@@ -41,14 +41,14 @@ export class IRender {
 
     private gl:WebGLRenderingContext;
 
-    private uniformLocations: { 
+    private uniformLocations!: { 
         u_windowSize: WebGLUniformLocation|null,
         u_textureSize: WebGLUniformLocation|null,
         u_cameraSize: WebGLUniformLocation|null,
         u_cameraPosition: WebGLUniformLocation|null,
     };
 
-    private attribuitesLocations: {
+    private attribuitesLocations!: {
         a_position: number
         a_spriteSize: number;
         a_texCoord: number;
@@ -58,7 +58,7 @@ export class IRender {
         a_direction: number;
     };
 
-    private attrData: {
+    private attrData!: {
         a_position: Float32Array,
         a_spriteSize: Float32Array,
         a_texCoord: Float32Array,
@@ -69,7 +69,7 @@ export class IRender {
         indicate: Uint32Array,
     }
 
-    private attrBuffer: {
+    private attrBuffer!: {
         a_position: WebGLBuffer|null,
         a_spriteSize: WebGLBuffer|null,
         a_texCoord: WebGLBuffer|null,
@@ -101,7 +101,7 @@ export class IRender {
 
     private updatedId = 0
 
-    private texture: WebGLTexture|null
+    private texture: WebGLTexture|null = null
 
     private options: typeof DEFAULT_OPTION 
 
@@ -109,7 +109,7 @@ export class IRender {
 
     public glCanvas: HTMLCanvasElement
 
-    protected handle: UpdateHandle;
+    protected handle!: UpdateHandle;
 
     protected normolizeSize(size: number): number {
       mathLog2Polyfill()

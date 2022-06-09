@@ -51,7 +51,7 @@ function converColor(colorStr: string):RGBA|undefined {
     const str = (colorStr||'').replace(/\s/g, '').toLowerCase()
     
     // key workds color.
-    const keywordsColor = KEYWORDS_COLOR[str]
+    const keywordsColor = (KEYWORDS_COLOR as any)[str]
     if(keywordsColor) return keywordsColor
     
 
