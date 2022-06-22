@@ -7,14 +7,14 @@ const LARGE_PROPERTIES = Array.from({length: 20}).map( (_, ind) => String.fromCh
 
 function createSmallOrderProperty() {
     const properties = [...SMALL_PROPERTIES]
-    const obj = {}
+    const obj: any = {}
     properties.forEach((v) => { obj[v] = Math.ceil(Math.random() * 100)})
     return obj
 }
 
 function createSmallRandomProperty() {
     const properties = [...SMALL_PROPERTIES]
-    const obj = {}
+    const obj: any = {}
      while(properties.length) { 
         const keyIndex = Math.floor( Math.random() * properties.length )
         const v = properties[keyIndex]
@@ -26,14 +26,14 @@ function createSmallRandomProperty() {
 
 function createLargeOrderProperty() {
     const properties = [...LARGE_PROPERTIES]
-    const obj = {}
+    const obj: any = {}
     properties.forEach((v) => { obj[v] = Math.ceil(Math.random() * 100)})
     return obj
 }
 
 function createLargeRandomProperty() {
     const properties = [...LARGE_PROPERTIES]
-    const obj = {}
+    const obj: any = {}
      while(properties.length) { 
         const keyIndex = Math.floor( Math.random() * properties.length )
         const v = properties[keyIndex]
